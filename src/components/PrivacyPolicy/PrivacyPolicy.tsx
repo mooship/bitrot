@@ -1,9 +1,19 @@
+import { useHashRoute } from "../../hooks/useHashRoute";
 import styles from "./PrivacyPolicy.module.css";
 
 export function PrivacyPolicy() {
+  const { navigateTo } = useHashRoute();
+
   return (
     <article className={styles.container}>
-      <a href="#" className={styles.backLink}>
+      <a
+        href="#"
+        className={styles.backLink}
+        onClick={(e) => {
+          e.preventDefault();
+          navigateTo(null);
+        }}
+      >
         &larr; Back to home
       </a>
       <h1 className={styles.title}>Privacy Policy</h1>
