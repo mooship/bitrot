@@ -733,7 +733,7 @@ const _entries: DeadTech[] = [
     category: "developer-tools",
     brandColor: "#6762A6",
     autopsy:
-      "Heroku made deploying web apps so simple that an entire generation of developers learned to ship code on it. Salesforce bought it for $212 million in 2010 and slowly stopped investing. Features stagnated, the dashboard rotted, and in 2022 Salesforce killed the free tier that had made Heroku the default for every hackathon, tutorial, and side project. The developer community moved to Railway, Fly.io, and Vercel. A textbook acqui-kill in slow motion.",
+      "Heroku made deploying web apps so simple that an entire generation of developers learned to ship code on it. Salesforce bought it for $212 million in 2010 and slowly stopped investing. Features stagnated, the dashboard rotted, and in 2022 Salesforce killed the free tier that had made Heroku the default for every hackathon, tutorial, and side project. The developer community scattered to Netlify, Railway, Fly.io, and Vercel. A textbook acqui-kill in slow motion.",
   },
   {
     id: "encarta",
@@ -845,7 +845,7 @@ const _entries: DeadTech[] = [
     category: "streaming",
     brandColor: "#F15922",
     autopsy:
-      "Three University of Florida students built a music streaming service that let users upload and share anything. It was beloved, intuitive, and completely illegal. The major labels sued for up to $736 million in damages. Grooveshark settled in 2015, agreed to wipe its servers, and handed over all IP. Co-founder Josh Greenberg was found dead months later. The shutdown message apologised without reservation.",
+      "Three University of Florida students built a music streaming service that let users upload and share anything. It was beloved, intuitive, and completely illegal. The major labels sued for up to $736 million in damages. Grooveshark settled in 2015, agreed to wipe its servers, and handed over all IP. The shutdown message apologised without reservation — a rare display of grace from a company that had spent years pretending copyright law was optional.",
   },
   {
     id: "napster",
