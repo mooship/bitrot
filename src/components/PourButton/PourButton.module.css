@@ -47,7 +47,6 @@
   border-block-start: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
-  /* clip-path prevents Safari border-radius overflow bug during composited animations */
   -webkit-clip-path: inset(0);
   clip-path: inset(0);
 }
