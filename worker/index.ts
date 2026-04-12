@@ -30,7 +30,7 @@ function json(data: unknown, status = 200, extraHeaders: HeadersInit = {}): Resp
 async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
   const key = `rl:${ip}`;
   const raw = await env.POURS.get(key);
-  const count = raw ? parseInt(raw, 10) : 0;
+  const count = raw ? parseInt(raw, 10) || 0 : 0;
   if (count >= RATE_LIMIT_MAX) {
     return false;
   }
@@ -58,7 +58,7 @@ export default {
         list.keys.map(async (key) => {
           const id = key.name.slice("pour:".length);
           const val = await env.POURS.get(key.name);
-          counts[id] = val ? parseInt(val, 10) : 0;
+          counts[id] = val ? parseInt(val, 10) || 0 : 0;
         })
       );
       return json(counts, 200, cors);
@@ -84,7 +84,7 @@ export default {
 
       const key = `pour:${id}`;
       const current = await env.POURS.get(key);
-      const next = (current ? parseInt(current, 10) : 0) + 1;
+      const next = (current ? parseInt(current, 10) || 0 : 0) + 1;
       await env.POURS.put(key, String(next));
 
       return json({ count: next }, 200, cors);

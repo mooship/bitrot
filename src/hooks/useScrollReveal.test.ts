@@ -54,7 +54,6 @@ describe("useScrollReveal", () => {
     const disconnect = vi.fn();
     const originalIO = globalThis.IntersectionObserver;
     globalThis.IntersectionObserver = class {
-      constructor(_cb: IntersectionObserverCallback) {}
       observe(_target: Element) {}
       unobserve = vi.fn();
       disconnect = disconnect;
