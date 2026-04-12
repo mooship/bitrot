@@ -11,7 +11,9 @@
     background-color var(--transition-fast);
 }
 
-.toggle:hover {
-  color: var(--text-primary);
-  background-color: var(--bg-elevated);
+@media (hover: hover) {
+  .toggle:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+  }
 }

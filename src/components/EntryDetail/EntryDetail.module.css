@@ -86,9 +86,11 @@
     background-color var(--transition-fast);
 }
 
-.closeBtn:hover {
-  color: var(--text-primary);
-  background-color: var(--bg-elevated);
+@media (hover: hover) {
+  .closeBtn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+  }
 }
 
 .body {
@@ -175,9 +177,11 @@
     border-color var(--transition-fast);
 }
 
-.shareBtn:hover {
-  color: var(--text-primary);
-  border-color: var(--text-muted);
+@media (hover: hover) {
+  .shareBtn:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+  }
 }
 
 @media (min-width: 640px) {
