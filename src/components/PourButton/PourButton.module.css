@@ -1,7 +1,7 @@
 .wrapper {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-2);
 }
 
 .button {
@@ -47,7 +47,9 @@
   border-block-start: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
+  -webkit-clip-path: inset(0);
   clip-path: inset(0);
+  will-change: transform;
 }
 
 .liquid {
