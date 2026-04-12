@@ -77,6 +77,10 @@
   }
 }
 
+.glass.pouring {
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
 .glass.pouring .liquid {
   will-change: transform;
   animation: pour 0.8s ease-out forwards;
