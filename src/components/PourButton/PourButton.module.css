@@ -47,8 +47,6 @@
   border-block-start: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
-  /* iOS Safari: overflow:hidden + border-radius doesn't clip abs-positioned children
-     without a stacking context on the parent */
   isolation: isolate;
 }
 
