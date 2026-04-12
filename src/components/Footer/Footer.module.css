@@ -1,0 +1,24 @@
+.footer {
+  margin-block-start: auto;
+  border-block-start: 1px solid var(--border);
+  padding-block: var(--space-8);
+}
+
+.inner {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+  text-align: center;
+}
+
+.text {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+
+.muted {
+  color: var(--text-muted);
+}

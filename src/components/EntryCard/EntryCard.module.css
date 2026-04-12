@@ -1,0 +1,129 @@
+.card {
+  position: relative;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+.trigger {
+  display: block;
+  width: 100%;
+  text-align: start;
+  cursor: pointer;
+}
+
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base);
+}
+
+.accent {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 3px;
+  background-color: var(--entry-accent, var(--border));
+  transition: background-color var(--transition-slow);
+}
+
+.body {
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dates {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.lifespan {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  line-height: var(--leading-snug);
+  color: var(--text-primary);
+  font-optical-sizing: auto;
+  font-variation-settings: "WONK" 1;
+}
+
+.tagline {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-block-start: var(--space-1);
+  flex-wrap: wrap;
+}
+
+.causeBadge {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-elevated);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.parent {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
+}
+
+@media (hover: hover) {
+  .card:has(.trigger:hover) {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px var(--entry-accent, var(--border)),
+      var(--shadow-lg);
+    border-color: var(--entry-accent, var(--border));
+  }
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--pour-liquid);
+  outline-offset: 2px;
+  border-radius: var(--radius-lg);
+}

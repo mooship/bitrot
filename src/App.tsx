@@ -1,0 +1,36 @@
+import { useEffect } from "react";
+import { EntryDetail } from "./components/EntryDetail/EntryDetail";
+import { FilterBar } from "./components/FilterBar/FilterBar";
+import { Footer } from "./components/Footer/Footer";
+import { Header } from "./components/Header/Header";
+import { SkipLink } from "./components/SkipLink/SkipLink";
+import { Timeline } from "./components/Timeline/Timeline";
+import { entries } from "./data/entries";
+import { useHashRoute } from "./hooks/useHashRoute";
+import { useFilteredEntries } from "./stores/useFilterStore";
+import { usePourStore } from "./stores/usePourStore";
+
+export default function App() {
+  const fetchPours = usePourStore((s) => s.fetchPours);
+  const filteredEntries = useFilteredEntries();
+  const { activeEntryId, navigateTo } = useHashRoute();
+
+  const activeEntry = activeEntryId ? (entries.find((e) => e.id === activeEntryId) ?? null) : null;
+
+  useEffect(() => {
+    fetchPours();
+  }, [fetchPours]);
+
+  return (
+    <>
+      <SkipLink />
+      <Header />
+      <FilterBar />
+      <main id="main-content">
+        <Timeline entries={filteredEntries} onSelect={navigateTo} />
+      </main>
+      <Footer />
+      <EntryDetail entry={activeEntry} onClose={() => navigateTo(null)} />
+    </>
+  );
+}

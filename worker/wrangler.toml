@@ -1,0 +1,11 @@
+name = "graveyard-shift-pours"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+
+[[kv_namespaces]]
+binding = "POURS"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
+
+[vars]
+ALLOWED_ORIGIN = "http://localhost:5173"

@@ -1,0 +1,23 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+  padding-inline-start: var(--space-4);
+}
+
+.year {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  min-width: 3.5rem;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border);
+}
