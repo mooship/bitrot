@@ -8,7 +8,7 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <a href="#" className={styles.brandLink}>
+        <a href="#/" className={styles.brandLink}>
           <h1 className={styles.title}>Bitrot</h1>
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
         </a>
