@@ -28,15 +28,10 @@ describe("PourButton", () => {
     expect(screen.getByText("10")).toBeInTheDocument();
   });
 
-  it("shows plural 'pours' for count > 1", () => {
+  it("hides count when zero", () => {
+    usePourStore.setState({ counts: {} });
     render(<PourButton entryId="vine" entryName="Vine" />);
-    expect(screen.getByText("pours")).toBeInTheDocument();
-  });
-
-  it("shows singular 'pour' for count of 1", () => {
-    usePourStore.setState({ counts: { vine: 1 } });
-    render(<PourButton entryId="vine" entryName="Vine" />);
-    expect(screen.getByText("pour")).toBeInTheDocument();
+    expect(screen.queryByText("0")).not.toBeInTheDocument();
   });
 
   it("shows 'Poured' and is disabled after pouring", () => {
