@@ -47,6 +47,7 @@
   border-block-start: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
+  /* clip-path prevents Safari border-radius overflow bug during composited animations */
   -webkit-clip-path: inset(0);
   clip-path: inset(0);
 }
@@ -59,7 +60,6 @@
   background-color: var(--pour-liquid);
   transform: scaleY(0);
   transform-origin: bottom;
-  will-change: transform;
 }
 
 .button.poured .liquid {
@@ -79,6 +79,7 @@
 }
 
 .glass.pouring .liquid {
+  will-change: transform;
   animation: pour 0.8s ease-out forwards;
 }
 
