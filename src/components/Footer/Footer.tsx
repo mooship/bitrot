@@ -8,6 +8,9 @@ export function Footer() {
           In memory of the products we actually used.{" "}
           <span className={styles.muted}>No flowers. Just one more pour.</span>
         </p>
+        <a href="#/privacy" className={styles.privacyLink}>
+          Privacy Policy
+        </a>
       </div>
     </footer>
   );

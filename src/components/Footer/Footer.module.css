@@ -22,3 +22,17 @@
 .muted {
   color: var(--text-muted);
 }
+
+.privacyLink {
+  display: inline-block;
+  margin-block-start: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast);
+}
+
+.privacyLink:hover {
+  color: var(--text-secondary);
+}
