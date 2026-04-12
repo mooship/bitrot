@@ -16,7 +16,7 @@ interface EntryDetailProps {
 export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined!);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const theme = useThemeStore((s) => s.theme);
   const [copied, setCopied] = useState(false);
 
