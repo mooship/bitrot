@@ -1,5 +1,9 @@
 import { fetchAllPours, incrementPour } from "./pours";
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 describe("fetchAllPours", () => {
   it("returns parsed JSON on success", async () => {
     vi.stubGlobal(

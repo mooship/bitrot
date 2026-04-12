@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { DeadTech } from "../../data/types";
+import { mockEntry, mockEntryMinimal } from "../../test/fixtures";
 import { EntryDetail } from "./EntryDetail";
 
 vi.mock("../../hooks/useReducedMotion", () => ({
@@ -11,33 +12,6 @@ vi.mock("../../api/pours", () => ({
   fetchAllPours: vi.fn().mockResolvedValue({}),
   incrementPour: vi.fn().mockResolvedValue(1),
 }));
-
-const mockEntry: DeadTech = {
-  id: "google-reader",
-  name: "Google Reader",
-  tagline: "The RSS reader that united the internet",
-  born: 2005,
-  died: 2013,
-  causeOfDeath: "neglected",
-  autopsy: "Google killed it because they wanted everyone on Google+.",
-  category: "software",
-  brandColor: "#4285F4",
-  parent: "Google",
-  killedBy: "Google+",
-  peakYear: 2012,
-  peakMetric: "24M users",
-};
-
-const mockEntryMinimal: DeadTech = {
-  id: "test-entry",
-  name: "Test Entry",
-  tagline: "A minimal test entry",
-  born: 2010,
-  died: 2015,
-  causeOfDeath: "hubris",
-  autopsy: "It failed spectacularly.",
-  category: "other",
-};
 
 describe("EntryDetail", () => {
   it("returns null when entry is null", () => {
@@ -134,36 +108,38 @@ describe("EntryDetail", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("copies link to clipboard when copy button is clicked", async () => {
-    const writeTextSpy = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: writeTextSpy },
-      writable: true,
-      configurable: true,
+  describe("copy link", () => {
+    let writeTextSpy: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      writeTextSpy = vi.fn().mockResolvedValue(undefined);
+      Object.defineProperty(navigator, "clipboard", {
+        value: { writeText: writeTextSpy },
+        writable: true,
+        configurable: true,
+      });
     });
 
-    render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+    it("copies link to clipboard when copy button is clicked", async () => {
+      render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
+      fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
-    await vi.waitFor(() => {
-      expect(writeTextSpy).toHaveBeenCalledWith(expect.stringContaining("#/entry/google-reader"));
-    });
-  });
-
-  it("shows 'Copied!' after clicking copy", async () => {
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: vi.fn().mockResolvedValue(undefined) },
-      writable: true,
-      configurable: true,
+      await vi.waitFor(() => {
+        expect(writeTextSpy).toHaveBeenCalledWith(
+          expect.stringContaining("#/entry/google-reader")
+        );
+      });
     });
 
-    render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+    it("shows 'Copied!' after clicking copy", async () => {
+      render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
+      fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
-    await vi.waitFor(() => {
-      expect(screen.getByText("Copied!")).toBeInTheDocument();
+      await vi.waitFor(() => {
+        expect(screen.getByText("Copied!")).toBeInTheDocument();
+      });
     });
   });
 

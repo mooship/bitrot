@@ -1,19 +1,11 @@
+import { mockMatchMedia } from "../test/setup";
+
 describe("useThemeStore", () => {
   beforeEach(() => {
     vi.resetModules();
     localStorage.clear();
     document.documentElement.dataset.theme = "";
-    // Reset matchMedia to default (dark preference)
-    vi.mocked(window.matchMedia).mockImplementation((query: string) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
+    mockMatchMedia(() => false);
   });
 
   async function importStore() {
@@ -34,16 +26,7 @@ describe("useThemeStore", () => {
   });
 
   it("uses system light preference when no localStorage", async () => {
-    vi.mocked(window.matchMedia).mockImplementation((query: string) => ({
-      matches: query === "(prefers-color-scheme: light)",
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
+    mockMatchMedia((query) => query === "(prefers-color-scheme: light)");
 
     const useThemeStore = await importStore();
     expect(useThemeStore.getState().theme).toBe("light");

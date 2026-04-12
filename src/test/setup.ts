@@ -4,9 +4,6 @@ import { afterEach, vi } from "vitest";
 
 afterEach(() => {
   cleanup();
-});
-
-afterEach(() => {
   localStorage.clear();
   sessionStorage.clear();
 });
@@ -56,3 +53,20 @@ Object.defineProperty(navigator, "clipboard", {
   writable: true,
   configurable: true,
 });
+
+/**
+ * Helper to configure window.matchMedia mock for tests that need
+ * specific media query behavior (e.g. prefers-color-scheme, prefers-reduced-motion).
+ */
+export function mockMatchMedia(predicate: (query: string) => boolean) {
+  vi.mocked(window.matchMedia).mockImplementation((query: string) => ({
+    matches: predicate(query),
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+}

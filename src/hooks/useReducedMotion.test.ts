@@ -1,4 +1,5 @@
 import { renderHook } from "@testing-library/react";
+import { mockMatchMedia } from "../test/setup";
 
 describe("useReducedMotion", () => {
   beforeEach(() => {
@@ -6,16 +7,7 @@ describe("useReducedMotion", () => {
   });
 
   it("returns false when prefers-reduced-motion does not match", async () => {
-    vi.mocked(window.matchMedia).mockImplementation((query: string) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
+    mockMatchMedia(() => false);
 
     const { useReducedMotion } = await import("./useReducedMotion");
     const { result } = renderHook(() => useReducedMotion());
@@ -23,16 +15,7 @@ describe("useReducedMotion", () => {
   });
 
   it("returns true when prefers-reduced-motion matches", async () => {
-    vi.mocked(window.matchMedia).mockImplementation((query: string) => ({
-      matches: query === "(prefers-reduced-motion: reduce)",
-      media: query,
-      onchange: null,
-      addListener: vi.fn(),
-      removeListener: vi.fn(),
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    }));
+    mockMatchMedia((query) => query === "(prefers-reduced-motion: reduce)");
 
     const { useReducedMotion } = await import("./useReducedMotion");
     const { result } = renderHook(() => useReducedMotion());

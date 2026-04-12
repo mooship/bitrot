@@ -1,37 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { DeadTech } from "../../data/types";
+import { mockEntry, mockEntryMinimal } from "../../test/fixtures";
 import { EntryCard } from "./EntryCard";
 
 vi.mock("../../hooks/useReducedMotion", () => ({
   useReducedMotion: vi.fn(() => false),
 }));
-
-const mockEntry: DeadTech = {
-  id: "google-reader",
-  name: "Google Reader",
-  tagline: "The RSS reader that united the internet",
-  born: 2005,
-  died: 2013,
-  causeOfDeath: "neglected",
-  autopsy: "Google killed it.",
-  category: "software",
-  brandColor: "#4285F4",
-  parent: "Google",
-  peakYear: 2012,
-  peakMetric: "24M users",
-};
-
-const mockEntryMinimal: DeadTech = {
-  id: "test-entry",
-  name: "Test Entry",
-  tagline: "A minimal test entry",
-  born: 2010,
-  died: 2015,
-  causeOfDeath: "hubris",
-  autopsy: "It failed.",
-  category: "other",
-};
 
 describe("EntryCard", () => {
   it("renders entry name", () => {
