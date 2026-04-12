@@ -16,11 +16,12 @@ interface EntryDetailProps {
 export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined!);
   const theme = useThemeStore((s) => s.theme);
   const [copied, setCopied] = useState(false);
 
   const accent = entry?.brandColor ? getAccentColor(entry.brandColor, theme) : undefined;
-  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
+  const canShare = typeof navigator.share === "function";
 
   useEffect(() => {
     if (!entry) {
@@ -76,6 +77,10 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
     }
   }, [entry]);
 
+  useEffect(() => {
+    return () => clearTimeout(copyTimeoutRef.current);
+  }, []);
+
   async function handleShare() {
     const url = `${window.location.origin}${window.location.pathname}#/entry/${entry?.id}`;
     if (canShare) {
@@ -85,10 +90,13 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
         // user cancelled — do nothing
       }
     } else {
-      navigator.clipboard.writeText(url).then(() => {
+      try {
+        await navigator.clipboard.writeText(url);
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      });
+        copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
+      } catch {
+        // clipboard unavailable — do nothing
+      }
     }
   }
 
