@@ -31,9 +31,7 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
       <span className={styles.glass} aria-hidden="true">
         <span className={styles.liquid} />
       </span>
-      <span className={styles.label}>
-        {alreadyPoured ? "Poured" : "Pour one out"}
-      </span>
+      <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
       {count > 0 && (
         <span className={styles.count} aria-live="polite" aria-atomic="true">
           {count.toLocaleString()}
