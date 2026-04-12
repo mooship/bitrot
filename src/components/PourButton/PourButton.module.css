@@ -15,6 +15,7 @@
   color: var(--pour-liquid);
   font-weight: 600;
   font-size: var(--text-sm);
+  overflow: hidden;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast),
@@ -49,6 +50,7 @@
   overflow: hidden;
   -webkit-clip-path: inset(0);
   clip-path: inset(0);
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
 }
 
 .liquid {
