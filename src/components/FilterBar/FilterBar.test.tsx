@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { entries } from "../../data/entries";
-import { CAUSES_OF_DEATH, CAUSE_LABELS, CATEGORY_LABELS, TECH_CATEGORIES } from "../../data/types";
+import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import { useFilterStore } from "../../stores/useFilterStore";
 import { FilterBar } from "./FilterBar";
 
@@ -86,7 +86,7 @@ describe("FilterBar", () => {
     await user.click(screen.getByText("Neglected"));
 
     expect(
-      screen.getByText(new RegExp(`Showing \\d+ of ${entries.length} entries`)),
+      screen.getByText(new RegExp(`Showing \\d+ of ${entries.length} entries`))
     ).toBeInTheDocument();
   });
 

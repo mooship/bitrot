@@ -4,16 +4,12 @@ import { Footer } from "./Footer";
 describe("Footer", () => {
   it("renders the memorial text", () => {
     render(<Footer />);
-    expect(
-      screen.getByText(/In memory of the products we actually used/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/In memory of the products we actually used/)).toBeInTheDocument();
   });
 
   it("renders the pour tagline", () => {
     render(<Footer />);
-    expect(
-      screen.getByText(/No flowers\. Just one more pour\./),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/No flowers\. Just one more pour\./)).toBeInTheDocument();
   });
 
   it("renders a footer element", () => {

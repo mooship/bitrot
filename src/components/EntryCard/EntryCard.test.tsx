@@ -36,16 +36,12 @@ const mockEntryMinimal: DeadTech = {
 describe("EntryCard", () => {
   it("renders entry name", () => {
     render(<EntryCard entry={mockEntry} onSelect={vi.fn()} />);
-    expect(
-      screen.getByRole("heading", { name: "Google Reader" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Google Reader" })).toBeInTheDocument();
   });
 
   it("renders tagline", () => {
     render(<EntryCard entry={mockEntry} onSelect={vi.fn()} />);
-    expect(
-      screen.getByText("The RSS reader that united the internet"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("The RSS reader that united the internet")).toBeInTheDocument();
   });
 
   it("renders birth and death dates", () => {
@@ -86,28 +82,18 @@ describe("EntryCard", () => {
   it("has an accessible aria-label on the button", () => {
     render(<EntryCard entry={mockEntry} onSelect={vi.fn()} />);
     const button = screen.getByRole("button");
-    expect(button).toHaveAttribute(
-      "aria-label",
-      expect.stringContaining("Google Reader"),
-    );
-    expect(button).toHaveAttribute(
-      "aria-label",
-      expect.stringContaining("Neglected"),
-    );
+    expect(button).toHaveAttribute("aria-label", expect.stringContaining("Google Reader"));
+    expect(button).toHaveAttribute("aria-label", expect.stringContaining("Neglected"));
   });
 
   it("applies accent color CSS variable when brandColor is present", () => {
-    const { container } = render(
-      <EntryCard entry={mockEntry} onSelect={vi.fn()} />,
-    );
+    const { container } = render(<EntryCard entry={mockEntry} onSelect={vi.fn()} />);
     const article = container.querySelector("article");
     expect(article?.style.getPropertyValue("--entry-accent")).toBeTruthy();
   });
 
   it("does not apply accent color when brandColor is absent", () => {
-    const { container } = render(
-      <EntryCard entry={mockEntryMinimal} onSelect={vi.fn()} />,
-    );
+    const { container } = render(<EntryCard entry={mockEntryMinimal} onSelect={vi.fn()} />);
     const article = container.querySelector("article");
     expect(article?.style.getPropertyValue("--entry-accent")).toBe("");
   });

@@ -51,9 +51,7 @@ describe("useThemeStore", () => {
 
   it("applies theme to document element on init", async () => {
     const useThemeStore = await importStore();
-    expect(document.documentElement.dataset.theme).toBe(
-      useThemeStore.getState().theme,
-    );
+    expect(document.documentElement.dataset.theme).toBe(useThemeStore.getState().theme);
   });
 
   it("toggleTheme switches from dark to light", async () => {

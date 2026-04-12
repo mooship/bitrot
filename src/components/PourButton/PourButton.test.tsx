@@ -53,10 +53,7 @@ describe("PourButton", () => {
   it("has an accessible aria-label with entry name and count", () => {
     render(<PourButton entryId="vine" entryName="Vine" />);
     const button = screen.getByRole("button");
-    expect(button).toHaveAttribute(
-      "aria-label",
-      "Pour one out for Vine. Current count: 10",
-    );
+    expect(button).toHaveAttribute("aria-label", "Pour one out for Vine. Current count: 10");
   });
 
   it("calls pour on click", async () => {

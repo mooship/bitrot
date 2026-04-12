@@ -40,7 +40,7 @@ class MockIntersectionObserver {
   observe(target: Element) {
     this.callback(
       [{ isIntersecting: true, target } as IntersectionObserverEntry],
-      this as unknown as IntersectionObserver,
+      this as unknown as IntersectionObserver
     );
   }
 

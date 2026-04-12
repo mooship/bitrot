@@ -7,7 +7,7 @@ describe("fetchAllPours", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ "google-reader": 42, vine: 10 }),
-      }),
+      })
     );
 
     const result = await fetchAllPours();
@@ -15,19 +15,13 @@ describe("fetchAllPours", () => {
   });
 
   it("throws on HTTP error with status", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: false, status: 500 }),
-    );
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 500 }));
 
     await expect(fetchAllPours()).rejects.toThrow("fetchAllPours failed: 500");
   });
 
   it("propagates network errors", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockRejectedValue(new TypeError("Failed to fetch")),
-    );
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("Failed to fetch")));
 
     await expect(fetchAllPours()).rejects.toThrow("Failed to fetch");
   });
@@ -51,7 +45,7 @@ describe("incrementPour", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ count: 43 }),
-      }),
+      })
     );
 
     const result = await incrementPour("google-reader");
@@ -72,13 +66,8 @@ describe("incrementPour", () => {
   });
 
   it("throws on HTTP error with status", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn().mockResolvedValue({ ok: false, status: 429 }),
-    );
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 429 }));
 
-    await expect(incrementPour("vine")).rejects.toThrow(
-      "incrementPour failed: 429",
-    );
+    await expect(incrementPour("vine")).rejects.toThrow("incrementPour failed: 429");
   });
 });

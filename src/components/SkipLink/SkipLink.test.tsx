@@ -11,7 +11,7 @@ describe("SkipLink", () => {
     render(<SkipLink />);
     expect(screen.getByRole("link", { name: "Skip to content" })).toHaveAttribute(
       "href",
-      "#main-content",
+      "#main-content"
     );
   });
 });

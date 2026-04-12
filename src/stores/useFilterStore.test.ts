@@ -1,6 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { entries } from "../data/entries";
-import { useFilterStore, useFilteredEntries } from "./useFilterStore";
+import { useFilteredEntries, useFilterStore } from "./useFilterStore";
 
 beforeEach(() => {
   useFilterStore.setState({
@@ -67,9 +67,7 @@ describe("useFilteredEntries", () => {
     useFilterStore.getState().toggleCause("neglected");
     const { result } = renderHook(() => useFilteredEntries());
     expect(result.current.length).toBeGreaterThan(0);
-    expect(
-      result.current.every((e) => e.causeOfDeath === "neglected"),
-    ).toBe(true);
+    expect(result.current.every((e) => e.causeOfDeath === "neglected")).toBe(true);
   });
 
   it("filters by a single category", () => {
@@ -84,10 +82,7 @@ describe("useFilteredEntries", () => {
     useFilterStore.getState().toggleCause("hubris");
     const { result } = renderHook(() => useFilteredEntries());
     expect(
-      result.current.every(
-        (e) =>
-          e.causeOfDeath === "neglected" || e.causeOfDeath === "hubris",
-      ),
+      result.current.every((e) => e.causeOfDeath === "neglected" || e.causeOfDeath === "hubris")
     ).toBe(true);
   });
 

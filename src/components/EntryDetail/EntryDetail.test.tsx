@@ -53,22 +53,18 @@ describe("EntryDetail", () => {
 
   it("renders entry name as heading", () => {
     render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
-    expect(
-      screen.getByRole("heading", { name: "Google Reader" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Google Reader" })).toBeInTheDocument();
   });
 
   it("renders tagline", () => {
     render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
-    expect(
-      screen.getByText("The RSS reader that united the internet"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("The RSS reader that united the internet")).toBeInTheDocument();
   });
 
   it("renders autopsy text", () => {
     render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
     expect(
-      screen.getByText(/Google killed it because they wanted everyone on Google\+/),
+      screen.getByText(/Google killed it because they wanted everyone on Google\+/)
     ).toBeInTheDocument();
   });
 
@@ -121,9 +117,7 @@ describe("EntryDetail", () => {
 
   it("calls onClose when backdrop is clicked", async () => {
     const onClose = vi.fn();
-    const { container } = render(
-      <EntryDetail entry={mockEntry} onClose={onClose} />,
-    );
+    const { container } = render(<EntryDetail entry={mockEntry} onClose={onClose} />);
     const user = userEvent.setup();
 
     const backdrop = container.firstChild as HTMLElement;
@@ -150,14 +144,10 @@ describe("EntryDetail", () => {
 
     render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Copy link to this entry" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
     await vi.waitFor(() => {
-      expect(writeTextSpy).toHaveBeenCalledWith(
-        expect.stringContaining("#/entry/google-reader"),
-      );
+      expect(writeTextSpy).toHaveBeenCalledWith(expect.stringContaining("#/entry/google-reader"));
     });
   });
 
@@ -170,9 +160,7 @@ describe("EntryDetail", () => {
 
     render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "Copy link to this entry" }),
-    );
+    fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
     await vi.waitFor(() => {
       expect(screen.getByText("Copied!")).toBeInTheDocument();
@@ -185,9 +173,7 @@ describe("EntryDetail", () => {
   });
 
   it("resets document.title when entry is null", () => {
-    const { rerender } = render(
-      <EntryDetail entry={mockEntry} onClose={vi.fn()} />,
-    );
+    const { rerender } = render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
     rerender(<EntryDetail entry={null} onClose={vi.fn()} />);
     expect(document.title).toBe("Bitrot — Dead Tech Memorial");
   });
@@ -197,7 +183,7 @@ describe("EntryDetail", () => {
     expect(
       screen.getByRole("button", {
         name: /Pour one out for Google Reader/,
-      }),
+      })
     ).toBeInTheDocument();
   });
 

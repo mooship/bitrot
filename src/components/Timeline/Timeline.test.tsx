@@ -48,35 +48,23 @@ describe("Timeline", () => {
 
   it("renders entry cards for each entry", () => {
     render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
-    expect(
-      screen.getByRole("heading", { name: "Entry A" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Entry B" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Entry C" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Entry A" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Entry B" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Entry C" })).toBeInTheDocument();
   });
 
   it("shows empty state when entries is empty", () => {
     render(<Timeline entries={[]} onSelect={vi.fn()} />);
-    expect(
-      screen.getByText("No entries match the current filters."),
-    ).toBeInTheDocument();
+    expect(screen.getByText("No entries match the current filters.")).toBeInTheDocument();
   });
 
   it("has aria-label on the section", () => {
     render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
-    expect(
-      screen.getByRole("region", { name: "Timeline of dead technology" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Timeline of dead technology" })).toBeInTheDocument();
   });
 
   it("does not show empty state when entries exist", () => {
     render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
-    expect(
-      screen.queryByText("No entries match the current filters."),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText("No entries match the current filters.")).not.toBeInTheDocument();
   });
 });

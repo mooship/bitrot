@@ -24,9 +24,7 @@ describe("Header", () => {
 
   it("renders the subtitle", () => {
     render(<Header />);
-    expect(
-      screen.getByText("An interactive memorial for dead technology"),
-    ).toBeInTheDocument();
+    expect(screen.getByText("An interactive memorial for dead technology")).toBeInTheDocument();
   });
 
   it("does not show count when globalCount is 0", () => {

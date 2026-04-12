@@ -7,17 +7,13 @@ describe("ThemeToggle", () => {
   it("shows 'Switch to light theme' when in dark mode", () => {
     useThemeStore.setState({ theme: "dark" });
     render(<ThemeToggle />);
-    expect(
-      screen.getByRole("button", { name: "Switch to light theme" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch to light theme" })).toBeInTheDocument();
   });
 
   it("shows 'Switch to dark theme' when in light mode", () => {
     useThemeStore.setState({ theme: "light" });
     render(<ThemeToggle />);
-    expect(
-      screen.getByRole("button", { name: "Switch to dark theme" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Switch to dark theme" })).toBeInTheDocument();
   });
 
   it("toggles theme on click", async () => {

@@ -25,9 +25,7 @@ beforeEach(() => {
 describe("App", () => {
   it("renders the skip link", () => {
     render(<App />);
-    expect(
-      screen.getByRole("link", { name: "Skip to content" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Skip to content" })).toBeInTheDocument();
   });
 
   it("renders the header with title", () => {
@@ -43,16 +41,12 @@ describe("App", () => {
 
   it("renders the timeline", () => {
     render(<App />);
-    expect(
-      screen.getByRole("region", { name: "Timeline of dead technology" }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Timeline of dead technology" })).toBeInTheDocument();
   });
 
   it("renders the footer", () => {
     render(<App />);
-    expect(
-      screen.getByText(/In memory of the products we actually used/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/In memory of the products we actually used/)).toBeInTheDocument();
   });
 
   it("does not render EntryDetail when no hash route is active", () => {
