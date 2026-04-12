@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Copy, X } from "lucide-react";
+import { Copy, Share2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
@@ -20,6 +20,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const [copied, setCopied] = useState(false);
 
   const accent = entry?.brandColor ? getAccentColor(entry.brandColor, theme) : undefined;
+  const canShare = typeof navigator !== "undefined" && typeof navigator.share === "function";
 
   useEffect(() => {
     if (!entry) {
@@ -75,12 +76,20 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
     }
   }, [entry]);
 
-  function handleCopy() {
+  async function handleShare() {
     const url = `${window.location.origin}${window.location.pathname}#/entry/${entry?.id}`;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    if (canShare) {
+      try {
+        await navigator.share({ title: entry?.name, text: entry?.tagline, url });
+      } catch {
+        // user cancelled — do nothing
+      }
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    }
   }
 
   if (!entry) {
@@ -160,11 +169,15 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
           <button
             type="button"
             className={styles.shareBtn}
-            onClick={handleCopy}
-            aria-label="Copy link to this entry"
+            onClick={handleShare}
+            aria-label={canShare ? "Share this entry" : "Copy link to this entry"}
           >
-            <Copy size={16} aria-hidden="true" />
-            <span>{copied ? "Copied!" : "Copy link"}</span>
+            {canShare ? (
+              <Share2 size={16} aria-hidden="true" />
+            ) : (
+              <Copy size={16} aria-hidden="true" />
+            )}
+            <span>{canShare ? "Share" : copied ? "Copied!" : "Copy link"}</span>
           </button>
         </footer>
       </div>

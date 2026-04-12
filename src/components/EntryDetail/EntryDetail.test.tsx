@@ -108,13 +108,19 @@ describe("EntryDetail", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  describe("copy link", () => {
+  describe("copy link (clipboard fallback)", () => {
     let writeTextSpy: ReturnType<typeof vi.fn>;
 
     beforeEach(() => {
       writeTextSpy = vi.fn().mockResolvedValue(undefined);
       Object.defineProperty(navigator, "clipboard", {
         value: { writeText: writeTextSpy },
+        writable: true,
+        configurable: true,
+      });
+      // Ensure Share API is not available so the clipboard path is exercised
+      Object.defineProperty(navigator, "share", {
+        value: undefined,
         writable: true,
         configurable: true,
       });
@@ -137,6 +143,59 @@ describe("EntryDetail", () => {
 
       await vi.waitFor(() => {
         expect(screen.getByText("Copied!")).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe("share button (Web Share API)", () => {
+    let shareSpy: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      shareSpy = vi.fn().mockResolvedValue(undefined);
+      Object.defineProperty(navigator, "share", {
+        value: shareSpy,
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    afterEach(() => {
+      Object.defineProperty(navigator, "share", {
+        value: undefined,
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    it("shows 'Share' label when navigator.share is available", () => {
+      render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+      expect(screen.getByRole("button", { name: "Share this entry" })).toBeInTheDocument();
+      expect(screen.getByText("Share")).toBeInTheDocument();
+    });
+
+    it("calls navigator.share with correct data when clicked", async () => {
+      render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("button", { name: "Share this entry" }));
+
+      await vi.waitFor(() => {
+        expect(shareSpy).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: "Google Reader",
+            url: expect.stringContaining("#/entry/google-reader"),
+          })
+        );
+      });
+    });
+
+    it("does not throw when navigator.share rejects (user cancelled)", async () => {
+      shareSpy.mockRejectedValue(new DOMException("Share cancelled", "AbortError"));
+      render(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("button", { name: "Share this entry" }));
+
+      await vi.waitFor(() => {
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
       });
     });
   });
