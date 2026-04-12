@@ -3,10 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { usePourStore } from "../../stores/usePourStore";
 import { PourButton } from "./PourButton";
 
-vi.mock("../../hooks/useReducedMotion", () => ({
-  useReducedMotion: vi.fn(() => false),
-}));
-
 vi.mock("../../api/pours", () => ({
   fetchAllPours: vi.fn().mockResolvedValue({}),
   incrementPour: vi.fn().mockResolvedValue(1),

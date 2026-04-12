@@ -47,43 +47,20 @@
   border-block-start: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
-  -webkit-clip-path: inset(0);
-  clip-path: inset(0);
 }
 
 .liquid {
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  height: 100%;
+  height: 60%;
   background-color: var(--pour-liquid);
-  transform: scaleY(0);
-  transform-origin: bottom;
+  opacity: 0;
+  transition: opacity var(--transition-slow);
 }
 
 .button.poured .liquid {
-  transform: scaleY(0.6);
-}
-
-@keyframes pour {
-  0% {
-    transform: scaleY(0);
-  }
-  60% {
-    transform: scaleY(0.8);
-  }
-  100% {
-    transform: scaleY(0.6);
-  }
-}
-
-.glass.pouring {
-  -webkit-mask-image: -webkit-radial-gradient(white, black);
-}
-
-.glass.pouring .liquid {
-  will-change: transform;
-  animation: pour 0.8s ease-out forwards;
+  opacity: 1;
 }
 
 .label {

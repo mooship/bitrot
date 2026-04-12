@@ -1,6 +1,4 @@
 import clsx from "clsx";
-import { useState } from "react";
-import { useReducedMotion } from "../../hooks/useReducedMotion";
 import { usePourStore } from "../../stores/usePourStore";
 import styles from "./PourButton.module.css";
 
@@ -11,8 +9,6 @@ interface PourButtonProps {
 
 export function PourButton({ entryId, entryName }: PourButtonProps) {
   const { counts, pouredThisSession, pour } = usePourStore();
-  const reducedMotion = useReducedMotion();
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const count = counts[entryId] ?? 0;
   const alreadyPoured = pouredThisSession.has(entryId);
@@ -21,10 +17,7 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
     if (alreadyPoured) {
       return;
     }
-    pour(entryId).catch(() => setIsAnimating(false));
-    if (!reducedMotion) {
-      setIsAnimating(true);
-    }
+    pour(entryId);
   }
 
   return (
@@ -36,8 +29,8 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
         disabled={alreadyPoured}
         aria-label={`Pour one out for ${entryName}. Current count: ${count}`}
       >
-        <span className={clsx(styles.glass, isAnimating && styles.pouring)} aria-hidden="true">
-          <span className={styles.liquid} onAnimationEnd={() => setIsAnimating(false)} />
+        <span className={styles.glass} aria-hidden="true">
+          <span className={styles.liquid} />
         </span>
         <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
       </button>
