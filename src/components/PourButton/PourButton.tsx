@@ -21,10 +21,9 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
     if (alreadyPoured) {
       return;
     }
-    pour(entryId);
+    pour(entryId).catch(() => setIsAnimating(false));
     if (!reducedMotion) {
       setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 800);
     }
   }
 
@@ -38,7 +37,7 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
         aria-label={`Pour one out for ${entryName}. Current count: ${count}`}
       >
         <span className={clsx(styles.glass, isAnimating && styles.pouring)} aria-hidden="true">
-          <span className={styles.liquid} />
+          <span className={styles.liquid} onAnimationEnd={() => setIsAnimating(false)} />
         </span>
         <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
       </button>

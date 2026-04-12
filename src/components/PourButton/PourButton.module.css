@@ -59,7 +59,6 @@
   background-color: var(--pour-liquid);
   transform: scaleY(0);
   transform-origin: bottom;
-  will-change: transform;
 }
 
 .button.poured .liquid {
@@ -79,6 +78,7 @@
 }
 
 .glass.pouring .liquid {
+  will-change: transform;
   animation: pour 0.8s ease-out forwards;
 }
 
