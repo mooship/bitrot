@@ -2,10 +2,26 @@ name = "bitrot-pours"
 main = "index.ts"
 compatibility_date = "2026-04-12"
 
+[placement]
+mode = "smart"
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+
+[observability.traces]
+enabled = true
+
 [[kv_namespaces]]
 binding = "POURS"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_YOUR_KV_PREVIEW_ID"
+id = "f37c7fead51c46d59b48ac5bb6e600e3"
+preview_id = "f37c7fead51c46d59b48ac5bb6e600e3"
 
 [vars]
 ALLOWED_ORIGIN = "http://localhost:5173"
+
+[env.production]
+[env.production.vars]
+ALLOWED_ORIGIN = "https://bitrot.timothybrits.co.za"
