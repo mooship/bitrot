@@ -5,6 +5,7 @@ import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
 import { useThemeStore } from "../../stores/useThemeStore";
 import { getAccentColor } from "../../utils/color";
+import { resetSeo, updateSeoForEntry } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
 import styles from "./EntryDetail.module.css";
 
@@ -71,9 +72,9 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
 
   useEffect(() => {
     if (entry) {
-      document.title = `${entry.name} — Bitrot`;
+      updateSeoForEntry(entry);
     } else {
-      document.title = "Bitrot — Dead Tech Memorial";
+      resetSeo();
     }
   }, [entry]);
 
