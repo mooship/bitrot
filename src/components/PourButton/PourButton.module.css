@@ -48,6 +48,8 @@
   border-radius: 0 0 3px 3px;
   overflow: hidden;
   isolation: isolate;
+  -webkit-clip-path: inset(0);
+  clip-path: inset(0);
 }
 
 .liquid {
