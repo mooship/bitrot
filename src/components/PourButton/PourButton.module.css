@@ -64,5 +64,5 @@
 .count {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  opacity: 0.6;
+  color: var(--text-muted);
 }

@@ -8,10 +8,9 @@ interface PourButtonProps {
 }
 
 export function PourButton({ entryId, entryName }: PourButtonProps) {
-  const { counts, pouredThisSession, pour } = usePourStore();
-
-  const count = counts[entryId] ?? 0;
-  const alreadyPoured = pouredThisSession.has(entryId);
+  const count = usePourStore((s) => s.counts[entryId] ?? 0);
+  const alreadyPoured = usePourStore((s) => s.pouredThisSession.has(entryId));
+  const pour = usePourStore((s) => s.pour);
 
   function handlePour() {
     if (alreadyPoured) {
