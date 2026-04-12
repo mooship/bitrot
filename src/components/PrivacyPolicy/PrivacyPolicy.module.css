@@ -5,6 +5,19 @@
   padding-block: var(--space-12) var(--space-16);
 }
 
+.backLink {
+  display: inline-block;
+  margin-block-end: var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+}
+
 .title {
   font-family: var(--font-display);
   font-size: var(--text-3xl);
