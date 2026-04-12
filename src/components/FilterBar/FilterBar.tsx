@@ -8,7 +8,7 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from "../../data/types";
-import { useFilterStore, useFilteredEntries } from "../../stores/useFilterStore";
+import { useFilteredEntries, useFilterStore } from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
 export function FilterBar() {
