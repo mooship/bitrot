@@ -2,6 +2,10 @@ name = "bitrot-pours"
 main = "index.ts"
 compatibility_date = "2026-04-12"
 
+routes = [
+  { pattern = "api.bitrot.timothybrits.co.za", custom_domain = true }
+]
+
 [placement]
 mode = "smart"
 
