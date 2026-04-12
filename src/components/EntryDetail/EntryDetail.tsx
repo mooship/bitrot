@@ -86,17 +86,13 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
     if (canShare) {
       try {
         await navigator.share({ title: entry?.name, text: entry?.tagline, url });
-      } catch {
-        // user cancelled — do nothing
-      }
+      } catch {}
     } else {
       try {
         await navigator.clipboard.writeText(url);
         setCopied(true);
         copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
-      } catch {
-        // clipboard unavailable — do nothing
-      }
+      } catch {}
     }
   }
 
