@@ -1,75 +1,46 @@
-# React + TypeScript + Vite
+# Bitrot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive memorial for dead technology. Browse the tombstones of killed products, defunct platforms, and abandoned tech. Pour one out.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Runtime:** Bun
+- **Frontend:** React 19 + React Compiler, TypeScript, Vite
+- **Styling:** CSS Modules, CLSX
+- **State:** Zustand
+- **Backend:** Cloudflare Workers + KV (pour counts)
+- **Hosting:** Cloudflare Pages
+- **Linting/Formatting:** Biome
+- **Git hooks:** Lefthook
 
-## React Compiler
+## Dev
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```bash
+bun install
 
-Note: This will impact Vite dev & build performances.
+# SPA on :5173
+bun run dev
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Worker on :8787 (optional — pour counts)
+bun run worker:dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Copy `.env.example` to `.env` and set `VITE_WORKER_URL=http://localhost:8787` to connect the SPA to the local worker.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Commands
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Command | Description |
+|---|---|
+| `bun run dev` | Start Vite dev server |
+| `bun run build` | Type-check + production build |
+| `bun run check` | Biome lint + format (write) |
+| `bun run worker:dev` | Start Wrangler dev server |
+| `bun run worker:deploy` | Deploy worker to Cloudflare |
+
+## Deploy
+
+**Worker:** Create a KV namespace in the Cloudflare dashboard, update the IDs in `worker/wrangler.toml`, then run `bun run worker:deploy`.
+
+**SPA:** Connect the repo to Cloudflare Pages. Build command: `bun run build`. Output directory: `dist`. Set `VITE_WORKER_URL` to your deployed worker URL in Pages environment variables.
+
+**CORS:** After Pages is deployed, set `ALLOWED_ORIGIN` to your Pages URL in the Worker's environment variables via the Cloudflare dashboard.
