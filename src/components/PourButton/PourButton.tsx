@@ -8,10 +8,9 @@ interface PourButtonProps {
 }
 
 export function PourButton({ entryId, entryName }: PourButtonProps) {
-  const { counts, pouredThisSession, pour } = usePourStore();
-
-  const count = counts[entryId] ?? 0;
-  const alreadyPoured = pouredThisSession.has(entryId);
+  const count = usePourStore((s) => s.counts[entryId] ?? 0);
+  const alreadyPoured = usePourStore((s) => s.pouredThisSession.has(entryId));
+  const pour = usePourStore((s) => s.pour);
 
   function handlePour() {
     if (alreadyPoured) {
@@ -21,23 +20,22 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <button
-        type="button"
-        className={clsx(styles.button, alreadyPoured && styles.poured)}
-        onClick={handlePour}
-        disabled={alreadyPoured}
-        aria-label={`Pour one out for ${entryName}. Current count: ${count}`}
-      >
-        <span className={styles.glass} aria-hidden="true">
-          <span className={styles.liquid} />
+    <button
+      type="button"
+      className={clsx(styles.button, alreadyPoured && styles.poured)}
+      onClick={handlePour}
+      disabled={alreadyPoured}
+      aria-label={`Pour one out for ${entryName}. Current count: ${count}`}
+    >
+      <span className={styles.glass} aria-hidden="true">
+        <span className={styles.liquid} />
+      </span>
+      <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
+      {count > 0 && (
+        <span className={styles.count} aria-live="polite" aria-atomic="true">
+          {count.toLocaleString()}
         </span>
-        <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
-      </button>
-      <p className={styles.count} aria-live="polite" aria-atomic="true">
-        <span className={styles.countNum}>{count.toLocaleString()}</span>
-        <span className={styles.countWord}>{count === 1 ? "pour" : "pours"}</span>
-      </p>
-    </div>
+      )}
+    </button>
   );
 }
