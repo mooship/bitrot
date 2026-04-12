@@ -20,8 +20,4 @@ id = "f37c7fead51c46d59b48ac5bb6e600e3"
 preview_id = "f37c7fead51c46d59b48ac5bb6e600e3"
 
 [vars]
-ALLOWED_ORIGIN = "http://localhost:5173"
-
-[env.production]
-[env.production.vars]
 ALLOWED_ORIGIN = "https://bitrot.timothybrits.co.za"
