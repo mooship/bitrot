@@ -91,6 +91,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
       try {
         await navigator.clipboard.writeText(url);
         setCopied(true);
+        clearTimeout(copyTimeoutRef.current);
         copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
       } catch {}
     }
