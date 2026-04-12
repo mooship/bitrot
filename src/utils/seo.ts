@@ -5,11 +5,15 @@ const DEFAULT_TITLE = "Bitrot — Dead Tech Memorial";
 const DEFAULT_DESCRIPTION =
   "An interactive memorial for dead technology. Browse the tombstones of killed products, defunct platforms, and abandoned tech.";
 
+export function getEntryUrl(entryId: string): string {
+  return `${BASE_URL}/#/entry/${entryId}`;
+}
+
 interface SeoData {
   title: string;
   description: string;
   url: string;
-  type?: string;
+  type: "website" | "article";
 }
 
 function setMetaTag(attribute: "name" | "property", key: string, content: string): void {
@@ -44,27 +48,45 @@ function setJsonLd(data: Record<string, unknown>): void {
   script.textContent = JSON.stringify(data);
 }
 
-function updateSeo(data: SeoData): void {
+function applySeo(data: SeoData): void {
   document.title = data.title;
 
   setMetaTag("name", "description", data.description);
   setMetaTag("property", "og:title", data.title);
   setMetaTag("property", "og:description", data.description);
   setMetaTag("property", "og:url", data.url);
-  setMetaTag("property", "og:type", data.type ?? "website");
+  setMetaTag("property", "og:type", data.type);
   setMetaTag("name", "twitter:title", data.title);
   setMetaTag("name", "twitter:description", data.description);
 
   setCanonical(data.url);
 }
 
-export function updateSeoForEntry(entry: DeadTech): void {
+export function updateSeo(entry: DeadTech | null): void {
+  if (!entry) {
+    applySeo({
+      title: DEFAULT_TITLE,
+      description: DEFAULT_DESCRIPTION,
+      url: BASE_URL,
+      type: "website",
+    });
+
+    setJsonLd({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Bitrot",
+      url: BASE_URL,
+      description: DEFAULT_DESCRIPTION,
+    });
+    return;
+  }
+
   const truncatedAutopsy =
     entry.autopsy.length > 120 ? `${entry.autopsy.slice(0, 120)}…` : entry.autopsy;
   const description = `${entry.name} (${entry.born}–${entry.died}): ${entry.tagline}. ${truncatedAutopsy}`;
-  const url = `${BASE_URL}/#/entry/${entry.id}`;
+  const url = getEntryUrl(entry.id);
 
-  updateSeo({
+  applySeo({
     title: `${entry.name} — Bitrot`,
     description,
     url,
@@ -91,22 +113,5 @@ export function updateSeoForEntry(entry: DeadTech): void {
       url: BASE_URL,
     },
     ...(entry.parent ? { author: { "@type": "Organization", name: entry.parent } } : {}),
-  });
-}
-
-export function resetSeo(): void {
-  updateSeo({
-    title: DEFAULT_TITLE,
-    description: DEFAULT_DESCRIPTION,
-    url: BASE_URL,
-    type: "website",
-  });
-
-  setJsonLd({
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "Bitrot",
-    url: BASE_URL,
-    description: DEFAULT_DESCRIPTION,
   });
 }

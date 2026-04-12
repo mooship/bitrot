@@ -5,7 +5,7 @@ import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
 import { useThemeStore } from "../../stores/useThemeStore";
 import { getAccentColor } from "../../utils/color";
-import { resetSeo, updateSeoForEntry } from "../../utils/seo";
+import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
 import styles from "./EntryDetail.module.css";
 
@@ -71,11 +71,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   }, [entry, onClose]);
 
   useEffect(() => {
-    if (entry) {
-      updateSeoForEntry(entry);
-    } else {
-      resetSeo();
-    }
+    updateSeo(entry);
   }, [entry]);
 
   useEffect(() => {
@@ -83,7 +79,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   }, []);
 
   async function handleShare() {
-    const url = `${window.location.origin}${window.location.pathname}#/entry/${entry?.id}`;
+    const url = entry ? getEntryUrl(entry.id) : window.location.href;
     if (canShare) {
       try {
         await navigator.share({ title: entry?.name, text: entry?.tagline, url });
