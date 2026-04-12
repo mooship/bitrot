@@ -54,10 +54,8 @@ describe("useScrollReveal", () => {
     const disconnect = vi.fn();
     const originalIO = globalThis.IntersectionObserver;
     globalThis.IntersectionObserver = class {
-      constructor(private cb: IntersectionObserverCallback) {}
-      observe(target: Element) {
-        // Don't trigger - keep element as not visible
-      }
+      constructor(_cb: IntersectionObserverCallback) {}
+      observe(_target: Element) {}
       unobserve = vi.fn();
       disconnect = disconnect;
       takeRecords = vi.fn().mockReturnValue([]);
