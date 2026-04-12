@@ -1,7 +1,6 @@
 import type { DeadTech } from "./types";
 
 const _entries: DeadTech[] = [
-  // ---- Google Kills ----
   {
     id: "google-reader",
     name: "Google Reader",
@@ -161,8 +160,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "A solid music streaming service with a killer feature: upload 50,000 of your own tracks for free. Google killed it to consolidate around YouTube Music, a product that spent years playing catch-up to the thing it replaced. Users lost their uploads, their playlists, and their patience.",
   },
-
-  // ---- Social Networks & Communities ----
   {
     id: "geocities",
     name: "GeoCities",
@@ -179,7 +176,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "GeoCities gave millions of people their first homepage — complete with under-construction GIFs, auto-playing MIDIs, and guestbooks. Yahoo bought it for $3.57 billion at the peak of the dot-com bubble, then spent a decade neglecting it into irrelevance before shutting it down in 2009. The Internet Archive scrambled to save what it could. An entire generation's first creative act on the internet, deleted by a company that didn't understand what it had.",
   },
-
   {
     id: "vine",
     name: "Vine",
@@ -291,8 +287,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Yahoo paid $1.1 billion for Tumblr in 2013. Automattic bought it for $3 million in 2019. The platform's NSFW content ban in 2018 drove away a huge portion of its user base — the very community that made Tumblr culturally relevant. It still exists, technically, but the Tumblr that mattered is long dead.",
   },
-
-  // ---- Hardware ----
   {
     id: "ipod",
     name: "iPod",
@@ -405,8 +399,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "The Pre ran webOS — an operating system so good that Apple hired its creator and Android borrowed its best ideas. But Palm couldn't compete with Apple's ecosystem or Android's momentum. HP bought Palm for $1.2 billion, released one more device, then killed everything within 18 months. webOS eventually ended up in LG TVs.",
   },
-
-  // ---- Messaging ----
   {
     id: "aim",
     name: "AIM",
@@ -487,7 +479,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Mxit was the dominant mobile messenger in South Africa when data was expensive and smartphones were rare. It ran on feature phones and used almost no bandwidth. WhatsApp arrived with cross-platform support and richer features, and Mxit couldn't adapt fast enough. A local champion outrun by a global one.",
   },
-
   {
     id: "yahoo-messenger",
     name: "Yahoo Messenger",
@@ -504,8 +495,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Yahoo Messenger completed the holy trinity of early-2000s instant messaging alongside AIM and MSN Messenger. It pioneered custom status messages and webcam chat. But Yahoo's endless corporate turmoil meant Messenger was perpetually neglected — redesigned, abandoned, briefly relaunched in 2018, then killed for good within months. The last of the big three IMs to die, and the one with the quietest funeral.",
   },
-
-  // ---- Browsers & OS ----
   {
     id: "internet-explorer",
     name: "Internet Explorer",
@@ -570,7 +559,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "webOS pioneered cards-based multitasking, gesture navigation, and unified notifications — features iOS and Android adopted years later. HP bought Palm for $1.2 billion, released one tablet, panicked at poor sales after six weeks, and killed the entire mobile platform. LG bought webOS in 2013 and uses it in smart TVs to this day — which is roughly equivalent to a musician ending up in elevator music.",
   },
-
   {
     id: "symbian",
     name: "Symbian",
@@ -587,8 +575,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Symbian powered over half of all smartphones on earth in 2009. Nokia was the undisputed king of mobile. Then the iPhone happened, Android followed, and Nokia's CEO wrote the famous \"burning platform\" memo comparing the company to a man standing on a burning oil platform. Nokia chose to jump to Windows Phone instead of Android. Both platforms drowned. Symbian's death wasn't just an OS dying — it was an empire falling.",
   },
-
-  // ---- Search Engines ----
   {
     id: "yahoo",
     name: "Yahoo",
@@ -637,8 +623,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Ask Jeeves let you type questions in plain English and a cartoon butler would find the answer. It was charming, intuitive, and hopelessly outclassed once Google proved that ten blue links were all anyone needed. The butler was retired in 2006, the search engine pivoted to a Q&A site, and IAC eventually gave up on search entirely. Jeeves deserved a better employer.",
   },
-
-  // ---- Gaming ----
   {
     id: "second-life",
     name: "Second Life",
@@ -687,8 +671,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "A Vietnamese developer made a brutally simple game with stolen-looking pipe graphics. It went viral. Dong Nguyen was earning $50,000 a day from ads. Then he pulled it from the App Store because he said it was \"too addictive\" and he couldn't sleep. No acquisition, no lawsuit, no bankruptcy — just a developer who decided success wasn't worth it. Phones with Flappy Bird installed sold for thousands on eBay.",
   },
-
-  // ---- Streaming ----
   {
     id: "quibi",
     name: "Quibi",
@@ -737,8 +719,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Microsoft bought Beam, renamed it Mixer, and threw money at the problem — including paying Ninja, the world's biggest streamer, over $30 million to leave Twitch. His audience didn't follow. Neither did anyone else's. Mixer had genuinely better technology (lower latency, interactive features) but you can't buy a community. Microsoft shut it down and partnered with Facebook Gaming, which also failed.",
   },
-
-  // ---- Developer Tools ----
   {
     id: "heroku",
     name: "Heroku",
@@ -755,8 +735,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Heroku made deploying web apps so simple that an entire generation of developers learned to ship code on it. Salesforce bought it for $212 million in 2010 and slowly stopped investing. Features stagnated, the dashboard rotted, and in 2022 Salesforce killed the free tier that had made Heroku the default for every hackathon, tutorial, and side project. The developer community moved to Railway, Fly.io, and Vercel. A textbook acqui-kill in slow motion.",
   },
-
-  // ---- Misc ----
   {
     id: "encarta",
     name: "Microsoft Encarta",
