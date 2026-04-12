@@ -1,8 +1,13 @@
 import { useCallback, useSyncExternalStore } from "react";
 
-function parseHash(hash: string): string | null {
+type Route = { page: "home"; entryId: string | null } | { page: "privacy" };
+
+function parseHash(hash: string): Route {
+  if (hash === "#/privacy") {
+    return { page: "privacy" };
+  }
   const match = /^#\/entry\/(.+)$/.exec(hash);
-  return match ? match[1] : null;
+  return { page: "home", entryId: match ? match[1] : null };
 }
 
 function subscribe(cb: () => void) {
@@ -16,7 +21,9 @@ function getSnapshot() {
 
 export function useHashRoute() {
   const hash = useSyncExternalStore(subscribe, getSnapshot, () => "");
-  const activeEntryId = parseHash(hash);
+  const route = parseHash(hash);
+
+  const activeEntryId = route.page === "home" ? route.entryId : null;
 
   const navigateTo = useCallback((id: string | null) => {
     if (id) {
@@ -27,5 +34,5 @@ export function useHashRoute() {
     }
   }, []);
 
-  return { activeEntryId, navigateTo };
+  return { route, activeEntryId, navigateTo };
 }
