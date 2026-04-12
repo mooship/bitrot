@@ -1,23 +1,14 @@
-import { useHashRoute } from "../../hooks/useHashRoute";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
 
 export function Header() {
   const globalCount = usePourStore((s) => s.globalCount);
-  const { navigateTo } = useHashRoute();
 
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <a
-          href="#"
-          className={styles.brandLink}
-          onClick={(e) => {
-            e.preventDefault();
-            navigateTo(null);
-          }}
-        >
+        <a href="#" className={styles.brandLink}>
           <h1 className={styles.title}>Bitrot</h1>
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
         </a>
