@@ -126,9 +126,7 @@ describe("EntryDetail", () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
       await vi.waitFor(() => {
-        expect(writeTextSpy).toHaveBeenCalledWith(
-          expect.stringContaining("#/entry/google-reader")
-        );
+        expect(writeTextSpy).toHaveBeenCalledWith(expect.stringContaining("#/entry/google-reader"));
       });
     });
 
