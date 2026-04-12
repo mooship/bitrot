@@ -6,21 +6,27 @@ beforeEach(() => {
 });
 
 describe("useHashRoute", () => {
-  it("returns null activeEntryId when hash is empty", () => {
+  it("returns home route with null entryId when hash is empty", () => {
     const { result } = renderHook(() => useHashRoute());
-    expect(result.current.activeEntryId).toBeNull();
+    expect(result.current.route).toEqual({ page: "home", entryId: null });
   });
 
   it("parses entry id from hash", () => {
     window.location.hash = "/entry/google-reader";
     const { result } = renderHook(() => useHashRoute());
-    expect(result.current.activeEntryId).toBe("google-reader");
+    expect(result.current.route).toEqual({ page: "home", entryId: "google-reader" });
   });
 
-  it("returns null for non-matching hash patterns", () => {
+  it("returns home route with null entryId for non-matching hash patterns", () => {
     window.location.hash = "/other";
     const { result } = renderHook(() => useHashRoute());
-    expect(result.current.activeEntryId).toBeNull();
+    expect(result.current.route).toEqual({ page: "home", entryId: null });
+  });
+
+  it("returns privacy route for #/privacy hash", () => {
+    window.location.hash = "/privacy";
+    const { result } = renderHook(() => useHashRoute());
+    expect(result.current.route).toEqual({ page: "privacy" });
   });
 
   it("navigateTo sets the hash for an entry", () => {
@@ -52,12 +58,12 @@ describe("useHashRoute", () => {
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     });
 
-    expect(result.current.activeEntryId).toBe("myspace");
+    expect(result.current.route).toEqual({ page: "home", entryId: "myspace" });
   });
 
   it("handles entry ids with hyphens", () => {
     window.location.hash = "/entry/windows-phone";
     const { result } = renderHook(() => useHashRoute());
-    expect(result.current.activeEntryId).toBe("windows-phone");
+    expect(result.current.route).toEqual({ page: "home", entryId: "windows-phone" });
   });
 });

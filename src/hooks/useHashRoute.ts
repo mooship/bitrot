@@ -23,8 +23,6 @@ export function useHashRoute() {
   const hash = useSyncExternalStore(subscribe, getSnapshot, () => "");
   const route = parseHash(hash);
 
-  const activeEntryId = route.page === "home" ? route.entryId : null;
-
   const navigateTo = useCallback((id: string | null) => {
     if (id) {
       window.location.hash = `/entry/${id}`;
@@ -34,5 +32,5 @@ export function useHashRoute() {
     }
   }, []);
 
-  return { route, activeEntryId, navigateTo };
+  return { route, navigateTo };
 }
