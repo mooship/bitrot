@@ -20,7 +20,6 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const [copied, setCopied] = useState(false);
 
   const accent = entry?.brandColor ? getAccentColor(entry.brandColor, theme) : undefined;
-  const isOpen = entry !== null;
 
   useEffect(() => {
     if (!entry) {
@@ -30,7 +29,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   }, [entry]);
 
   useEffect(() => {
-    if (!isOpen) {
+    if (!entry) {
       return;
     }
 
@@ -66,15 +65,15 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [entry, onClose]);
 
   useEffect(() => {
-    if (isOpen && entry) {
-      document.title = `${entry.name} — Graveyard Shift`;
+    if (entry) {
+      document.title = `${entry.name} — Bitrot`;
     } else {
-      document.title = "Graveyard Shift — Dead Tech Memorial";
+      document.title = "Bitrot — Dead Tech Memorial";
     }
-  }, [isOpen, entry]);
+  }, [entry]);
 
   function handleCopy() {
     const url = `${window.location.origin}${window.location.pathname}#/entry/${entry?.id}`;
@@ -84,7 +83,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
     });
   }
 
-  if (!isOpen || !entry) {
+  if (!entry) {
     return null;
   }
 
@@ -98,7 +97,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="detail-title"
-        className={clsx(styles.panel, isOpen && styles.open)}
+        className={clsx(styles.panel, styles.open)}
         style={accent ? ({ "--entry-accent": accent } as React.CSSProperties) : undefined}
       >
         <div className={styles.accentBar} aria-hidden="true" />

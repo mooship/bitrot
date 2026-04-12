@@ -9,7 +9,7 @@ export function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <div className={styles.brand}>
-          <h1 className={styles.title}>Graveyard Shift</h1>
+          <h1 className={styles.title}>Bitrot</h1>
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
         </div>
         <div className={styles.actions}>

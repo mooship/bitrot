@@ -1,7 +1,4 @@
 .header {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: var(--z-sticky);
   background-color: var(--bg-primary);
   border-block-end: 1px solid var(--border);
   transition: background-color var(--transition-slow);

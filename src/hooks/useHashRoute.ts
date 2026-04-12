@@ -19,7 +19,12 @@ export function useHashRoute() {
   const activeEntryId = parseHash(hash);
 
   const navigateTo = useCallback((id: string | null) => {
-    window.location.hash = id ? `/entry/${id}` : "";
+    if (id) {
+      window.location.hash = `/entry/${id}`;
+    } else {
+      history.pushState(null, "", window.location.pathname + window.location.search);
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+    }
   }, []);
 
   return { activeEntryId, navigateTo };

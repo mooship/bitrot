@@ -1,7 +1,4 @@
 .filterBar {
-  position: sticky;
-  inset-block-start: var(--header-height);
-  z-index: var(--z-sticky);
   background-color: var(--bg-primary);
   border-block-end: 1px solid var(--border);
   padding-block: var(--space-3);

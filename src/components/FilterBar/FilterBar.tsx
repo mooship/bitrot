@@ -8,7 +8,7 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from "../../data/types";
-import { useFilterStore } from "../../stores/useFilterStore";
+import { useFilterStore, useFilteredEntries } from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
 export function FilterBar() {
@@ -16,15 +16,7 @@ export function FilterBar() {
     useFilterStore();
 
   const hasFilters = activeCauses.size > 0 || activeCategories.size > 0;
-  const filteredCount = entries.filter((e) => {
-    if (activeCauses.size > 0 && !activeCauses.has(e.causeOfDeath)) {
-      return false;
-    }
-    if (activeCategories.size > 0 && !activeCategories.has(e.category)) {
-      return false;
-    }
-    return true;
-  }).length;
+  const filteredCount = useFilteredEntries().length;
 
   return (
     <search className={styles.filterBar} aria-label="Filter entries">

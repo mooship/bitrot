@@ -47,6 +47,8 @@ export const usePourStore = create<PourStore>((set, get) => ({
     }
 
     const prev = state.counts[id] ?? 0;
+    const prevGlobalCount = state.globalCount;
+    const prevSession = new Set(state.pouredThisSession);
     const nextCounts = { ...state.counts, [id]: prev + 1 };
     const nextSession = new Set(state.pouredThisSession);
     nextSession.add(id);
@@ -54,7 +56,7 @@ export const usePourStore = create<PourStore>((set, get) => ({
 
     set({
       counts: nextCounts,
-      globalCount: state.globalCount + 1,
+      globalCount: prevGlobalCount + 1,
       pouredThisSession: nextSession,
     });
 
@@ -65,13 +67,12 @@ export const usePourStore = create<PourStore>((set, get) => ({
       }));
     } catch {
       const rollback = { ...get().counts, [id]: prev };
-      const rolledSession = new Set(get().pouredThisSession);
-      rolledSession.delete(id);
-      saveSessionPoured(rolledSession);
+      prevSession.delete(id);
+      saveSessionPoured(prevSession);
       set({
         counts: rollback,
-        globalCount: get().globalCount - 1,
-        pouredThisSession: rolledSession,
+        globalCount: prevGlobalCount,
+        pouredThisSession: prevSession,
       });
     }
   },

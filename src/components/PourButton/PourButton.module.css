@@ -48,7 +48,6 @@
   inset-block-end: 0;
   height: 0%;
   background-color: var(--pour-liquid);
-  transition: height 0.6s ease-out;
 }
 
 .button.poured .liquid {
