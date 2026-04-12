@@ -44,15 +44,19 @@
   width: 18px;
   height: 22px;
   border: 2px solid currentColor;
-  border-block-start: none;
+  border-top: none;
   border-radius: 0 0 3px 3px;
   overflow: hidden;
+  /* iOS Safari: force new stacking context so overflow:hidden clips correctly */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .liquid {
   position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 0%;
   background-color: var(--pour-liquid);
 }
