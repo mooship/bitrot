@@ -3,6 +3,9 @@ import styles from "./PrivacyPolicy.module.css";
 export function PrivacyPolicy() {
   return (
     <article className={styles.container}>
+      <a href="#" className={styles.backLink}>
+        &larr; Back to home
+      </a>
       <h1 className={styles.title}>Privacy Policy</h1>
       <p className={styles.updated}>Last updated: April 12, 2026</p>
 
