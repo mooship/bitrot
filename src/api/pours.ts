@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_WORKER_URL ?? "http://localhost:8787";
+const BASE_URL = (import.meta.env.VITE_WORKER_URL ?? "http://localhost:8787").replace(/\/$/, "");
 
 export async function fetchAllPours(): Promise<Record<string, number>> {
   const res = await fetch(`${BASE_URL}/pours`);
