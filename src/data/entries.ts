@@ -1,7 +1,6 @@
 import type { DeadTech } from "./types";
 
 const _entries: DeadTech[] = [
-  // ---- Google Kills ----
   {
     id: "google-reader",
     name: "Google Reader",
@@ -161,8 +160,22 @@ const _entries: DeadTech[] = [
     autopsy:
       "A solid music streaming service with a killer feature: upload 50,000 of your own tracks for free. Google killed it to consolidate around YouTube Music, a product that spent years playing catch-up to the thing it replaced. Users lost their uploads, their playlists, and their patience.",
   },
-
-  // ---- Social Networks ----
+  {
+    id: "geocities",
+    name: "GeoCities",
+    tagline: "Under construction GIFs, visitor counters, and the entire soul of the early web",
+    born: 1994,
+    died: 2009,
+    peakYear: 1999,
+    peakMetric: "38 million user-built pages, third most visited site on the web",
+    causeOfDeath: "neglected",
+    killedBy: "Yahoo's indifference",
+    parent: "GeoCities → Yahoo (acquired 1999 for $3.57 billion)",
+    category: "social",
+    brandColor: "#FF4500",
+    autopsy:
+      "GeoCities gave millions of people their first homepage — complete with under-construction GIFs, auto-playing MIDIs, and guestbooks. Yahoo bought it for $3.57 billion at the peak of the dot-com bubble, then spent a decade neglecting it into irrelevance before shutting it down in 2009. The Internet Archive scrambled to save what it could. An entire generation's first creative act on the internet, deleted by a company that didn't understand what it had.",
+  },
   {
     id: "vine",
     name: "Vine",
@@ -274,8 +287,22 @@ const _entries: DeadTech[] = [
     autopsy:
       "Yahoo paid $1.1 billion for Tumblr in 2013. Automattic bought it for $3 million in 2019. The platform's NSFW content ban in 2018 drove away a huge portion of its user base — the very community that made Tumblr culturally relevant. It still exists, technically, but the Tumblr that mattered is long dead.",
   },
-
-  // ---- Hardware ----
+  {
+    id: "ipod",
+    name: "iPod",
+    tagline: "1,000 songs in your pocket. Then your phone ate it.",
+    born: 2001,
+    died: 2022,
+    peakYear: 2008,
+    peakMetric: "450 million units sold lifetime, 70%+ MP3 player market share",
+    causeOfDeath: "outcompeted",
+    killedBy: "iPhone (its own sibling)",
+    parent: "Apple",
+    category: "hardware",
+    brandColor: "#A2AAAD",
+    autopsy:
+      "The iPod didn't just win the MP3 player wars — it created the modern Apple. The click wheel, the white earbuds, and iTunes Store reshaped how humanity bought and listened to music. Then Apple released the iPhone and the iPod became redundant. Apple kept selling the Touch model for years out of what felt like nostalgia, before finally discontinuing it in 2022. The iPod was killed by its own family — the most successful act of corporate cannibalism in history.",
+  },
   {
     id: "microsoft-zune",
     name: "Microsoft Zune",
@@ -372,8 +399,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "The Pre ran webOS — an operating system so good that Apple hired its creator and Android borrowed its best ideas. But Palm couldn't compete with Apple's ecosystem or Android's momentum. HP bought Palm for $1.2 billion, released one more device, then killed everything within 18 months. webOS eventually ended up in LG TVs.",
   },
-
-  // ---- Messaging ----
   {
     id: "aim",
     name: "AIM",
@@ -454,8 +479,22 @@ const _entries: DeadTech[] = [
     autopsy:
       "Mxit was the dominant mobile messenger in South Africa when data was expensive and smartphones were rare. It ran on feature phones and used almost no bandwidth. WhatsApp arrived with cross-platform support and richer features, and Mxit couldn't adapt fast enough. A local champion outrun by a global one.",
   },
-
-  // ---- Browsers & OS ----
+  {
+    id: "yahoo-messenger",
+    name: "Yahoo Messenger",
+    tagline: "The third wheel of the instant messaging golden age",
+    born: 1998,
+    died: 2018,
+    peakYear: 2003,
+    peakMetric: "94 million monthly users",
+    causeOfDeath: "outcompeted",
+    killedBy: "Facebook Messenger, WhatsApp, smartphones",
+    parent: "Yahoo",
+    category: "messaging",
+    brandColor: "#7B0099",
+    autopsy:
+      "Yahoo Messenger completed the holy trinity of early-2000s instant messaging alongside AIM and MSN Messenger. It pioneered custom status messages and webcam chat. But Yahoo's endless corporate turmoil meant Messenger was perpetually neglected — redesigned, abandoned, briefly relaunched in 2018, then killed for good within months. The last of the big three IMs to die, and the one with the quietest funeral.",
+  },
   {
     id: "internet-explorer",
     name: "Internet Explorer",
@@ -520,8 +559,198 @@ const _entries: DeadTech[] = [
     autopsy:
       "webOS pioneered cards-based multitasking, gesture navigation, and unified notifications — features iOS and Android adopted years later. HP bought Palm for $1.2 billion, released one tablet, panicked at poor sales after six weeks, and killed the entire mobile platform. LG bought webOS in 2013 and uses it in smart TVs to this day — which is roughly equivalent to a musician ending up in elevator music.",
   },
-
-  // ---- Misc ----
+  {
+    id: "symbian",
+    name: "Symbian",
+    tagline: "Half the world's smartphones ran it. Then the world moved on overnight.",
+    born: 1997,
+    died: 2012,
+    peakYear: 2009,
+    peakMetric: "51% global smartphone market share",
+    causeOfDeath: "outcompeted",
+    killedBy: "iOS, Android",
+    parent: "Nokia (primarily)",
+    category: "os",
+    brandColor: "#FDB813",
+    autopsy:
+      "Symbian powered over half of all smartphones on earth in 2009. Nokia was the undisputed king of mobile. Then the iPhone happened, Android followed, and Nokia's CEO wrote the famous \"burning platform\" memo comparing the company to a man standing on a burning oil platform. Nokia chose to jump to Windows Phone instead of Android. Both platforms drowned. Symbian's death wasn't just an OS dying — it was an empire falling.",
+  },
+  {
+    id: "yahoo",
+    name: "Yahoo",
+    tagline: "Turned down buying Google for $1 million. Then turned down $44.6 billion.",
+    born: 1995,
+    died: 2017,
+    peakYear: 2000,
+    peakMetric: "$125 billion market cap, most visited website on earth",
+    causeOfDeath: "hubris",
+    killedBy: "Google, and a decade of catastrophic strategic decisions",
+    parent: "Yahoo → Verizon (Oath) → Altaba",
+    category: "search-engine",
+    brandColor: "#7B0099",
+    autopsy:
+      "Yahoo could have bought Google for $1 million in 1998. It passed. Google offered to sell for $3 billion in 2002. Yahoo passed again. Microsoft offered $44.6 billion in 2008. Yahoo's CEO said no. By 2017, Verizon bought what was left for $4.5 billion — less than a tenth of the Microsoft offer. The greatest series of missed opportunities in business history.",
+  },
+  {
+    id: "altavista",
+    name: "AltaVista",
+    tagline: "The search engine that ruled the web before Google existed",
+    born: 1995,
+    died: 2013,
+    peakYear: 1999,
+    peakMetric: "80 million daily search queries",
+    causeOfDeath: "outcompeted",
+    killedBy: "Google",
+    parent: "Digital Equipment Corp → Compaq → Yahoo",
+    category: "search-engine",
+    brandColor: "#CC0000",
+    autopsy:
+      "AltaVista was the first search engine that felt like magic — it could actually find things on the early web. DEC, a hardware company, had no idea what to do with it. Compaq acquired DEC and tried to turn AltaVista into a portal. Yahoo eventually absorbed the remains. Google simply built a better mousetrap, and AltaVista became a redirect to Yahoo Search.",
+  },
+  {
+    id: "ask-jeeves",
+    name: "Ask Jeeves",
+    tagline: "The butler who couldn't compete with a blank search box",
+    born: 1996,
+    died: 2010,
+    peakYear: 2001,
+    peakMetric: "~2% search market share at peak",
+    causeOfDeath: "outcompeted",
+    killedBy: "Google",
+    parent: "Ask.com → IAC (InterActiveCorp)",
+    category: "search-engine",
+    brandColor: "#1D4B8F",
+    autopsy:
+      "Ask Jeeves let you type questions in plain English and a cartoon butler would find the answer. It was charming, intuitive, and hopelessly outclassed once Google proved that ten blue links were all anyone needed. The butler was retired in 2006, the search engine pivoted to a Q&A site, and IAC eventually gave up on search entirely. Jeeves deserved a better employer.",
+  },
+  {
+    id: "second-life",
+    name: "Second Life",
+    tagline: "The metaverse before anyone called it that",
+    born: 2003,
+    died: 2012,
+    peakYear: 2007,
+    peakMetric: "1 million regular users, $500M+ annual virtual economy",
+    causeOfDeath: "ahead-of-time",
+    killedBy: "Hype collapse, real-world recession",
+    parent: "Linden Lab",
+    category: "gaming",
+    brandColor: "#009933",
+    autopsy:
+      "In 2007, Reuters opened a bureau in Second Life. IBM held meetings there. Sweden opened a virtual embassy. The hype was so enormous that nobody noticed most users logged in once and never came back. When the novelty wore off and the economy crashed, the corporate tourists vanished overnight. Second Life technically still exists — much like Meta's metaverse ambitions, just with better self-awareness.",
+  },
+  {
+    id: "wii-u",
+    name: "Wii U",
+    tagline: "The console so confusing people thought it was an accessory",
+    born: 2012,
+    died: 2017,
+    peakYear: 2014,
+    peakMetric: "13.56 million units sold (vs. Wii's 101.6 million)",
+    causeOfDeath: "hubris",
+    killedBy: "Confusing marketing, weak third-party support",
+    parent: "Nintendo",
+    category: "gaming",
+    brandColor: "#009AC7",
+    autopsy:
+      "Nintendo followed the best-selling Wii with a console nobody understood. Was it a new system? A tablet add-on? Even retailers couldn't explain it. The gamepad was innovative but developers ignored it, third-party support evaporated, and sales cratered to 13 million — an 87% drop from the Wii. Nintendo learned its lesson and built the Switch, which sold 140 million. The Wii U was the failure that made the comeback possible.",
+  },
+  {
+    id: "flappy-bird",
+    name: "Flappy Bird",
+    tagline: "The game that was too successful for its own creator",
+    born: 2013,
+    died: 2014,
+    peakYear: 2014,
+    peakMetric: "50 million downloads, $50,000/day in ad revenue",
+    causeOfDeath: "pivot",
+    killedBy: "Its own creator, voluntarily",
+    parent: "Dong Nguyen (independent developer)",
+    category: "gaming",
+    brandColor: "#71C558",
+    autopsy:
+      "A Vietnamese developer made a brutally simple game with stolen-looking pipe graphics. It went viral. Dong Nguyen was earning $50,000 a day from ads. Then he pulled it from the App Store because he said it was \"too addictive\" and he couldn't sleep. No acquisition, no lawsuit, no bankruptcy — just a developer who decided success wasn't worth it. Phones with Flappy Bird installed sold for thousands on eBay.",
+  },
+  {
+    id: "quibi",
+    name: "Quibi",
+    tagline: "$1.75 billion and six months. That's it. That's the obituary.",
+    born: 2020,
+    died: 2020,
+    peakYear: 2020,
+    peakMetric: "peaked at 910K downloads on launch day, cratered immediately",
+    causeOfDeath: "hubris",
+    killedBy: "COVID-19, a fundamentally flawed premise, and reality",
+    parent: "Quibi Holdings (Jeffrey Katzenberg / Meg Whitman)",
+    category: "streaming",
+    brandColor: "#5C2D91",
+    autopsy:
+      'Jeffrey Katzenberg raised $1.75 billion to build a mobile-only streaming service for "quick bites" of premium content. It launched into a pandemic where everyone was stuck at home watching TV — not glancing at phones during commutes. The signature feature was a rotating phone screen. Celebrities participated. Nobody subscribed. Quibi burned through nearly $2 billion in six months, the most expensive proof-of-concept in entertainment history.',
+  },
+  {
+    id: "rdio",
+    name: "Rdio",
+    tagline: "The most beautiful music app nobody used",
+    born: 2010,
+    died: 2015,
+    peakYear: 2013,
+    peakMetric: "~5 million registered users",
+    causeOfDeath: "acqui-killed",
+    killedBy: "Spotify's growth, then Pandora's acquisition",
+    parent: "Rdio (Skype co-founders) → Pandora",
+    category: "streaming",
+    brandColor: "#2C7BB6",
+    autopsy:
+      "Rdio was built by the co-founders of Skype and was widely considered the best-designed music streaming app of its era — better looking and better organised than Spotify. But Spotify had the marketing budget and the free tier that Rdio couldn't match. Pandora bought Rdio's technology and team for $75 million in a fire sale, then shut the service down immediately. Being the best product doesn't matter if you're not the most popular one.",
+  },
+  {
+    id: "mixer",
+    name: "Mixer",
+    tagline: "Microsoft paid $30 million for Ninja and got nothing",
+    born: 2016,
+    died: 2020,
+    peakYear: 2019,
+    peakMetric: "~30 million monthly active users (vs. Twitch's 140 million)",
+    causeOfDeath: "outcompeted",
+    killedBy: "Twitch's entrenched community",
+    parent: "Microsoft",
+    category: "streaming",
+    brandColor: "#1FBAED",
+    autopsy:
+      "Microsoft bought Beam, renamed it Mixer, and threw money at the problem — including paying Ninja, the world's biggest streamer, over $30 million to leave Twitch. His audience didn't follow. Neither did anyone else's. Mixer had genuinely better technology (lower latency, interactive features) but you can't buy a community. Microsoft shut it down and partnered with Facebook Gaming, which also failed.",
+  },
+  {
+    id: "heroku",
+    name: "Heroku",
+    tagline: "git push heroku main. That's it. That's why we loved it.",
+    born: 2007,
+    died: 2022,
+    peakYear: 2015,
+    peakMetric: "13+ million apps deployed",
+    causeOfDeath: "neglected",
+    killedBy: "Salesforce's indifference, free tier removal",
+    parent: "Heroku → Salesforce (acquired 2010 for $212M)",
+    category: "developer-tools",
+    brandColor: "#6762A6",
+    autopsy:
+      "Heroku made deploying web apps so simple that an entire generation of developers learned to ship code on it. Salesforce bought it for $212 million in 2010 and slowly stopped investing. Features stagnated, the dashboard rotted, and in 2022 Salesforce killed the free tier that had made Heroku the default for every hackathon, tutorial, and side project. The developer community scattered to Netlify, Railway, Fly.io, and Vercel. A textbook acqui-kill in slow motion.",
+  },
+  {
+    id: "encarta",
+    name: "Microsoft Encarta",
+    tagline: "The encyclopedia that lost to one nobody was paid to write",
+    born: 1993,
+    died: 2009,
+    peakYear: 2000,
+    peakMetric: "bundled with millions of PCs, dominated digital encyclopedias",
+    causeOfDeath: "outcompeted",
+    killedBy: "Wikipedia",
+    parent: "Microsoft",
+    category: "software",
+    brandColor: "#D83B01",
+    autopsy:
+      "Microsoft Encarta was the digital encyclopedia of the CD-ROM era — interactive, multimedia-rich, and installed on practically every family PC in the late '90s. Then a website where anyone could edit anything, with no business model and no paid editors, crushed it completely. Microsoft shut down Encarta in 2009. The idea that a free, volunteer-written encyclopedia would outperform a product backed by the richest company in the world was absurd — until it wasn't.",
+  },
   {
     id: "adobe-flash",
     name: "Adobe Flash",
@@ -616,7 +845,7 @@ const _entries: DeadTech[] = [
     category: "streaming",
     brandColor: "#F15922",
     autopsy:
-      "Three University of Florida students built a music streaming service that let users upload and share anything. It was beloved, intuitive, and completely illegal. The major labels sued for up to $736 million in damages. Grooveshark settled in 2015, agreed to wipe its servers, and handed over all IP. Co-founder Josh Greenberg was found dead months later. The shutdown message apologised without reservation.",
+      "Three University of Florida students built a music streaming service that let users upload and share anything. It was beloved, intuitive, and completely illegal. The major labels sued for up to $736 million in damages. Grooveshark settled in 2015, agreed to wipe its servers, and handed over all IP. The shutdown message apologised without reservation — a rare display of grace from a company that had spent years pretending copyright law was optional.",
   },
   {
     id: "napster",
