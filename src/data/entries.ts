@@ -310,23 +310,6 @@ const _entries: DeadTech[] = [
       "The iPod didn't just win the MP3 player wars — it created the modern Apple. The click wheel, the white earbuds, and iTunes Store reshaped how humanity bought and listened to music. Then Apple released the iPhone and the iPod became redundant. Apple kept selling the Touch model for years out of what felt like nostalgia, before finally discontinuing it in 2022. The iPod was killed by its own family — the most successful act of corporate cannibalism in history.",
   },
   {
-    id: "samsung-galaxy-note-7",
-    name: "Samsung Galaxy Note 7",
-    tagline: "The phone so hot it was banned from airplanes",
-    born: 2016,
-    died: 2016,
-    peakYear: 2016,
-    peakMetric: "2.5 million units recalled worldwide",
-    causeOfDeath: "hubris",
-    killedBy: "Exploding batteries, two failed recalls",
-    parent: "Samsung",
-    category: "hardware",
-    brandColor: "#1428A0",
-    autopsy:
-      "Samsung rushed the Note 7 to market before the iPhone 7 launch and squeezed a battery that was too large into a case that was too thin. The phones caught fire. Samsung recalled 2.5 million units, issued replacements — and the replacements also caught fire. Airlines banned them. Samsung had to kill its own flagship mid-cycle, eating a $5.3 billion loss. The Note brand never fully recovered.",
-  },
-
-  {
     id: "microsoft-zune",
     name: "Microsoft Zune",
     tagline: "The iPod killer that couldn't kill anything",
@@ -720,7 +703,7 @@ const _entries: DeadTech[] = [
     category: "streaming",
     brandColor: "#5C2D91",
     autopsy:
-      "Jeffrey Katzenberg raised $1.75 billion to build a mobile-only streaming service for \"quick bites\" of premium content. It launched into a pandemic where everyone was stuck at home watching TV — not glancing at phones during commutes. The signature feature was a rotating phone screen. Celebrities participated. Nobody subscribed. Quibi burned through nearly $2 billion in six months, the most expensive proof-of-concept in entertainment history.",
+      'Jeffrey Katzenberg raised $1.75 billion to build a mobile-only streaming service for "quick bites" of premium content. It launched into a pandemic where everyone was stuck at home watching TV — not glancing at phones during commutes. The signature feature was a rotating phone screen. Celebrities participated. Nobody subscribed. Quibi burned through nearly $2 billion in six months, the most expensive proof-of-concept in entertainment history.',
   },
   {
     id: "rdio",
