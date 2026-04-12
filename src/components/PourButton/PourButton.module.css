@@ -9,6 +9,7 @@
   color: var(--pour-liquid);
   font-weight: 600;
   font-size: var(--text-sm);
+  overflow: hidden;
   transition:
     background-color var(--transition-fast),
     color var(--transition-fast),
