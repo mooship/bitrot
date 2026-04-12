@@ -21,9 +21,11 @@
     opacity var(--transition-fast);
 }
 
-.button:hover:not(:disabled) {
-  background-color: var(--pour-liquid);
-  color: var(--bg-primary);
+@media (hover: hover) {
+  .button:hover:not(:disabled) {
+    background-color: var(--pour-liquid);
+    color: var(--bg-primary);
+  }
 }
 
 .button.poured {

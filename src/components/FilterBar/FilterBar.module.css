@@ -126,6 +126,7 @@
 
   .group {
     flex-wrap: nowrap;
+    flex-shrink: 0;
   }
 
   .chips {
