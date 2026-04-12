@@ -11,11 +11,18 @@ interface TimelineProps {
 
 export function Timeline({ entries, onSelect }: TimelineProps) {
   const entriesByYear = useMemo(() => {
-    const years = [...new Set(entries.map((e) => e.died))].sort((a, b) => b - a);
-    return years.map((year) => ({
-      year,
-      entries: entries.filter((e) => e.died === year),
-    }));
+    const map = new Map<number, DeadTech[]>();
+    for (const entry of entries) {
+      let group = map.get(entry.died);
+      if (!group) {
+        group = [];
+        map.set(entry.died, group);
+      }
+      group.push(entry);
+    }
+    return Array.from(map, ([year, entries]) => ({ year, entries })).sort(
+      (a, b) => b.year - a.year
+    );
   }, [entries]);
 
   return (
