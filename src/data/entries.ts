@@ -830,7 +830,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "Netscape Navigator was the browser that brought the internet to the masses. Then Microsoft bundled IE with Windows for free and Netscape's market share collapsed from 80% to irrelevance. The antitrust case it triggered reshaped tech regulation. Netscape open-sourced its code as Mozilla — which eventually became Firefox. In death, it still shaped the web.",
   },
-  // Tier 1 new entries
   {
     id: "sega-dreamcast",
     name: "Sega Dreamcast",
@@ -927,7 +926,6 @@ const _entries: DeadTech[] = [
     autopsy:
       "OnLive demoed cloud gaming nine years before Stadia made the same promises and the same mistakes. Stream any PC game on any device, no hardware required. It worked — mostly. But the economics were brutal: maintaining data centers to stream games at low latency cost far more than subscriptions covered. OnLive went bankrupt in 2012, restructured, and limped along until Sony bought the patents in 2015 and shut the service down. Stadia would later prove that the infrastructure problem wasn't solved — just better funded.",
   },
-  // Tier 2 new entries
   {
     id: "hp-touchpad",
     name: "HP TouchPad",
