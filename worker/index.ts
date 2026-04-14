@@ -101,10 +101,7 @@ export default {
       }
 
       const key = `pour:${id}`;
-      const [current, totals] = await Promise.all([
-        env.POURS.get(key),
-        readTotals(env),
-      ]);
+      const [current, totals] = await Promise.all([env.POURS.get(key), readTotals(env)]);
       const next = (current ? parseInt(current, 10) || 0 : 0) + 1;
       totals[id] = next;
       await Promise.all([
