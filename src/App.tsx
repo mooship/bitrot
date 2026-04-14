@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { AboutPage } from "./components/AboutPage/AboutPage";
 import { EntryDetail } from "./components/EntryDetail/EntryDetail";
 import { FilterBar } from "./components/FilterBar/FilterBar";
 import { Footer } from "./components/Footer/Footer";
@@ -54,7 +55,7 @@ export default function App() {
           path="/about"
           element={
             <main id="main-content">
-              <div>About</div>
+              <AboutPage />
             </main>
           }
         />
