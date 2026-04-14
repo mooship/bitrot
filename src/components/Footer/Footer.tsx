@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -8,9 +9,14 @@ export function Footer() {
           In memory of the products we actually used.{" "}
           <span className={styles.muted}>No flowers. Just one more pour.</span>
         </p>
-        <a href="#/privacy" className={styles.privacyLink}>
-          Privacy Policy
-        </a>
+        <div className={styles.links}>
+          <Link to="/privacy" className={styles.privacyLink}>
+            Privacy Policy
+          </Link>
+          <Link to="/about" className={styles.privacyLink}>
+            About
+          </Link>
+        </div>
       </div>
     </footer>
   );
