@@ -6,6 +6,27 @@ export interface Env {
 const VALID_ID = /^[a-z0-9-]{1,64}$/;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX = 10;
+const TOTALS_KEY = "meta:totals";
+
+async function readTotals(env: Env): Promise<Record<string, number>> {
+  const raw = await env.POURS.get(TOTALS_KEY);
+  if (raw) {
+    try {
+      return JSON.parse(raw) as Record<string, number>;
+    } catch {}
+  }
+  const list = await env.POURS.list({ prefix: "pour:" });
+  const counts: Record<string, number> = {};
+  await Promise.all(
+    list.keys.map(async (key) => {
+      const id = key.name.slice("pour:".length);
+      const val = await env.POURS.get(key.name);
+      counts[id] = val ? parseInt(val, 10) || 0 : 0;
+    })
+  );
+  await env.POURS.put(TOTALS_KEY, JSON.stringify(counts));
+  return counts;
+}
 
 function corsHeaders(allowedOrigin: string): HeadersInit {
   return {
@@ -56,15 +77,7 @@ export default {
     }
 
     if (url.pathname === "/pours" && request.method === "GET") {
-      const list = await env.POURS.list({ prefix: "pour:" });
-      const counts: Record<string, number> = {};
-      await Promise.all(
-        list.keys.map(async (key) => {
-          const id = key.name.slice("pour:".length);
-          const val = await env.POURS.get(key.name);
-          counts[id] = val ? parseInt(val, 10) || 0 : 0;
-        })
-      );
+      const counts = await readTotals(env);
       return json(counts, 200, cors);
     }
 
@@ -88,9 +101,16 @@ export default {
       }
 
       const key = `pour:${id}`;
-      const current = await env.POURS.get(key);
+      const [current, totals] = await Promise.all([
+        env.POURS.get(key),
+        readTotals(env),
+      ]);
       const next = (current ? parseInt(current, 10) || 0 : 0) + 1;
-      await env.POURS.put(key, String(next));
+      totals[id] = next;
+      await Promise.all([
+        env.POURS.put(key, String(next)),
+        env.POURS.put(TOTALS_KEY, JSON.stringify(totals)),
+      ]);
 
       return json({ count: next }, 200, cors);
     }
