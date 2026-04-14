@@ -75,6 +75,7 @@
   .chip:hover {
     color: var(--text-primary);
     border-color: var(--text-muted);
+    background-color: var(--bg-elevated);
   }
 
   .chipActive:hover {
@@ -91,18 +92,22 @@
 .clearBtn {
   font-size: var(--text-xs);
   color: var(--text-muted);
-  text-decoration: underline;
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-1) var(--space-3);
   min-height: var(--touch-target);
   display: flex;
   align-items: center;
-  transition: color var(--transition-fast);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
   white-space: nowrap;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 @media (hover: hover) {
   .clearBtn:hover {
     color: var(--text-primary);
+    border-color: var(--text-muted);
   }
 }
 
@@ -124,6 +129,8 @@
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     min-width: 0;
+    mask-image: linear-gradient(to right, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 80%, transparent 100%);
   }
 
   .groups::-webkit-scrollbar {

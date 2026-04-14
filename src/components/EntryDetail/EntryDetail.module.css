@@ -83,13 +83,15 @@
   flex-shrink: 0;
   transition:
     color var(--transition-fast),
-    background-color var(--transition-fast);
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 @media (hover: hover) {
   .closeBtn:hover {
     color: var(--text-primary);
     background-color: var(--bg-elevated);
+    transform: scale(1.1);
   }
 }
 
