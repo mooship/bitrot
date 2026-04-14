@@ -7,10 +7,9 @@ const VALID_ID = /^[a-z0-9-]{1,64}$/;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX = 10;
 
-function corsHeaders(origin: string, allowedOrigin: string): HeadersInit {
-  const allowed = origin === allowedOrigin ? origin : allowedOrigin;
+function corsHeaders(allowedOrigin: string): HeadersInit {
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
@@ -45,7 +44,12 @@ export default {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") ?? "";
     const allowedOrigin = env.ALLOWED_ORIGIN;
-    const cors = corsHeaders(origin, allowedOrigin);
+
+    if (origin !== allowedOrigin) {
+      return new Response(null, { status: 403 });
+    }
+
+    const cors = corsHeaders(allowedOrigin);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
@@ -65,17 +69,18 @@ export default {
     }
 
     const pourMatch = /^\/pours\/([a-z0-9-]+)$/.exec(url.pathname);
-    if (pourMatch && request.method === "POST") {
+    if (pourMatch) {
+      if (request.method !== "POST") {
+        return json({ error: "Method not allowed" }, 405, cors);
+      }
+
       const id = pourMatch[1];
 
       if (!VALID_ID.test(id)) {
         return json({ error: "Invalid entry ID" }, 400, cors);
       }
 
-      const ip =
-        request.headers.get("CF-Connecting-IP") ??
-        request.headers.get("X-Forwarded-For") ??
-        "unknown";
+      const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
 
       const allowed = await checkRateLimit(env, ip);
       if (!allowed) {
