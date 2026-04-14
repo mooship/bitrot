@@ -1135,22 +1135,6 @@ const _entries: DeadTech[] = [
       "FarmVille was the game that broke Facebook. 83 million people were planting virtual crops in 2010 — about a third of all Facebook users. It created the template for every freemium mobile game since: waiting timers, energy mechanics, social pressure to invite friends. Zynga went public in 2011 at a $7 billion valuation. Then mobile games ate browser games, Flash deprecation killed the platform, and Zynga pivoted away. FarmVille shut down December 31, 2020, the same day Adobe killed Flash. The game that defined social gaming's golden age ended on the same day as the technology that ran it.",
   },
   {
-    id: "second-life",
-    name: "Second Life",
-    tagline: "The metaverse before the metaverse, and somehow better than the metaverse.",
-    born: 2003,
-    died: 2013,
-    peakYear: 2007,
-    peakMetric: "1 million active users, $500 million in user-to-user transactions (2009)",
-    causeOfDeath: "outcompeted",
-    killedBy: "Social media, smartphones, the friction of virtual worlds",
-    parent: "Linden Lab",
-    category: "social",
-    brandColor: "#00A651",
-    autopsy:
-      "Second Life was a fully functioning virtual economy — businesses opened offices, musicians held concerts, and its Linden Dollar currency traded against real money. Reuters opened a bureau there. Philip Rosedale's bet was that people would live significant parts of their lives in a virtual world. The platform still runs and still has users, but the moment when every newspaper ran a breathless Second Life story lasted about two years before Facebook, Twitter, and smartphones offered connection without the learning curve. Mark Zuckerberg would later spend $36 billion trying to rebuild what Second Life was in 2007. Second Life did it first, cheaper, and considerably weirder.",
-  },
-  {
     id: "stumbleupon",
     name: "StumbleUpon",
     tagline:
