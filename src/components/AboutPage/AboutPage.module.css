@@ -27,6 +27,7 @@
 }
 
 .section {
+  margin-block-start: var(--space-8);
   margin-block-end: var(--space-8);
 }
 
