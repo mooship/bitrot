@@ -1102,22 +1102,6 @@ const _entries: DeadTech[] = [
       "Apple launched Ping inside iTunes in 2010 — a social network for music where you could follow artists and friends and share what you were listening to. Steve Jobs personally negotiated with Bono to get U2 on board. Facebook refused to integrate without terms Apple wouldn't accept. Users signed up en masse on launch day and had nothing to do. Ping had no algorithmic discovery, no real social graph, and was buried inside a desktop app most people were using less and less. Apple quietly killed it two years later. The only social network Steve Jobs ever personally championed lasted less than a Microsoft Kin.",
   },
   {
-    id: "mapquest",
-    name: "MapQuest",
-    tagline: "Print this page. Take exit 14B. Hope nothing has changed.",
-    born: 1996,
-    died: 2016,
-    peakYear: 2001,
-    peakMetric: "35 million monthly users, 80%+ of the online mapping market",
-    causeOfDeath: "outcompeted",
-    killedBy: "Google Maps",
-    parent: "MapQuest → AOL (acquired 2000)",
-    category: "software",
-    brandColor: "#DA291C",
-    autopsy:
-      "MapQuest was how you got anywhere before smartphones. You printed the directions, folded the paper, and handed it to your passenger — hoping construction wouldn't make step 14 irrelevant. At its peak in 2001 it commanded over 80% of the online mapping market. AOL acquired it for $1.1 billion in 2000. Google Maps launched in 2005 with satellite imagery, street view, and live traffic, then added turn-by-turn navigation on mobile. MapQuest's mobile app shut down in 2016. MapQuest.com still technically exists, but as a mapping service it has been irrelevant for over a decade. A billion-dollar acquisition turned into a rounding error.",
-  },
-  {
     id: "club-penguin",
     name: "Club Penguin",
     tagline: "Disney bought it for $350 million. Kids held funeral marches when it died.",
