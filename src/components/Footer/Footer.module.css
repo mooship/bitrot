@@ -23,6 +23,12 @@
   color: var(--text-muted);
 }
 
+.links {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
 .privacyLink {
   display: inline-block;
   margin-block-start: var(--space-3);

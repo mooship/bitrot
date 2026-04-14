@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { AboutPage } from "./components/AboutPage/AboutPage";
 import { EntryDetail } from "./components/EntryDetail/EntryDetail";
 import { FilterBar } from "./components/FilterBar/FilterBar";
 import { Footer } from "./components/Footer/Footer";
@@ -7,42 +9,58 @@ import { PrivacyPolicy } from "./components/PrivacyPolicy/PrivacyPolicy";
 import { SkipLink } from "./components/SkipLink/SkipLink";
 import { Timeline } from "./components/Timeline/Timeline";
 import { entries } from "./data/entries";
-import { useHashRoute } from "./hooks/useHashRoute";
 import { useFilteredEntries } from "./stores/useFilterStore";
 import { usePourStore } from "./stores/usePourStore";
 
-export default function App() {
+function HomePage() {
   const fetchPours = usePourStore((s) => s.fetchPours);
   const filteredEntries = useFilteredEntries();
-  const { route, navigateTo } = useHashRoute();
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
-  const activeEntryId = route.page === "home" ? route.entryId : null;
-  const activeEntry = activeEntryId ? (entries.find((e) => e.id === activeEntryId) ?? null) : null;
+  const activeEntry = id ? (entries.find((e) => e.id === id) ?? null) : null;
 
   useEffect(() => {
-    if (route.page === "home") {
-      fetchPours();
-    }
-  }, [fetchPours, route.page]);
+    fetchPours();
+  }, [fetchPours]);
 
+  return (
+    <>
+      <FilterBar />
+      <main id="main-content">
+        <Timeline entries={filteredEntries} onSelect={(entryId) => navigate(`/entry/${entryId}`)} />
+      </main>
+      <EntryDetail entry={activeEntry} onClose={() => navigate("/")} />
+    </>
+  );
+}
+
+export default function App() {
   return (
     <>
       <SkipLink />
       <Header />
-      {route.page === "home" && (
-        <>
-          <FilterBar />
-          <main id="main-content">
-            <Timeline entries={filteredEntries} onSelect={navigateTo} />
-          </main>
-          <EntryDetail entry={activeEntry} onClose={() => navigateTo(null)} />
-        </>
-      )}
-      {route.page === "privacy" && (
-        <main id="main-content">
-          <PrivacyPolicy />
-        </main>
-      )}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/entry/:id" element={<HomePage />} />
+        <Route
+          path="/privacy"
+          element={
+            <main id="main-content">
+              <PrivacyPolicy />
+            </main>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <main id="main-content">
+              <AboutPage />
+            </main>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       <Footer />
     </>
   );

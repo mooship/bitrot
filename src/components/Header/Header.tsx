@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
@@ -8,10 +9,10 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.inner}>
-        <a href="#/" className={styles.brandLink}>
+        <Link to="/" className={styles.brandLink}>
           <h1 className={styles.title}>Bitrot</h1>
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
-        </a>
+        </Link>
         <div className={styles.actions}>
           {globalCount > 0 && (
             <p className={styles.globalCount} aria-live="polite">
