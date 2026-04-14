@@ -2,4 +2,4 @@ pre-commit:
   commands:
     biome:
       glob: "*.{ts,tsx,js,jsx,json}"
-      run: bunx biome check --write --staged {staged_files}
+      run: npx biome check --write --staged {staged_files}

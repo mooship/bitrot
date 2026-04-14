@@ -6,13 +6,13 @@ Interactive memorial for dead technology. React 19 SPA + Cloudflare Worker backe
 
 | Command | Description |
 |---|---|
-| `bun run dev` | Vite SPA on :5173 |
-| `bun run build` | Type-check + production build |
-| `bun run check` | Biome lint + format (write) |
-| `bun run test` | Vitest (single run) |
-| `bun run test:watch` | Vitest watch mode |
-| `bun run worker:dev` | Wrangler dev server on :8787 |
-| `bun run worker:deploy` | Deploy worker to Cloudflare |
+| `npm run dev` | Vite SPA on :5173 |
+| `npm run build` | Type-check + production build |
+| `npm run check` | Biome lint + format (write) |
+| `npm run test` | Vitest (single run) |
+| `npm run test:watch` | Vitest watch mode |
+| `npm run worker:dev` | Wrangler dev server on :8787 |
+| `npm run worker:deploy` | Deploy worker to Cloudflare |
 
 ## Architecture
 
