@@ -30,9 +30,7 @@ describe("useDocumentTitle", () => {
   });
 
   it("sets meta description on mount when provided and restores on unmount", () => {
-    const { unmount } = renderHook(() =>
-      useDocumentTitle("New Title", "New description"),
-    );
+    const { unmount } = renderHook(() => useDocumentTitle("New Title", "New description"));
 
     expect(metaEl.getAttribute("content")).toBe("New description");
 
