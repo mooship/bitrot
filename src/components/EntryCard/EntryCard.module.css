@@ -4,6 +4,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--transition-base),
     box-shadow var(--transition-base),

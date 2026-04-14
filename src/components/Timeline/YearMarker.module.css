@@ -8,9 +8,9 @@
 
 .year {
   font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   letter-spacing: 0.06em;
   white-space: nowrap;
   min-width: 3.5rem;
@@ -19,5 +19,11 @@
 .line {
   flex: 1;
   height: 1px;
-  background-color: var(--border);
+  background: linear-gradient(to right, var(--border), transparent);
+}
+
+@media (min-width: 640px) {
+  .wrapper {
+    grid-column: 1 / -1;
+  }
 }

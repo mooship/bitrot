@@ -52,11 +52,16 @@
   height: 60%;
   background-color: var(--pour-liquid);
   opacity: 0;
-  transition: opacity var(--transition-slow);
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition:
+    opacity var(--transition-slow),
+    transform var(--transition-slow);
 }
 
 .button.poured .liquid {
   opacity: 1;
+  transform: scaleY(1);
 }
 
 .label {
