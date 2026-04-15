@@ -10,13 +10,24 @@ interface PourButtonProps {
 export function PourButton({ entryId, entryName }: PourButtonProps) {
   const count = usePourStore((s) => s.counts[entryId] ?? 0);
   const alreadyPoured = usePourStore((s) => s.pouredThisSession.has(entryId));
+  const isPending = usePourStore((s) => s.pendingPours.has(entryId));
   const pour = usePourStore((s) => s.pour);
 
   function handlePour() {
-    if (alreadyPoured) {
+    if (alreadyPoured || isPending) {
       return;
     }
     pour(entryId);
+  }
+
+  function getLabel() {
+    if (isPending) {
+      return "Pouring…";
+    }
+    if (alreadyPoured) {
+      return "Poured";
+    }
+    return "Pour one out";
   }
 
   return (
@@ -24,18 +35,17 @@ export function PourButton({ entryId, entryName }: PourButtonProps) {
       type="button"
       className={clsx(styles.button, alreadyPoured && styles.poured)}
       onClick={handlePour}
-      disabled={alreadyPoured}
+      disabled={alreadyPoured || isPending}
       aria-label={`Pour one out for ${entryName}. Current count: ${count}`}
+      aria-busy={isPending}
     >
       <span className={styles.glass} aria-hidden="true">
         <span className={styles.liquid} />
       </span>
-      <span className={styles.label}>{alreadyPoured ? "Poured" : "Pour one out"}</span>
-      {count > 0 && (
-        <span className={styles.count} aria-live="polite" aria-atomic="true">
-          {count.toLocaleString()}
-        </span>
-      )}
+      <span className={styles.label}>{getLabel()}</span>
+      <span className={styles.count} aria-live="polite" aria-atomic="true">
+        {count > 0 ? count.toLocaleString() : ""}
+      </span>
     </button>
   );
 }

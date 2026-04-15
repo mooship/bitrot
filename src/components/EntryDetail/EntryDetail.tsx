@@ -92,13 +92,13 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   useFocusTrap(panelRef, { active: !!entry, onEscape: onClose });
 
   useEffect(() => {
-    if (entry) {
-      closeButtonRef.current?.focus();
-    }
+    updateSeo(entry);
   }, [entry]);
 
   useEffect(() => {
-    updateSeo(entry);
+    if (entry) {
+      closeButtonRef.current?.focus();
+    }
   }, [entry]);
 
   if (!entry) {
@@ -148,7 +148,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
             type="button"
             className={styles.closeBtn}
             onClick={onClose}
-            aria-label="Close"
+            aria-label={`Close ${entry.name}`}
           >
             <X size={20} aria-hidden="true" />
           </button>

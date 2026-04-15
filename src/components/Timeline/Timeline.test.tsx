@@ -41,30 +41,30 @@ const mockEntries: DeadTech[] = [
 
 describe("Timeline", () => {
   it("renders entries grouped by death year", () => {
-    render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
+    render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
     expect(screen.getByText("2020")).toBeInTheDocument();
     expect(screen.getByText("2015")).toBeInTheDocument();
   });
 
   it("renders entry cards for each entry", () => {
-    render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
+    render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
     expect(screen.getByRole("heading", { name: "Entry A" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Entry B" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Entry C" })).toBeInTheDocument();
   });
 
   it("shows empty state when entries is empty", () => {
-    render(<Timeline entries={[]} onSelect={vi.fn()} />);
+    render(<Timeline entries={[]} sortOrder="died" onSelect={vi.fn()} />);
     expect(screen.getByText("No entries match the current filters.")).toBeInTheDocument();
   });
 
   it("has aria-label on the section", () => {
-    render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
+    render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
     expect(screen.getByRole("region", { name: "Timeline of dead technology" })).toBeInTheDocument();
   });
 
   it("does not show empty state when entries exist", () => {
-    render(<Timeline entries={mockEntries} onSelect={vi.fn()} />);
+    render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
     expect(screen.queryByText("No entries match the current filters.")).not.toBeInTheDocument();
   });
 });
