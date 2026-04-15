@@ -1,13 +1,6 @@
 import clsx from "clsx";
 import { entries } from "../../data/entries";
-import {
-  CATEGORY_LABELS,
-  CAUSE_LABELS,
-  CAUSES_OF_DEATH,
-  type CauseOfDeath,
-  TECH_CATEGORIES,
-  type TechCategory,
-} from "../../data/types";
+import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import { useFilteredEntries, useFilterStore } from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
@@ -31,9 +24,9 @@ export function FilterBar() {
                   type="button"
                   className={clsx(styles.chip, activeCauses.has(cause) && styles.chipActive)}
                   aria-pressed={activeCauses.has(cause)}
-                  onClick={() => toggleCause(cause as CauseOfDeath)}
+                  onClick={() => toggleCause(cause)}
                 >
-                  {CAUSE_LABELS[cause as CauseOfDeath]}
+                  {CAUSE_LABELS[cause]}
                 </button>
               ))}
             </div>
@@ -48,9 +41,9 @@ export function FilterBar() {
                   type="button"
                   className={clsx(styles.chip, activeCategories.has(cat) && styles.chipActive)}
                   aria-pressed={activeCategories.has(cat)}
-                  onClick={() => toggleCategory(cat as TechCategory)}
+                  onClick={() => toggleCategory(cat)}
                 >
-                  {CATEGORY_LABELS[cat as TechCategory]}
+                  {CATEGORY_LABELS[cat]}
                 </button>
               ))}
             </div>

@@ -1,6 +1,9 @@
 import type { DeadTech } from "../data/types";
 
-const BASE_URL = "https://bitrot.timothybrits.co.za";
+const BASE_URL = (import.meta.env.VITE_PUBLIC_URL ?? "https://bitrot.timothybrits.co.za").replace(
+  /\/$/,
+  ""
+);
 const DEFAULT_TITLE = "Bitrot — Dead Tech Memorial";
 const DEFAULT_DESCRIPTION =
   "An interactive memorial for dead technology. Browse the tombstones of killed products, defunct platforms, and abandoned tech.";
@@ -16,35 +19,41 @@ interface SeoData {
   type: "website" | "article";
 }
 
-function setMetaTag(attribute: "name" | "property", key: string, content: string): void {
-  let el = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`);
-  if (!el) {
-    el = document.createElement("meta");
-    el.setAttribute(attribute, key);
-    document.head.appendChild(el);
+function getOrCreateHeadElement<T extends HTMLElement>(selector: string, create: () => T): T {
+  const existing = document.head.querySelector<T>(selector);
+  if (existing) {
+    return existing;
   }
+  const el = create();
+  document.head.appendChild(el);
+  return el;
+}
+
+function setMetaTag(attribute: "name" | "property", key: string, content: string): void {
+  const el = getOrCreateHeadElement<HTMLMetaElement>(`meta[${attribute}="${key}"]`, () => {
+    const meta = document.createElement("meta");
+    meta.setAttribute(attribute, key);
+    return meta;
+  });
   el.content = content;
 }
 
 function setCanonical(url: string): void {
-  let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
-  if (!link) {
-    link = document.createElement("link");
-    link.rel = "canonical";
-    document.head.appendChild(link);
-  }
+  const link = getOrCreateHeadElement<HTMLLinkElement>('link[rel="canonical"]', () => {
+    const l = document.createElement("link");
+    l.rel = "canonical";
+    return l;
+  });
   link.href = url;
 }
 
 function setJsonLd(data: Record<string, unknown>): void {
-  const id = "seo-json-ld";
-  let script = document.getElementById(id) as HTMLScriptElement | null;
-  if (!script) {
-    script = document.createElement("script");
-    script.id = id;
-    script.type = "application/ld+json";
-    document.head.appendChild(script);
-  }
+  const script = getOrCreateHeadElement<HTMLScriptElement>("script#seo-json-ld", () => {
+    const s = document.createElement("script");
+    s.id = "seo-json-ld";
+    s.type = "application/ld+json";
+    return s;
+  });
   script.textContent = JSON.stringify(data);
 }
 

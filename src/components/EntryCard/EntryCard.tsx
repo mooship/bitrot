@@ -2,9 +2,8 @@ import clsx from "clsx";
 import { useRef } from "react";
 import type { DeadTech } from "../../data/types";
 import { CAUSE_LABELS } from "../../data/types";
+import { useEntryAccent } from "../../hooks/useEntryAccent";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
-import { useThemeStore } from "../../stores/useThemeStore";
-import { getAccentColor } from "../../utils/color";
 import styles from "./EntryCard.module.css";
 
 interface EntryCardProps {
@@ -15,8 +14,7 @@ interface EntryCardProps {
 export function EntryCard({ entry, onSelect }: EntryCardProps) {
   const ref = useRef<HTMLElement>(null);
   const isVisible = useScrollReveal(ref);
-  const theme = useThemeStore((s) => s.theme);
-  const accent = entry.brandColor ? getAccentColor(entry.brandColor, theme) : undefined;
+  const accentStyle = useEntryAccent(entry.brandColor);
 
   const lifespan = entry.died - entry.born;
 
@@ -24,7 +22,7 @@ export function EntryCard({ entry, onSelect }: EntryCardProps) {
     <article
       ref={ref}
       className={clsx(styles.card, isVisible && styles.visible)}
-      style={accent ? ({ "--entry-accent": accent } as React.CSSProperties) : undefined}
+      style={accentStyle}
     >
       <button
         type="button"
