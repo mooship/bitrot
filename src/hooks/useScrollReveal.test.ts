@@ -1,7 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import type { RefObject } from "react";
 
-// Mock useReducedMotion at module level
 vi.mock("./useReducedMotion", () => ({
   useReducedMotion: vi.fn(() => false),
 }));
