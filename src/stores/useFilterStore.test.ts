@@ -100,7 +100,6 @@ describe("useFilteredEntries", () => {
     useFilterStore.getState().toggleCause("legal");
     useFilterStore.getState().toggleCategory("os");
     const { result } = renderHook(() => useFilteredEntries());
-    // If no entries match both legal + os, should be empty or very few
     for (const entry of result.current) {
       expect(entry.causeOfDeath).toBe("legal");
       expect(entry.category).toBe("os");

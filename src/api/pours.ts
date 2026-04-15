@@ -1,11 +1,19 @@
-const BASE_URL = (import.meta.env.VITE_WORKER_URL ?? "http://localhost:8787").replace(/\/$/, "");
+import type { PourCounts } from "../data/types";
 
-export async function fetchAllPours(): Promise<Record<string, number>> {
+const WORKER_URL_ENV = import.meta.env.VITE_WORKER_URL;
+
+if (import.meta.env.PROD && !WORKER_URL_ENV) {
+  throw new Error("VITE_WORKER_URL must be set in production");
+}
+
+const BASE_URL = (WORKER_URL_ENV ?? "http://localhost:8787").replace(/\/$/, "");
+
+export async function fetchAllPours(): Promise<PourCounts> {
   const res = await fetch(`${BASE_URL}/pours`);
   if (!res.ok) {
     throw new Error(`fetchAllPours failed: ${res.status}`);
   }
-  return res.json() as Promise<Record<string, number>>;
+  return res.json() as Promise<PourCounts>;
 }
 
 export async function incrementPour(id: string): Promise<number> {

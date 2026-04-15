@@ -24,6 +24,19 @@ Object.defineProperty(window, "matchMedia", {
 });
 
 // Mock IntersectionObserver (not available in happy-dom)
+function buildEntry(target: Element): IntersectionObserverEntry {
+  const rect = target.getBoundingClientRect();
+  return {
+    target,
+    isIntersecting: true,
+    intersectionRatio: 1,
+    boundingClientRect: rect,
+    intersectionRect: rect,
+    rootBounds: null,
+    time: performance.now(),
+  };
+}
+
 class MockIntersectionObserver {
   readonly root = null;
   readonly rootMargin = "0px";
@@ -35,10 +48,7 @@ class MockIntersectionObserver {
   }
 
   observe(target: Element) {
-    this.callback(
-      [{ isIntersecting: true, target } as IntersectionObserverEntry],
-      this as unknown as IntersectionObserver
-    );
+    this.callback([buildEntry(target)], this as unknown as IntersectionObserver);
   }
 
   unobserve = vi.fn();

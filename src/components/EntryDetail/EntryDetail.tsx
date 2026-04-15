@@ -1,10 +1,11 @@
 import clsx from "clsx";
 import { Copy, Share2, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, type ReactNode, useEffect, useRef } from "react";
 import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
-import { useThemeStore } from "../../stores/useThemeStore";
-import { getAccentColor } from "../../utils/color";
+import { useEntryAccent } from "../../hooks/useEntryAccent";
+import { useFocusTrap } from "../../hooks/useFocusTrap";
+import { useShareOrCopy } from "../../hooks/useShareOrCopy";
 import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
 import styles from "./EntryDetail.module.css";
@@ -14,91 +15,68 @@ interface EntryDetailProps {
   onClose: () => void;
 }
 
+interface Fact {
+  label: string;
+  value: ReactNode;
+}
+
+function buildFacts(entry: DeadTech): Fact[] {
+  const facts: Fact[] = [];
+  if (entry.parent) {
+    facts.push({ label: "Parent", value: entry.parent });
+  }
+  if (entry.killedBy) {
+    facts.push({ label: "Killed by", value: entry.killedBy });
+  }
+  if (entry.peakYear) {
+    facts.push({
+      label: "Peak",
+      value: entry.peakMetric ? `${entry.peakYear} — ${entry.peakMetric}` : `${entry.peakYear}`,
+    });
+  }
+  facts.push({ label: "Category", value: CATEGORY_LABELS[entry.category] });
+  return facts;
+}
+
+function getCopyLabel(state: ReturnType<typeof useShareOrCopy>["copyState"]): string {
+  switch (state) {
+    case "copied":
+      return "Copied!";
+    case "error":
+      return "Copy failed";
+    default:
+      return "Copy link";
+  }
+}
+
 export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const theme = useThemeStore((s) => s.theme);
-  const [copied, setCopied] = useState(false);
+  const accentStyle = useEntryAccent(entry?.brandColor);
+  const { canShare, copyState, share } = useShareOrCopy();
 
-  const accent = entry?.brandColor ? getAccentColor(entry.brandColor, theme) : undefined;
-  const canShare = typeof navigator.share === "function";
+  useFocusTrap(panelRef, { active: !!entry, onEscape: onClose });
 
   useEffect(() => {
-    if (!entry) {
-      return;
+    if (entry) {
+      closeButtonRef.current?.focus();
     }
-    closeButtonRef.current?.focus();
   }, [entry]);
-
-  useEffect(() => {
-    if (!entry) {
-      return;
-    }
-
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        onClose();
-        return;
-      }
-      if (e.key !== "Tab") {
-        return;
-      }
-      const panel = panelRef.current;
-      if (!panel) {
-        return;
-      }
-      const focusable = panel.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-      );
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last?.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first?.focus();
-        }
-      }
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [entry, onClose]);
 
   useEffect(() => {
     updateSeo(entry);
   }, [entry]);
-
-  useEffect(() => {
-    return () => clearTimeout(copyTimeoutRef.current);
-  }, []);
-
-  async function handleShare() {
-    const url = entry ? getEntryUrl(entry.id) : window.location.href;
-    if (canShare) {
-      try {
-        await navigator.share({ title: entry?.name, text: entry?.tagline, url });
-      } catch {}
-    } else {
-      try {
-        await navigator.clipboard.writeText(url);
-        setCopied(true);
-        clearTimeout(copyTimeoutRef.current);
-        copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
-      } catch {}
-    }
-  }
 
   if (!entry) {
     return null;
   }
 
   const lifespan = entry.died - entry.born;
+  const facts = buildFacts(entry);
+
+  const handleShare = () => {
+    void share({ title: entry.name, text: entry.tagline, url: getEntryUrl(entry.id) });
+  };
 
   return (
     <>
@@ -109,7 +87,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
         aria-modal="true"
         aria-labelledby="detail-title"
         className={clsx(styles.panel, styles.open)}
-        style={accent ? ({ "--entry-accent": accent } as React.CSSProperties) : undefined}
+        style={accentStyle}
       >
         <div className={styles.accentBar} aria-hidden="true" />
 
@@ -140,29 +118,12 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
           <p className={styles.autopsy}>{entry.autopsy}</p>
 
           <dl className={styles.facts}>
-            {entry.parent && (
-              <>
-                <dt>Parent</dt>
-                <dd>{entry.parent}</dd>
-              </>
-            )}
-            {entry.killedBy && (
-              <>
-                <dt>Killed by</dt>
-                <dd>{entry.killedBy}</dd>
-              </>
-            )}
-            {entry.peakYear && (
-              <>
-                <dt>Peak</dt>
-                <dd>
-                  {entry.peakYear}
-                  {entry.peakMetric ? ` — ${entry.peakMetric}` : ""}
-                </dd>
-              </>
-            )}
-            <dt>Category</dt>
-            <dd>{CATEGORY_LABELS[entry.category]}</dd>
+            {facts.map((fact) => (
+              <Fragment key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </Fragment>
+            ))}
           </dl>
         </div>
 
@@ -179,7 +140,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
             ) : (
               <Copy size={16} aria-hidden="true" />
             )}
-            <span>{canShare ? "Share" : copied ? "Copied!" : "Copy link"}</span>
+            <span>{canShare ? "Share" : getCopyLabel(copyState)}</span>
           </button>
         </footer>
       </div>

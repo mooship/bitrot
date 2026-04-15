@@ -5,10 +5,11 @@ import { EntryDetail } from "./components/EntryDetail/EntryDetail";
 import { FilterBar } from "./components/FilterBar/FilterBar";
 import { Footer } from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
+import { PageMain } from "./components/PageMain/PageMain";
 import { PrivacyPolicy } from "./components/PrivacyPolicy/PrivacyPolicy";
 import { SkipLink } from "./components/SkipLink/SkipLink";
 import { Timeline } from "./components/Timeline/Timeline";
-import { entries } from "./data/entries";
+import { entryById } from "./data/entries";
 import { useFilteredEntries } from "./stores/useFilterStore";
 import { usePourStore } from "./stores/usePourStore";
 
@@ -18,7 +19,7 @@ function HomePage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
-  const activeEntry = id ? (entries.find((e) => e.id === id) ?? null) : null;
+  const activeEntry = id ? entryById(id) : null;
 
   useEffect(() => {
     fetchPours();
@@ -27,9 +28,9 @@ function HomePage() {
   return (
     <>
       <FilterBar />
-      <main id="main-content">
+      <PageMain>
         <Timeline entries={filteredEntries} onSelect={(entryId) => navigate(`/entry/${entryId}`)} />
-      </main>
+      </PageMain>
       <EntryDetail entry={activeEntry} onClose={() => navigate("/")} />
     </>
   );
@@ -46,17 +47,17 @@ export default function App() {
         <Route
           path="/privacy"
           element={
-            <main id="main-content">
+            <PageMain>
               <PrivacyPolicy />
-            </main>
+            </PageMain>
           }
         />
         <Route
           path="/about"
           element={
-            <main id="main-content">
+            <PageMain>
               <AboutPage />
-            </main>
+            </PageMain>
           }
         />
         <Route path="*" element={<Navigate to="/" replace />} />

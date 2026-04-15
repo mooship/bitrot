@@ -1,3 +1,5 @@
+export type PourCounts = Record<string, number>;
+
 export type CauseOfDeath =
   | "acqui-killed"
   | "neglected"

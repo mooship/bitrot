@@ -5,7 +5,6 @@ type Theme = "dark" | "light";
 interface ThemeStore {
   theme: Theme;
   toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
 }
 
 function getInitialTheme(): Theme {
@@ -32,11 +31,6 @@ export const useThemeStore = create<ThemeStore>((set) => {
         const next = state.theme === "dark" ? "light" : "dark";
         applyTheme(next);
         return { theme: next };
-      }),
-    setTheme: (theme) =>
-      set(() => {
-        applyTheme(theme);
-        return { theme };
       }),
   };
 });

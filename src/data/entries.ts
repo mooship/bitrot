@@ -1186,3 +1186,9 @@ const _entries: DeadTech[] = [
 ];
 
 export const entries = _entries.sort((a, b) => b.died - a.died);
+
+const entriesById = new Map(entries.map((e) => [e.id, e] as const));
+
+export function entryById(id: string): DeadTech | null {
+  return entriesById.get(id) ?? null;
+}

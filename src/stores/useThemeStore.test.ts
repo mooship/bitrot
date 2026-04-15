@@ -63,12 +63,4 @@ describe("useThemeStore", () => {
     useThemeStore.getState().toggleTheme();
     expect(localStorage.getItem("theme")).toBe("light");
   });
-
-  it("setTheme explicitly sets the theme", async () => {
-    const useThemeStore = await importStore();
-    useThemeStore.getState().setTheme("light");
-    expect(useThemeStore.getState().theme).toBe("light");
-    expect(document.documentElement.dataset.theme).toBe("light");
-    expect(localStorage.getItem("theme")).toBe("light");
-  });
 });

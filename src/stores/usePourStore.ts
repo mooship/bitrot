@@ -1,8 +1,12 @@
 import { create } from "zustand";
 import { fetchAllPours, incrementPour } from "../api/pours";
+import type { PourCounts } from "../data/types";
+import { readSessionSet, writeSessionSet } from "../utils/sessionStorage";
+
+const SESSION_KEY = "poured";
 
 interface PourStore {
-  counts: Record<string, number>;
+  counts: PourCounts;
   globalCount: number;
   pouredThisSession: Set<string>;
   loading: boolean;
@@ -10,23 +14,10 @@ interface PourStore {
   pour: (id: string) => Promise<void>;
 }
 
-function getSessionPoured(): Set<string> {
-  try {
-    const raw = sessionStorage.getItem("poured");
-    return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
-  } catch {
-    return new Set();
-  }
-}
-
-function saveSessionPoured(ids: Set<string>) {
-  sessionStorage.setItem("poured", JSON.stringify([...ids]));
-}
-
 export const usePourStore = create<PourStore>((set, get) => ({
   counts: {},
   globalCount: 0,
-  pouredThisSession: getSessionPoured(),
+  pouredThisSession: readSessionSet(SESSION_KEY),
   loading: false,
 
   fetchPours: async () => {
@@ -52,7 +43,7 @@ export const usePourStore = create<PourStore>((set, get) => ({
     const nextCounts = { ...state.counts, [id]: prev + 1 };
     const nextSession = new Set(state.pouredThisSession);
     nextSession.add(id);
-    saveSessionPoured(nextSession);
+    writeSessionSet(SESSION_KEY, nextSession);
 
     set({
       counts: nextCounts,
@@ -68,7 +59,7 @@ export const usePourStore = create<PourStore>((set, get) => ({
     } catch {
       const rollback = { ...get().counts, [id]: prev };
       prevSession.delete(id);
-      saveSessionPoured(prevSession);
+      writeSessionSet(SESSION_KEY, prevSession);
       set({
         counts: rollback,
         globalCount: prevGlobalCount,

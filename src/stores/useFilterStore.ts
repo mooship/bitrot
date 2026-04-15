@@ -2,6 +2,16 @@ import { create } from "zustand";
 import { entries } from "../data/entries";
 import type { CauseOfDeath, TechCategory } from "../data/types";
 
+function toggleInSet<T>(set: Set<T>, item: T): Set<T> {
+  const next = new Set(set);
+  if (next.has(item)) {
+    next.delete(item);
+  } else {
+    next.add(item);
+  }
+  return next;
+}
+
 interface FilterStore {
   activeCauses: Set<CauseOfDeath>;
   activeCategories: Set<TechCategory>;
@@ -15,32 +25,17 @@ export const useFilterStore = create<FilterStore>((set) => ({
   activeCategories: new Set(),
 
   toggleCause: (cause) =>
-    set((state) => {
-      const next = new Set(state.activeCauses);
-      if (next.has(cause)) {
-        next.delete(cause);
-      } else {
-        next.add(cause);
-      }
-      return { activeCauses: next };
-    }),
+    set((state) => ({ activeCauses: toggleInSet(state.activeCauses, cause) })),
 
   toggleCategory: (category) =>
-    set((state) => {
-      const next = new Set(state.activeCategories);
-      if (next.has(category)) {
-        next.delete(category);
-      } else {
-        next.add(category);
-      }
-      return { activeCategories: next };
-    }),
+    set((state) => ({ activeCategories: toggleInSet(state.activeCategories, category) })),
 
   clearAll: () => set({ activeCauses: new Set(), activeCategories: new Set() }),
 }));
 
 export function useFilteredEntries() {
-  const { activeCauses, activeCategories } = useFilterStore();
+  const activeCauses = useFilterStore((s) => s.activeCauses);
+  const activeCategories = useFilterStore((s) => s.activeCategories);
   return entries.filter((entry) => {
     if (activeCauses.size > 0 && !activeCauses.has(entry.causeOfDeath)) {
       return false;

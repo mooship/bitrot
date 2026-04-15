@@ -40,7 +40,6 @@ export function lighten(hex: string, amount: number): string {
   return `hsl(${h}, ${s}%, ${Math.min(100, l + amount)}%)`;
 }
 
-/** Returns the appropriate accent color for a brand color given the current theme. */
 export function getAccentColor(brandColor: string, theme: "dark" | "light"): string {
   return theme === "dark" ? desaturate(brandColor, 40) : lighten(brandColor, 20);
 }
