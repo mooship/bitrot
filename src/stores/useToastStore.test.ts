@@ -10,10 +10,6 @@ afterEach(() => {
 });
 
 describe("useToastStore", () => {
-  it("starts with no toast", () => {
-    expect(useToastStore.getState().toast).toBeNull();
-  });
-
   it("show sets a toast with the given message", () => {
     useToastStore.getState().show("Something went wrong");
     expect(useToastStore.getState().toast?.message).toBe("Something went wrong");

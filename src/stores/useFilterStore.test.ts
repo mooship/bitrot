@@ -190,7 +190,7 @@ describe("useFilteredEntries", () => {
 });
 
 describe("useFilterStore sortOrder", () => {
-  it("defaults to 'died'", () => {
+  it("is 'died' after reset", () => {
     expect(useFilterStore.getState().sortOrder).toBe("died");
   });
 

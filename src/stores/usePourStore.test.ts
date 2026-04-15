@@ -1,5 +1,6 @@
 import type { Mock } from "vitest";
 import { fetchAllPours, incrementPour } from "../api/pours";
+import { resetPourStore, resetToastStore } from "../test/fixtures";
 import { usePourStore } from "./usePourStore";
 import { useToastStore } from "./useToastStore";
 
@@ -12,13 +13,8 @@ const mockedFetchAllPours = fetchAllPours as Mock;
 const mockedIncrementPour = incrementPour as Mock;
 
 beforeEach(() => {
-  usePourStore.setState({
-    counts: {},
-    globalCount: 0,
-    pouredThisSession: new Set(),
-    pendingPours: new Set(),
-    loading: false,
-  });
+  resetPourStore();
+  resetToastStore();
   sessionStorage.clear();
   vi.clearAllMocks();
 });
@@ -139,7 +135,6 @@ describe("pour", () => {
 
   it("shows a toast on API failure", async () => {
     mockedIncrementPour.mockRejectedValue(new Error("fail"));
-    useToastStore.setState({ toast: null });
 
     await usePourStore.getState().pour("vine");
 
