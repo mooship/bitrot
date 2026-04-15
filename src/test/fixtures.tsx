@@ -1,12 +1,36 @@
+import { render } from "@testing-library/react";
+import type { ReactElement } from "react";
+import { MemoryRouter } from "react-router-dom";
 import type { DeadTech } from "../data/types";
 import { useFilterStore } from "../stores/useFilterStore";
+import { usePourStore } from "../stores/usePourStore";
+import { useToastStore } from "../stores/useToastStore";
+
+export function renderWithRouter(ui: ReactElement) {
+  return render(<MemoryRouter>{ui}</MemoryRouter>);
+}
 
 export function resetFilterStore() {
   useFilterStore.setState({
     activeCauses: new Set(),
     activeCategories: new Set(),
     searchQuery: "",
+    sortOrder: "died",
   });
+}
+
+export function resetPourStore() {
+  usePourStore.setState({
+    counts: {},
+    globalCount: 0,
+    pouredThisSession: new Set(),
+    pendingPours: new Set(),
+    loading: false,
+  });
+}
+
+export function resetToastStore() {
+  useToastStore.setState({ toast: null });
 }
 
 export const mockEntry: DeadTech = {

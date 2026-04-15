@@ -164,4 +164,38 @@ describe("useFilteredEntries", () => {
       expect(entry.causeOfDeath).toBe("neglected");
     }
   });
+
+  it("sorts by name A-Z when sortOrder is 'name'", () => {
+    useFilterStore.getState().setSortOrder("name");
+    const { result } = renderHook(() => useFilteredEntries());
+    const names = result.current.map((e) => e.name);
+    const sorted = [...names].sort((a, b) => a.localeCompare(b));
+    expect(names).toEqual(sorted);
+  });
+
+  it("sorts by lifespan ascending when sortOrder is 'lifespan'", () => {
+    useFilterStore.getState().setSortOrder("lifespan");
+    const { result } = renderHook(() => useFilteredEntries());
+    const lifespans = result.current.map((e) => e.died - e.born);
+    for (let i = 1; i < lifespans.length; i++) {
+      expect(lifespans[i]).toBeGreaterThanOrEqual(lifespans[i - 1]);
+    }
+  });
+
+  it("clearAll does not reset sortOrder", () => {
+    useFilterStore.getState().setSortOrder("name");
+    useFilterStore.getState().clearAll();
+    expect(useFilterStore.getState().sortOrder).toBe("name");
+  });
+});
+
+describe("useFilterStore sortOrder", () => {
+  it("is 'died' after reset", () => {
+    expect(useFilterStore.getState().sortOrder).toBe("died");
+  });
+
+  it("setSortOrder updates the sort order", () => {
+    useFilterStore.getState().setSortOrder("lifespan");
+    expect(useFilterStore.getState().sortOrder).toBe("lifespan");
+  });
 });

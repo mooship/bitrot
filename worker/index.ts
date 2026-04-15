@@ -145,7 +145,10 @@ export default {
         return json({ error: "Invalid entry ID" }, 400, cors);
       }
 
-      const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+      const ip = request.headers.get("CF-Connecting-IP");
+      if (!ip) {
+        return json({ error: "Unable to determine client IP" }, 400, cors);
+      }
 
       const allowed = await checkRateLimit(env, ip);
       if (!allowed) {

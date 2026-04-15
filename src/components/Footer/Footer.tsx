@@ -10,11 +10,14 @@ export function Footer() {
           <span className={styles.muted}>No flowers. Just one more pour.</span>
         </p>
         <div className={styles.links}>
-          <Link to="/privacy" className={styles.privacyLink}>
-            Privacy Policy
+          <Link to="/stats" className={styles.privacyLink}>
+            Stats
           </Link>
           <Link to="/about" className={styles.privacyLink}>
             About
+          </Link>
+          <Link to="/privacy" className={styles.privacyLink}>
+            Privacy Policy
           </Link>
         </div>
       </div>

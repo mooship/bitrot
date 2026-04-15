@@ -1,20 +1,55 @@
 import clsx from "clsx";
 import { Search, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
+import type { SortOrder } from "../../stores/useFilterStore";
 import { useFilteredEntries, useFilterStore } from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
+const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
+  { value: "died", label: "Year" },
+  { value: "lifespan", label: "Lifespan" },
+  { value: "name", label: "Name" },
+];
+
 export function FilterBar() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
   const {
     activeCauses,
     activeCategories,
     searchQuery,
+    sortOrder,
     toggleCause,
     toggleCategory,
     setSearchQuery,
+    setSortOrder,
     clearAll,
   } = useFilterStore();
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "/") {
+        return;
+      }
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable ||
+        target.closest('[role="dialog"]') !== null
+      ) {
+        return;
+      }
+      e.preventDefault();
+      inputRef.current?.focus();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   const hasFilters =
     activeCauses.size > 0 || activeCategories.size > 0 || searchQuery.trim().length > 0;
@@ -29,6 +64,7 @@ export function FilterBar() {
             <span className={styles.searchInputWrap}>
               <Search size={16} aria-hidden="true" className={styles.searchIcon} />
               <input
+                ref={inputRef}
                 type="search"
                 className={styles.searchInput}
                 placeholder="Search dead tech…"
@@ -51,9 +87,9 @@ export function FilterBar() {
           </label>
 
           <p className={styles.status} aria-live="polite" aria-atomic="true">
-            {hasFilters
-              ? `Showing ${filteredCount} of ${entries.length} entries`
-              : `${entries.length} entries`}
+            {filteredCount === entries.length
+              ? `${entries.length} entries`
+              : `Showing ${filteredCount} of ${entries.length} entries`}
           </p>
         </div>
 
@@ -88,6 +124,23 @@ export function FilterBar() {
                     onClick={() => toggleCategory(cat)}
                   >
                     {CATEGORY_LABELS[cat]}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+
+            <fieldset className={styles.group}>
+              <legend className={styles.groupLabel}>Sort</legend>
+              <div className={styles.chips}>
+                {SORT_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    className={clsx(styles.chip, sortOrder === value && styles.chipActive)}
+                    aria-pressed={sortOrder === value}
+                    onClick={() => setSortOrder(value)}
+                  >
+                    {label}
                   </button>
                 ))}
               </div>

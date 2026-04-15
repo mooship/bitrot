@@ -96,7 +96,7 @@ describe("EntryDetail", () => {
     renderWithRouter(<EntryDetail entry={mockEntry} onClose={onClose} />);
     const user = userEvent.setup();
 
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await user.click(screen.getByRole("button", { name: /^Close / }));
     expect(onClose).toHaveBeenCalled();
   });
 

@@ -13,6 +13,7 @@ beforeEach(() => {
     counts: { vine: 10 },
     globalCount: 10,
     pouredThisSession: new Set(),
+    pendingPours: new Set(),
     loading: false,
   });
 });

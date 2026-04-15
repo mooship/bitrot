@@ -1,16 +1,21 @@
 import { Fragment, useMemo } from "react";
 import type { DeadTech } from "../../data/types";
+import type { SortOrder } from "../../stores/useFilterStore";
 import { EntryCard } from "../EntryCard/EntryCard";
 import styles from "./Timeline.module.css";
 import { YearMarker } from "./YearMarker";
 
 interface TimelineProps {
   entries: DeadTech[];
+  sortOrder: SortOrder;
   onSelect: (id: string) => void;
 }
 
-export function Timeline({ entries, onSelect }: TimelineProps) {
+export function Timeline({ entries, sortOrder, onSelect }: TimelineProps) {
   const entriesByYear = useMemo(() => {
+    if (sortOrder !== "died") {
+      return null;
+    }
     const map = new Map<number, DeadTech[]>();
     for (const entry of entries) {
       let group = map.get(entry.died);
@@ -20,24 +25,30 @@ export function Timeline({ entries, onSelect }: TimelineProps) {
       }
       group.push(entry);
     }
-    return Array.from(map, ([year, entries]) => ({ year, entries })).sort(
+    return Array.from(map, ([year, items]) => ({ year, entries: items })).sort(
       (a, b) => b.year - a.year
     );
-  }, [entries]);
+  }, [entries, sortOrder]);
 
   return (
     <section className={styles.section} aria-label="Timeline of dead technology">
       <ol className={styles.list}>
-        {entriesByYear.map(({ year, entries: yearEntries }) => (
-          <Fragment key={year}>
-            <YearMarker year={year} />
-            {yearEntries.map((entry) => (
+        {entriesByYear
+          ? entriesByYear.map(({ year, entries: yearEntries }) => (
+              <Fragment key={year}>
+                <YearMarker year={year} />
+                {yearEntries.map((entry) => (
+                  <li key={entry.id} className={styles.item}>
+                    <EntryCard entry={entry} onSelect={onSelect} />
+                  </li>
+                ))}
+              </Fragment>
+            ))
+          : entries.map((entry) => (
               <li key={entry.id} className={styles.item}>
                 <EntryCard entry={entry} onSelect={onSelect} />
               </li>
             ))}
-          </Fragment>
-        ))}
       </ol>
 
       {entries.length === 0 && (

@@ -12,13 +12,17 @@ function toggleInSet<T>(set: Set<T>, item: T): Set<T> {
   return next;
 }
 
+export type SortOrder = "died" | "lifespan" | "name";
+
 interface FilterStore {
   activeCauses: Set<CauseOfDeath>;
   activeCategories: Set<TechCategory>;
   searchQuery: string;
+  sortOrder: SortOrder;
   toggleCause: (cause: CauseOfDeath) => void;
   toggleCategory: (category: TechCategory) => void;
   setSearchQuery: (query: string) => void;
+  setSortOrder: (order: SortOrder) => void;
   clearAll: () => void;
 }
 
@@ -26,6 +30,7 @@ export const useFilterStore = create<FilterStore>((set) => ({
   activeCauses: new Set(),
   activeCategories: new Set(),
   searchQuery: "",
+  sortOrder: "died",
 
   toggleCause: (cause) =>
     set((state) => ({ activeCauses: toggleInSet(state.activeCauses, cause) })),
@@ -34,6 +39,8 @@ export const useFilterStore = create<FilterStore>((set) => ({
     set((state) => ({ activeCategories: toggleInSet(state.activeCategories, category) })),
 
   setSearchQuery: (query) => set({ searchQuery: query }),
+
+  setSortOrder: (order) => set({ sortOrder: order }),
 
   clearAll: () => set({ activeCauses: new Set(), activeCategories: new Set(), searchQuery: "" }),
 }));
@@ -55,8 +62,10 @@ export function useFilteredEntries() {
   const activeCauses = useFilterStore((s) => s.activeCauses);
   const activeCategories = useFilterStore((s) => s.activeCategories);
   const searchQuery = useFilterStore((s) => s.searchQuery);
+  const sortOrder = useFilterStore((s) => s.sortOrder);
   const normalizedQuery = searchQuery.trim().toLowerCase();
-  return entries.filter((entry) => {
+
+  const filtered = entries.filter((entry) => {
     if (activeCauses.size > 0 && !activeCauses.has(entry.causeOfDeath)) {
       return false;
     }
@@ -68,4 +77,12 @@ export function useFilteredEntries() {
     }
     return true;
   });
+
+  if (sortOrder === "lifespan") {
+    return [...filtered].sort((a, b) => a.died - a.born - (b.died - b.born));
+  }
+  if (sortOrder === "name") {
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+  }
+  return filtered;
 }
