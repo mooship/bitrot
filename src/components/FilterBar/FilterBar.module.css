@@ -10,12 +10,38 @@
   margin-inline: auto;
   padding-inline: var(--space-4);
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
   gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .searchField {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.searchInputWrap {
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -24,14 +50,14 @@
   padding-inline: var(--space-3);
   background-color: var(--bg-elevated);
   min-height: var(--touch-target);
+  flex: 1 1 auto;
+  min-inline-size: 0;
   transition:
     border-color var(--transition-fast),
     background-color var(--transition-fast);
-  flex: 0 1 240px;
-  min-inline-size: 0;
 }
 
-.searchField:focus-within {
+.searchInputWrap:focus-within {
   border-color: var(--pour-liquid);
 }
 
@@ -81,22 +107,17 @@
   }
 }
 
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.filtersRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .groups {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: var(--space-3) var(--space-5);
   flex: 1;
 }
 
@@ -118,6 +139,7 @@
   letter-spacing: 0.08em;
   white-space: nowrap;
   float: none;
+  flex-shrink: 0;
 }
 
 .chips {
@@ -191,17 +213,26 @@
 }
 
 .status {
-  max-width: var(--max-width);
-  margin-inline: auto;
-  padding-inline: var(--space-4);
-  padding-block-start: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--text-muted);
+  margin: 0;
+  flex-shrink: 0;
 }
 
 @media (max-width: 639px) {
+  .searchRow {
+    align-items: stretch;
+  }
+
   .searchField {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    flex: 1 1 100%;
+  }
+
+  .status {
     flex: 1 1 100%;
   }
 
