@@ -10,6 +10,7 @@ import { PrivacyPolicy } from "./components/PrivacyPolicy/PrivacyPolicy";
 import { SkipLink } from "./components/SkipLink/SkipLink";
 import { Timeline } from "./components/Timeline/Timeline";
 import { entryById } from "./data/entries";
+import { useFilterUrlSync } from "./hooks/useFilterUrlSync";
 import { useFilteredEntries } from "./stores/useFilterStore";
 import { usePourStore } from "./stores/usePourStore";
 
@@ -20,6 +21,8 @@ function HomePage() {
   const { id } = useParams<{ id: string }>();
 
   const activeEntry = id ? entryById(id) : null;
+
+  useFilterUrlSync();
 
   useEffect(() => {
     fetchPours();

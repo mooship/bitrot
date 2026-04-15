@@ -9,6 +9,7 @@ beforeEach(() => {
   useFilterStore.setState({
     activeCauses: new Set(),
     activeCategories: new Set(),
+    searchQuery: "",
   });
 });
 
@@ -94,5 +95,68 @@ describe("FilterBar", () => {
     const { container } = render(<FilterBar />);
     const searchEl = container.querySelector("search");
     expect(searchEl).toHaveAttribute("aria-label", "Filter entries");
+  });
+
+  describe("search input", () => {
+    it("renders a search input with placeholder", () => {
+      render(<FilterBar />);
+      expect(screen.getByPlaceholderText(/search dead tech/i)).toBeInTheDocument();
+    });
+
+    it("typing updates the store and filters the count", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      const input = screen.getByPlaceholderText(/search dead tech/i);
+      await user.type(input, "google reader");
+
+      expect(useFilterStore.getState().searchQuery).toBe("google reader");
+      expect(
+        screen.getByText(new RegExp(`Showing \\d+ of ${entries.length} entries`))
+      ).toBeInTheDocument();
+    });
+
+    it("shows clear button only when query is non-empty", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      expect(screen.queryByLabelText("Clear search")).not.toBeInTheDocument();
+
+      const input = screen.getByPlaceholderText(/search dead tech/i);
+      await user.type(input, "x");
+
+      expect(screen.getByLabelText("Clear search")).toBeInTheDocument();
+    });
+
+    it("clear button empties the query", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      const input = screen.getByPlaceholderText(/search dead tech/i);
+      await user.type(input, "google");
+      await user.click(screen.getByLabelText("Clear search"));
+
+      expect(useFilterStore.getState().searchQuery).toBe("");
+      expect(input).toHaveValue("");
+    });
+
+    it("Clear filters also clears the search query", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      await user.type(screen.getByPlaceholderText(/search dead tech/i), "google");
+      await user.click(screen.getByText("Clear filters"));
+
+      expect(useFilterStore.getState().searchQuery).toBe("");
+    });
+
+    it("search query alone shows 'Clear filters' button", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      expect(screen.queryByText("Clear filters")).not.toBeInTheDocument();
+      await user.type(screen.getByPlaceholderText(/search dead tech/i), "google");
+      expect(screen.getByText("Clear filters")).toBeInTheDocument();
+    });
   });
 });
