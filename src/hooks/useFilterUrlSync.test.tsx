@@ -2,6 +2,7 @@ import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { MemoryRouter, useNavigate, useSearchParams } from "react-router-dom";
 import { useFilterStore } from "../stores/useFilterStore";
+import { resetFilterStore } from "../test/fixtures";
 import { useFilterUrlSync } from "./useFilterUrlSync";
 
 function makeWrapper(initialUrl: string) {
@@ -34,11 +35,7 @@ function renderSyncWithNavigate(initialUrl = "/") {
 }
 
 beforeEach(() => {
-  useFilterStore.setState({
-    activeCauses: new Set(),
-    activeCategories: new Set(),
-    searchQuery: "",
-  });
+  resetFilterStore();
 });
 
 describe("useFilterUrlSync", () => {

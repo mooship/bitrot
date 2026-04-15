@@ -3,14 +3,11 @@ import userEvent from "@testing-library/user-event";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import { useFilterStore } from "../../stores/useFilterStore";
+import { resetFilterStore } from "../../test/fixtures";
 import { FilterBar } from "./FilterBar";
 
 beforeEach(() => {
-  useFilterStore.setState({
-    activeCauses: new Set(),
-    activeCategories: new Set(),
-    searchQuery: "",
-  });
+  resetFilterStore();
 });
 
 describe("FilterBar", () => {

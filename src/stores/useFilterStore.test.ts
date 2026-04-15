@@ -1,13 +1,10 @@
 import { renderHook } from "@testing-library/react";
 import { entries } from "../data/entries";
+import { resetFilterStore } from "../test/fixtures";
 import { useFilteredEntries, useFilterStore } from "./useFilterStore";
 
 beforeEach(() => {
-  useFilterStore.setState({
-    activeCauses: new Set(),
-    activeCategories: new Set(),
-    searchQuery: "",
-  });
+  resetFilterStore();
 });
 
 describe("useFilterStore", () => {

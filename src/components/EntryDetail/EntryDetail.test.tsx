@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 import { MemoryRouter } from "react-router-dom";
 import type { DeadTech } from "../../data/types";
 import { useFilterStore } from "../../stores/useFilterStore";
-import { mockEntry, mockEntryMinimal } from "../../test/fixtures";
+import { mockEntry, mockEntryMinimal, resetFilterStore } from "../../test/fixtures";
 import { EntryDetail } from "./EntryDetail";
 
 vi.mock("../../hooks/useReducedMotion", () => ({
@@ -21,11 +21,7 @@ function renderWithRouter(ui: ReactElement, options?: RenderOptions) {
 }
 
 beforeEach(() => {
-  useFilterStore.setState({
-    activeCauses: new Set(),
-    activeCategories: new Set(),
-    searchQuery: "",
-  });
+  resetFilterStore();
 });
 
 describe("EntryDetail", () => {
