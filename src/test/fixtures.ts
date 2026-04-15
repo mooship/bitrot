@@ -6,6 +6,7 @@ export function resetFilterStore() {
     activeCauses: new Set(),
     activeCategories: new Set(),
     searchQuery: "",
+    sortOrder: "died",
   });
 }
 

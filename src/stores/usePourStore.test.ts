@@ -1,6 +1,7 @@
 import type { Mock } from "vitest";
 import { fetchAllPours, incrementPour } from "../api/pours";
 import { usePourStore } from "./usePourStore";
+import { useToastStore } from "./useToastStore";
 
 vi.mock("../api/pours", () => ({
   fetchAllPours: vi.fn(),
@@ -15,6 +16,7 @@ beforeEach(() => {
     counts: {},
     globalCount: 0,
     pouredThisSession: new Set(),
+    pendingPours: new Set(),
     loading: false,
   });
   sessionStorage.clear();
@@ -93,6 +95,55 @@ describe("pour", () => {
     await usePourStore.getState().pour("vine");
 
     expect(usePourStore.getState().counts.vine).toBe(99);
+  });
+
+  it("recalculates globalCount from all counts after server confirms", async () => {
+    mockedIncrementPour.mockResolvedValue(20);
+    usePourStore.setState({ counts: { vine: 5, icq: 10 }, globalCount: 15 });
+
+    await usePourStore.getState().pour("vine");
+
+    expect(usePourStore.getState().globalCount).toBe(30);
+  });
+
+  it("adds entry to pendingPours during the API call", async () => {
+    let resolvePour!: (v: number) => void;
+    mockedIncrementPour.mockReturnValue(
+      new Promise((r) => {
+        resolvePour = r;
+      })
+    );
+
+    const promise = usePourStore.getState().pour("vine");
+    expect(usePourStore.getState().pendingPours.has("vine")).toBe(true);
+
+    resolvePour(1);
+    await promise;
+  });
+
+  it("removes entry from pendingPours after success", async () => {
+    mockedIncrementPour.mockResolvedValue(1);
+
+    await usePourStore.getState().pour("vine");
+
+    expect(usePourStore.getState().pendingPours.has("vine")).toBe(false);
+  });
+
+  it("removes entry from pendingPours after failure", async () => {
+    mockedIncrementPour.mockRejectedValue(new Error("fail"));
+
+    await usePourStore.getState().pour("vine");
+
+    expect(usePourStore.getState().pendingPours.has("vine")).toBe(false);
+  });
+
+  it("shows a toast on API failure", async () => {
+    mockedIncrementPour.mockRejectedValue(new Error("fail"));
+    useToastStore.setState({ toast: null });
+
+    await usePourStore.getState().pour("vine");
+
+    expect(useToastStore.getState().toast?.message).toMatch(/couldn't pour/i);
   });
 
   it("prevents duplicate pours in the same session", async () => {
