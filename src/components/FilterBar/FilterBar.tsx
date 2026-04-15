@@ -34,7 +34,12 @@ export function FilterBar() {
         return;
       }
       const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+      if (
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable ||
+        target.closest('[role="dialog"]') !== null
+      ) {
         return;
       }
       e.preventDefault();

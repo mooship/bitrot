@@ -39,10 +39,9 @@ export function StatsPage() {
     .sort((a, b) => b.pours - a.pours)
     .slice(0, 5);
 
-  const shortestLived = [...entries]
-    .sort((a, b) => a.died - a.born - (b.died - b.born))
-    .slice(0, 5);
-  const longestLived = [...entries].sort((a, b) => b.died - b.born - (a.died - a.born)).slice(0, 5);
+  const byLifespan = [...entries].sort((a, b) => a.died - a.born - (b.died - b.born));
+  const shortestLived = byLifespan.slice(0, 5);
+  const longestLived = byLifespan.slice(-5).reverse();
 
   return (
     <article className={styles.container}>
