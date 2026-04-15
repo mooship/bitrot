@@ -1,4 +1,13 @@
 import type { DeadTech } from "../data/types";
+import { useFilterStore } from "../stores/useFilterStore";
+
+export function resetFilterStore() {
+  useFilterStore.setState({
+    activeCauses: new Set(),
+    activeCategories: new Set(),
+    searchQuery: "",
+  });
+}
 
 export const mockEntry: DeadTech = {
   id: "google-reader",

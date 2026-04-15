@@ -1,11 +1,13 @@
 import clsx from "clsx";
 import { Copy, Share2, X } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
 import { useEntryAccent } from "../../hooks/useEntryAccent";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { useShareOrCopy } from "../../hooks/useShareOrCopy";
+import { useFilterStore } from "../../stores/useFilterStore";
 import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
 import styles from "./EntryDetail.module.css";
@@ -20,13 +22,44 @@ interface Fact {
   value: ReactNode;
 }
 
-function buildFacts(entry: DeadTech): Fact[] {
+function cleanCrossLinkTerm(raw: string): string {
+  const parenIndex = raw.indexOf(" (");
+  const trimmed = parenIndex >= 0 ? raw.slice(0, parenIndex) : raw;
+  return trimmed.trim();
+}
+
+interface CrossLinkProps {
+  value: string;
+  onNavigate: (term: string) => void;
+}
+
+function CrossLink({ value, onNavigate }: CrossLinkProps) {
+  const term = cleanCrossLinkTerm(value);
+  return (
+    <button
+      type="button"
+      className={styles.crossLink}
+      onClick={() => onNavigate(term)}
+      aria-label={`Show entries related to ${term}`}
+    >
+      {value}
+    </button>
+  );
+}
+
+function buildFacts(entry: DeadTech, onCrossLink: (term: string) => void): Fact[] {
   const facts: Fact[] = [];
   if (entry.parent) {
-    facts.push({ label: "Parent", value: entry.parent });
+    facts.push({
+      label: "Parent",
+      value: <CrossLink value={entry.parent} onNavigate={onCrossLink} />,
+    });
   }
   if (entry.killedBy) {
-    facts.push({ label: "Killed by", value: entry.killedBy });
+    facts.push({
+      label: "Killed by",
+      value: <CrossLink value={entry.killedBy} onNavigate={onCrossLink} />,
+    });
   }
   if (entry.peakYear) {
     facts.push({
@@ -54,6 +87,7 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const accentStyle = useEntryAccent(entry?.brandColor);
   const { canShare, copyState, share } = useShareOrCopy();
+  const navigate = useNavigate();
 
   useFocusTrap(panelRef, { active: !!entry, onEscape: onClose });
 
@@ -72,7 +106,18 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   }
 
   const lifespan = entry.died - entry.born;
-  const facts = buildFacts(entry);
+
+  const handleCrossLink = (term: string) => {
+    useFilterStore.setState({
+      searchQuery: term,
+      activeCauses: new Set(),
+      activeCategories: new Set(),
+    });
+    onClose();
+    navigate("/");
+  };
+
+  const facts = buildFacts(entry, handleCrossLink);
 
   const handleShare = () => {
     void share({ title: entry.name, text: entry.tagline, url: getEntryUrl(entry.id) });

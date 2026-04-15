@@ -152,6 +152,33 @@
   color: var(--text-secondary);
 }
 
+.crossLink {
+  color: var(--text-secondary);
+  text-align: start;
+  font: inherit;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .crossLink:hover {
+    color: var(--entry-accent, var(--text-primary));
+    text-decoration-color: var(--entry-accent, var(--text-primary));
+  }
+}
+
+.crossLink:focus-visible {
+  color: var(--entry-accent, var(--text-primary));
+  text-decoration-color: var(--entry-accent, var(--text-primary));
+}
+
 .footer {
   display: flex;
   align-items: center;

@@ -1,19 +1,52 @@
 import clsx from "clsx";
+import { Search, X } from "lucide-react";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import { useFilteredEntries, useFilterStore } from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
 export function FilterBar() {
-  const { activeCauses, activeCategories, toggleCause, toggleCategory, clearAll } =
-    useFilterStore();
+  const {
+    activeCauses,
+    activeCategories,
+    searchQuery,
+    toggleCause,
+    toggleCategory,
+    setSearchQuery,
+    clearAll,
+  } = useFilterStore();
 
-  const hasFilters = activeCauses.size > 0 || activeCategories.size > 0;
+  const hasFilters =
+    activeCauses.size > 0 || activeCategories.size > 0 || searchQuery.trim().length > 0;
   const filteredCount = useFilteredEntries().length;
 
   return (
     <search className={styles.filterBar} aria-label="Filter entries">
       <div className={styles.inner}>
+        <label className={styles.searchField}>
+          <Search size={16} aria-hidden="true" className={styles.searchIcon} />
+          <span className={styles.visuallyHidden}>Search dead tech</span>
+          <input
+            type="search"
+            className={styles.searchInput}
+            placeholder="Search dead tech…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            autoComplete="off"
+            spellCheck="false"
+          />
+          {searchQuery.length > 0 && (
+            <button
+              type="button"
+              className={styles.searchClear}
+              onClick={() => setSearchQuery("")}
+              aria-label="Clear search"
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          )}
+        </label>
+
         <div className={styles.groups}>
           <fieldset className={styles.group}>
             <legend className={styles.groupLabel}>Cause</legend>

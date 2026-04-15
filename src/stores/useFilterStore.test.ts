@@ -1,12 +1,10 @@
 import { renderHook } from "@testing-library/react";
 import { entries } from "../data/entries";
+import { resetFilterStore } from "../test/fixtures";
 import { useFilteredEntries, useFilterStore } from "./useFilterStore";
 
 beforeEach(() => {
-  useFilterStore.setState({
-    activeCauses: new Set(),
-    activeCategories: new Set(),
-  });
+  resetFilterStore();
 });
 
 describe("useFilterStore", () => {
@@ -47,13 +45,20 @@ describe("useFilterStore", () => {
     expect(causes.size).toBe(2);
   });
 
-  it("clearAll resets both sets", () => {
+  it("clearAll resets both sets and search query", () => {
     useFilterStore.getState().toggleCause("neglected");
     useFilterStore.getState().toggleCategory("social");
+    useFilterStore.getState().setSearchQuery("google");
     useFilterStore.getState().clearAll();
     const state = useFilterStore.getState();
     expect(state.activeCauses.size).toBe(0);
     expect(state.activeCategories.size).toBe(0);
+    expect(state.searchQuery).toBe("");
+  });
+
+  it("setSearchQuery updates the query string", () => {
+    useFilterStore.getState().setSearchQuery("reader");
+    expect(useFilterStore.getState().searchQuery).toBe("reader");
   });
 });
 
@@ -111,5 +116,52 @@ describe("useFilteredEntries", () => {
     useFilterStore.getState().clearAll();
     const { result } = renderHook(() => useFilteredEntries());
     expect(result.current.length).toBe(entries.length);
+  });
+
+  it("filters by search query against entry name", () => {
+    useFilterStore.getState().setSearchQuery("Google Reader");
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.length).toBeGreaterThan(0);
+    expect(result.current.some((e) => e.id === "google-reader")).toBe(true);
+    expect(
+      result.current.every((e) =>
+        /google reader/i.test(
+          `${e.name} ${e.tagline} ${e.autopsy} ${e.killedBy ?? ""} ${e.parent ?? ""}`
+        )
+      )
+    ).toBe(true);
+  });
+
+  it("search query is case-insensitive", () => {
+    useFilterStore.getState().setSearchQuery("GOOGLE");
+    const lower = renderHook(() => useFilteredEntries()).result.current.length;
+    useFilterStore.getState().setSearchQuery("google");
+    const upper = renderHook(() => useFilteredEntries()).result.current.length;
+    expect(lower).toBe(upper);
+    expect(lower).toBeGreaterThan(0);
+  });
+
+  it("search query matches against killedBy and parent", () => {
+    useFilterStore.getState().setSearchQuery("google");
+    const { result } = renderHook(() => useFilteredEntries());
+    const matching = result.current.filter(
+      (e) => e.parent === "Google" || (e.killedBy ?? "").includes("Google")
+    );
+    expect(matching.length).toBeGreaterThan(0);
+  });
+
+  it("empty/whitespace search query is ignored", () => {
+    useFilterStore.getState().setSearchQuery("   ");
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.length).toBe(entries.length);
+  });
+
+  it("search combines with cause/category filters using AND logic", () => {
+    useFilterStore.getState().toggleCause("neglected");
+    useFilterStore.getState().setSearchQuery("google");
+    const { result } = renderHook(() => useFilteredEntries());
+    for (const entry of result.current) {
+      expect(entry.causeOfDeath).toBe("neglected");
+    }
   });
 });
