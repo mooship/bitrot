@@ -10,9 +10,9 @@
   padding-inline: var(--space-4);
   padding-block: var(--space-4);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
   min-height: var(--header-height);
 }
 
@@ -21,6 +21,7 @@
   flex-direction: column;
   gap: var(--space-1);
   text-decoration: none;
+  margin-inline-end: auto;
 }
 
 .title {
@@ -65,9 +66,9 @@
 
 .globalCount {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0;
+  align-items: baseline;
+  gap: var(--space-2);
+  width: 100%;
 }
 
 .countNumber {
@@ -91,5 +92,12 @@
 
   .title {
     font-size: var(--text-3xl);
+  }
+
+  .globalCount {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    width: auto;
   }
 }
