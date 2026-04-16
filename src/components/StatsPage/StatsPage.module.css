@@ -89,7 +89,7 @@
 
 .barRow {
   display: grid;
-  grid-template-columns: 10ch 1fr 3ch;
+  grid-template-columns: 12ch 1fr 4ch;
   align-items: center;
   gap: var(--space-3);
 }

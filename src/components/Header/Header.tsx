@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import clsx from "clsx";
+import { Link, NavLink } from "react-router-dom";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
@@ -14,6 +15,14 @@ export function Header() {
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
         </Link>
         <div className={styles.actions}>
+          <nav aria-label="Main">
+            <NavLink
+              to="/stats"
+              className={({ isActive }) => clsx(styles.navLink, isActive && styles.navLinkActive)}
+            >
+              Stats
+            </NavLink>
+          </nav>
           {globalCount > 0 && (
             <p className={styles.globalCount} aria-live="polite">
               <span className={styles.countNumber}>{globalCount.toLocaleString()}</span>
