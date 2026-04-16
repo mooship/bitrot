@@ -156,4 +156,65 @@ describe("FilterBar", () => {
       expect(screen.getByText("Clear filters")).toBeInTheDocument();
     });
   });
+
+  describe("Escape keyboard shortcut", () => {
+    it("clears filters when Escape is pressed on the document body", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      await user.click(screen.getByText("Neglected"));
+      expect(useFilterStore.getState().activeCauses.has("neglected")).toBe(true);
+
+      await user.keyboard("{Escape}");
+
+      expect(useFilterStore.getState().activeCauses.size).toBe(0);
+      expect(screen.queryByText("Clear filters")).not.toBeInTheDocument();
+    });
+
+    it("clears filters from inside the search input", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      const input = screen.getByPlaceholderText(/search dead tech/i);
+      await user.type(input, "google");
+      expect(useFilterStore.getState().searchQuery).toBe("google");
+
+      input.focus();
+      await user.keyboard("{Escape}");
+
+      expect(useFilterStore.getState().searchQuery).toBe("");
+    });
+
+    it("is a no-op when no filters are active", async () => {
+      render(<FilterBar />);
+      const user = userEvent.setup();
+
+      await user.keyboard("{Escape}");
+
+      expect(useFilterStore.getState().activeCauses.size).toBe(0);
+      expect(useFilterStore.getState().searchQuery).toBe("");
+    });
+
+    it("does not clear filters when target is inside a dialog", async () => {
+      useFilterStore.getState().toggleCause("neglected");
+
+      const dialog = document.createElement("div");
+      dialog.setAttribute("role", "dialog");
+      const inner = document.createElement("button");
+      dialog.appendChild(inner);
+      document.body.appendChild(dialog);
+
+      try {
+        render(<FilterBar />);
+        inner.focus();
+
+        const user = userEvent.setup();
+        await user.keyboard("{Escape}");
+
+        expect(useFilterStore.getState().activeCauses.has("neglected")).toBe(true);
+      } finally {
+        dialog.remove();
+      }
+    });
+  });
 });

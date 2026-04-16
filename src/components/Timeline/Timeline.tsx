@@ -1,6 +1,6 @@
 import { Fragment, useMemo } from "react";
 import type { DeadTech } from "../../data/types";
-import type { SortOrder } from "../../stores/useFilterStore";
+import { type SortOrder, useFilterStore } from "../../stores/useFilterStore";
 import { EntryCard } from "../EntryCard/EntryCard";
 import styles from "./Timeline.module.css";
 import { YearMarker } from "./YearMarker";
@@ -12,6 +12,7 @@ interface TimelineProps {
 }
 
 export function Timeline({ entries, sortOrder, onSelect }: TimelineProps) {
+  const clearAll = useFilterStore((s) => s.clearAll);
   const entriesByYear = useMemo(() => {
     if (sortOrder !== "died") {
       return null;
@@ -52,7 +53,12 @@ export function Timeline({ entries, sortOrder, onSelect }: TimelineProps) {
       </ol>
 
       {entries.length === 0 && (
-        <p className={styles.empty}>No entries match the current filters.</p>
+        <div className={styles.empty}>
+          <p className={styles.emptyMessage}>No tomb matches these filters.</p>
+          <button type="button" className={styles.emptyAction} onClick={clearAll}>
+            Clear filters
+          </button>
+        </div>
       )}
     </section>
   );

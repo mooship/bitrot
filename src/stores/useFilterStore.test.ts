@@ -182,10 +182,10 @@ describe("useFilteredEntries", () => {
     }
   });
 
-  it("clearAll does not reset sortOrder", () => {
+  it("clearAll resets sortOrder back to the default", () => {
     useFilterStore.getState().setSortOrder("name");
     useFilterStore.getState().clearAll();
-    expect(useFilterStore.getState().sortOrder).toBe("name");
+    expect(useFilterStore.getState().sortOrder).toBe("died");
   });
 });
 

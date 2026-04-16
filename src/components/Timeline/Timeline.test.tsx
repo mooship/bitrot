@@ -1,5 +1,8 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { DeadTech } from "../../data/types";
+import { useFilterStore } from "../../stores/useFilterStore";
+import { resetFilterStore } from "../../test/fixtures";
 import { Timeline } from "./Timeline";
 
 vi.mock("../../hooks/useReducedMotion", () => ({
@@ -39,6 +42,10 @@ const mockEntries: DeadTech[] = [
   },
 ];
 
+beforeEach(() => {
+  resetFilterStore();
+});
+
 describe("Timeline", () => {
   it("renders entries grouped by death year", () => {
     render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
@@ -55,7 +62,7 @@ describe("Timeline", () => {
 
   it("shows empty state when entries is empty", () => {
     render(<Timeline entries={[]} sortOrder="died" onSelect={vi.fn()} />);
-    expect(screen.getByText("No entries match the current filters.")).toBeInTheDocument();
+    expect(screen.getByText("No tomb matches these filters.")).toBeInTheDocument();
   });
 
   it("has aria-label on the section", () => {
@@ -65,6 +72,20 @@ describe("Timeline", () => {
 
   it("does not show empty state when entries exist", () => {
     render(<Timeline entries={mockEntries} sortOrder="died" onSelect={vi.fn()} />);
-    expect(screen.queryByText("No entries match the current filters.")).not.toBeInTheDocument();
+    expect(screen.queryByText("No tomb matches these filters.")).not.toBeInTheDocument();
+  });
+
+  it("empty state 'Clear filters' button resets the filter store", async () => {
+    useFilterStore.getState().toggleCause("neglected");
+    useFilterStore.getState().setSearchQuery("nothing matches");
+
+    render(<Timeline entries={[]} sortOrder="died" onSelect={vi.fn()} />);
+    const user = userEvent.setup();
+
+    await user.click(screen.getByRole("button", { name: "Clear filters" }));
+
+    const state = useFilterStore.getState();
+    expect(state.activeCauses.size).toBe(0);
+    expect(state.searchQuery).toBe("");
   });
 });

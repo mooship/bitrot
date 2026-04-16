@@ -42,7 +42,13 @@ export const useFilterStore = create<FilterStore>((set) => ({
 
   setSortOrder: (order) => set({ sortOrder: order }),
 
-  clearAll: () => set({ activeCauses: new Set(), activeCategories: new Set(), searchQuery: "" }),
+  clearAll: () =>
+    set({
+      activeCauses: new Set(),
+      activeCategories: new Set(),
+      searchQuery: "",
+      sortOrder: "died",
+    }),
 }));
 
 function entryMatchesQuery(entry: (typeof entries)[number], query: string): boolean {

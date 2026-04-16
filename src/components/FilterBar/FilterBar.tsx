@@ -28,22 +28,43 @@ export function FilterBar() {
     clearAll,
   } = useFilterStore();
 
+  const hasFilters =
+    activeCauses.size > 0 || activeCategories.size > 0 || searchQuery.trim().length > 0;
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key !== "/") {
-        return;
-      }
       const target = e.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable ||
-        target.closest('[role="dialog"]') !== null
-      ) {
+      const inEditable =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+      const inDialog = target.closest('[role="dialog"]') !== null;
+
+      if (e.key === "/") {
+        if (inEditable || inDialog) {
+          return;
+        }
+        e.preventDefault();
+        inputRef.current?.focus();
         return;
       }
-      e.preventDefault();
-      inputRef.current?.focus();
+
+      if (e.key === "Escape") {
+        if (inDialog) {
+          return;
+        }
+        const state = useFilterStore.getState();
+        const anyActive =
+          state.activeCauses.size > 0 ||
+          state.activeCategories.size > 0 ||
+          state.searchQuery.trim().length > 0;
+        if (!anyActive) {
+          return;
+        }
+        e.preventDefault();
+        state.clearAll();
+        if (target === inputRef.current) {
+          inputRef.current?.blur();
+        }
+      }
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -51,8 +72,6 @@ export function FilterBar() {
     };
   }, []);
 
-  const hasFilters =
-    activeCauses.size > 0 || activeCategories.size > 0 || searchQuery.trim().length > 0;
   const filteredCount = useFilteredEntries().length;
 
   return (
@@ -149,7 +168,12 @@ export function FilterBar() {
 
           {hasFilters && (
             <div className={styles.actions}>
-              <button type="button" className={styles.clearBtn} onClick={clearAll}>
+              <button
+                type="button"
+                className={styles.clearBtn}
+                onClick={clearAll}
+                title="Clear filters (Esc)"
+              >
                 Clear filters
               </button>
             </div>

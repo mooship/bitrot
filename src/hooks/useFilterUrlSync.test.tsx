@@ -69,6 +69,21 @@ describe("useFilterUrlSync", () => {
       expect(state.activeCategories.has("software")).toBe(true);
     });
 
+    it("hydrates sortOrder from the sort param", () => {
+      renderSync("/?sort=lifespan");
+      expect(useFilterStore.getState().sortOrder).toBe("lifespan");
+    });
+
+    it("falls back to 'died' when sort param is invalid", () => {
+      renderSync("/?sort=bogus");
+      expect(useFilterStore.getState().sortOrder).toBe("died");
+    });
+
+    it("defaults sortOrder to 'died' when param absent", () => {
+      renderSync("/");
+      expect(useFilterStore.getState().sortOrder).toBe("died");
+    });
+
     it("ignores unknown cause values but keeps valid ones", () => {
       renderSync("/?cause=unknown,neglected,fake");
       const state = useFilterStore.getState();
@@ -176,7 +191,7 @@ describe("useFilterUrlSync", () => {
     });
 
     it("clearAll empties all URL params", () => {
-      const { result } = renderSync("/?q=foo&cause=neglected&category=social");
+      const { result } = renderSync("/?q=foo&cause=neglected&category=social&sort=lifespan");
 
       act(() => {
         useFilterStore.getState().clearAll();
@@ -185,6 +200,27 @@ describe("useFilterUrlSync", () => {
       expect(result.current.has("q")).toBe(false);
       expect(result.current.has("cause")).toBe(false);
       expect(result.current.has("category")).toBe(false);
+      expect(result.current.has("sort")).toBe(false);
+    });
+
+    it("writes sort param when non-default", () => {
+      const { result } = renderSync("/");
+
+      act(() => {
+        useFilterStore.getState().setSortOrder("name");
+      });
+
+      expect(result.current.get("sort")).toBe("name");
+    });
+
+    it("omits sort param when value is the default 'died'", () => {
+      const { result } = renderSync("/?sort=lifespan");
+
+      act(() => {
+        useFilterStore.getState().setSortOrder("died");
+      });
+
+      expect(result.current.has("sort")).toBe(false);
     });
   });
 
