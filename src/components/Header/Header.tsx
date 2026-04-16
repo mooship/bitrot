@@ -23,16 +23,16 @@ export function Header() {
               Stats
             </NavLink>
           </nav>
-          {globalCount > 0 && (
-            <p className={styles.globalCount} aria-live="polite">
-              <span className={styles.countNumber}>{globalCount.toLocaleString()}</span>
-              <span className={styles.countLabel}>
-                {globalCount === 1 ? "moment of silence" : "moments of silence"} observed
-              </span>
-            </p>
-          )}
           <ThemeToggle />
         </div>
+        {globalCount > 0 && (
+          <p className={styles.globalCount} aria-live="polite">
+            <span className={styles.countNumber}>{globalCount.toLocaleString()}</span>
+            <span className={styles.countLabel}>
+              {globalCount === 1 ? "moment of silence" : "moments of silence"} observed
+            </span>
+          </p>
+        )}
       </div>
     </header>
   );

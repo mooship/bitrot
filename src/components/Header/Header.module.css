@@ -10,9 +10,10 @@
   padding-inline: var(--space-4);
   padding-block: var(--space-4);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  gap: var(--space-2) var(--space-4);
   min-height: var(--header-height);
 }
 
@@ -65,9 +66,11 @@
 
 .globalCount {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0;
+  flex-direction: row;
+  align-items: baseline;
+  gap: var(--space-2);
+  order: 1;
+  width: 100%;
 }
 
 .countNumber {
@@ -91,5 +94,13 @@
 
   .title {
     font-size: var(--text-3xl);
+  }
+
+  .globalCount {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0;
+    order: 0;
+    width: auto;
   }
 }
