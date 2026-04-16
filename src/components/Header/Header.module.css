@@ -46,11 +46,6 @@
   gap: var(--space-3);
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-}
-
 .navLink {
   font-size: var(--text-sm);
   color: var(--text-muted);

@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { usePourStore } from "../../stores/usePourStore";
+import { renderWithRouter } from "../../test/fixtures";
 import { Header } from "./Header";
 
 vi.mock("../../api/pours", () => ({
@@ -37,11 +38,7 @@ describe("Header", () => {
   });
 
   it("renders a Stats nav link", () => {
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     const link = screen.getByRole("link", { name: "Stats" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/stats");

@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Link, NavLink } from "react-router-dom";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
@@ -14,12 +15,10 @@ export function Header() {
           <p className={styles.subtitle}>An interactive memorial for dead technology</p>
         </Link>
         <div className={styles.actions}>
-          <nav className={styles.nav} aria-label="Main">
+          <nav aria-label="Main">
             <NavLink
               to="/stats"
-              className={({ isActive }) =>
-                isActive ? `${styles.navLink} ${styles.navLinkActive}` : styles.navLink
-              }
+              className={({ isActive }) => clsx(styles.navLink, isActive && styles.navLinkActive)}
             >
               Stats
             </NavLink>
