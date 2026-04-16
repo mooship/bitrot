@@ -36,6 +36,17 @@ describe("Header", () => {
     expect(screen.getByText("An interactive memorial for dead technology")).toBeInTheDocument();
   });
 
+  it("renders a Stats nav link", () => {
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>
+    );
+    const link = screen.getByRole("link", { name: "Stats" });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute("href", "/stats");
+  });
+
   it("does not show count when globalCount is 0", () => {
     render(
       <MemoryRouter>
