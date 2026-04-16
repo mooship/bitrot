@@ -272,22 +272,6 @@ const _entries: DeadTech[] = [
       "Google Buzz auto-followed your most frequent Gmail contacts and made your social connections public by default. Users were horrified. The FTC investigated. Google settled a privacy lawsuit and killed Buzz within a year. Somehow, this didn't stop them from trying again with Google+.",
   },
   {
-    id: "tumblr",
-    name: "Tumblr",
-    tagline: "Bought for a billion, sold for three million",
-    born: 2007,
-    died: 2019,
-    peakYear: 2014,
-    peakMetric: "207 million blogs, valued at $1.1 billion",
-    causeOfDeath: "pivot",
-    killedBy: "NSFW content ban, advertiser pressure",
-    parent: "Yahoo (acquired 2013) → Verizon → Automattic",
-    category: "social",
-    brandColor: "#36465D",
-    autopsy:
-      "Yahoo paid $1.1 billion for Tumblr in 2013. Automattic bought it for $3 million in 2019. The platform's NSFW content ban in 2018 drove away a huge portion of its user base — the very community that made Tumblr culturally relevant. The URL still resolves and Automattic still runs the platform, but the Tumblr that shaped internet culture died in 2018. What remains is a zombie wearing its skin.",
-  },
-  {
     id: "ipod",
     name: "iPod",
     tagline: "1,000 songs in your pocket. Then your phone ate it.",
@@ -372,7 +356,7 @@ const _entries: DeadTech[] = [
     tagline: "35 million sold. Zero people still using one.",
     born: 2010,
     died: 2017,
-    peakYear: 2017,
+    peakYear: 2011,
     peakMetric:
       "35 million lifetime units sold, Guinness record for fastest-selling consumer device",
     causeOfDeath: "pivot",
