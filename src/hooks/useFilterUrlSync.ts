@@ -6,12 +6,16 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from "../data/types";
-import { type SortOrder, useFilterStore } from "../stores/useFilterStore";
+import {
+  DEFAULT_SORT_ORDER,
+  SORT_ORDERS,
+  type SortOrder,
+  useFilterStore,
+} from "../stores/useFilterStore";
 
 const VALID_CAUSES = new Set<string>(CAUSES_OF_DEATH);
 const VALID_CATEGORIES = new Set<string>(TECH_CATEGORIES);
-const VALID_SORTS = new Set<SortOrder>(["died", "lifespan", "name"]);
-const DEFAULT_SORT: SortOrder = "died";
+const VALID_SORTS = new Set<SortOrder>(SORT_ORDERS);
 
 const PARAM_QUERY = "q";
 const PARAM_CAUSE = "cause";
@@ -36,7 +40,7 @@ function parseSortOrder(raw: string | null): SortOrder {
   if (raw && VALID_SORTS.has(raw as SortOrder)) {
     return raw as SortOrder;
   }
-  return DEFAULT_SORT;
+  return DEFAULT_SORT_ORDER;
 }
 
 function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): string {
@@ -51,7 +55,7 @@ function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): s
   if (state.activeCategories.size > 0) {
     next.set(PARAM_CATEGORY, [...state.activeCategories].join(","));
   }
-  if (state.sortOrder !== DEFAULT_SORT) {
+  if (state.sortOrder !== DEFAULT_SORT_ORDER) {
     next.set(PARAM_SORT, state.sortOrder);
   }
   return next.toString();

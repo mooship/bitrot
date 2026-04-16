@@ -3,8 +3,12 @@ import { Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
-import type { SortOrder } from "../../stores/useFilterStore";
-import { useFilteredEntries, useFilterStore } from "../../stores/useFilterStore";
+import {
+  hasActiveFilters,
+  type SortOrder,
+  useFilteredEntries,
+  useFilterStore,
+} from "../../stores/useFilterStore";
 import styles from "./FilterBar.module.css";
 
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
@@ -28,8 +32,7 @@ export function FilterBar() {
     clearAll,
   } = useFilterStore();
 
-  const hasFilters =
-    activeCauses.size > 0 || activeCategories.size > 0 || searchQuery.trim().length > 0;
+  const hasFilters = hasActiveFilters({ activeCauses, activeCategories, searchQuery });
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -52,11 +55,7 @@ export function FilterBar() {
           return;
         }
         const state = useFilterStore.getState();
-        const anyActive =
-          state.activeCauses.size > 0 ||
-          state.activeCategories.size > 0 ||
-          state.searchQuery.trim().length > 0;
-        if (!anyActive) {
+        if (!hasActiveFilters(state)) {
           return;
         }
         e.preventDefault();
