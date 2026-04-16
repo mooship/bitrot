@@ -1,5 +1,4 @@
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { screen } from "@testing-library/react";
 import { usePourStore } from "../../stores/usePourStore";
 import { renderWithRouter } from "../../test/fixtures";
 import { Header } from "./Header";
@@ -20,20 +19,12 @@ beforeEach(() => {
 
 describe("Header", () => {
   it("renders the title", () => {
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     expect(screen.getByRole("heading", { name: "Bitrot" })).toBeInTheDocument();
   });
 
   it("renders the subtitle", () => {
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     expect(screen.getByText("An interactive memorial for dead technology")).toBeInTheDocument();
   });
 
@@ -45,32 +36,20 @@ describe("Header", () => {
   });
 
   it("does not show count when globalCount is 0", () => {
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     expect(screen.queryByText(/moment/)).not.toBeInTheDocument();
   });
 
   it("shows singular form for count of 1", () => {
     usePourStore.setState({ globalCount: 1 });
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     expect(screen.getByText("1")).toBeInTheDocument();
     expect(screen.getByText(/moment of silence/)).toBeInTheDocument();
   });
 
   it("shows plural form for count greater than 1", () => {
     usePourStore.setState({ globalCount: 42 });
-    render(
-      <MemoryRouter>
-        <Header />
-      </MemoryRouter>
-    );
+    renderWithRouter(<Header />);
     expect(screen.getByText("42")).toBeInTheDocument();
     expect(screen.getByText(/moments of silence/)).toBeInTheDocument();
   });
