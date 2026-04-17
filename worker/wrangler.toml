@@ -23,5 +23,19 @@ binding = "POURS"
 id = "f37c7fead51c46d59b48ac5bb6e600e3"
 preview_id = "f37c7fead51c46d59b48ac5bb6e600e3"
 
+[[durable_objects.bindings]]
+name = "POUR_COUNTER"
+class_name = "PourCounter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PourCounter"]
+
+[[unsafe.bindings]]
+name = "POUR_RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1001"
+simple = { limit = 10, period = 60 }
+
 [vars]
 ALLOWED_ORIGIN = "https://bitrot.timothybrits.co.za"
