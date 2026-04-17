@@ -73,3 +73,7 @@
   font-size: var(--text-xs);
   color: var(--text-muted);
 }
+
+.placeholder {
+  opacity: 0.5;
+}

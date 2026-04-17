@@ -6,14 +6,21 @@ import {
   TECH_CATEGORIES,
   type TechCategory,
 } from "../data/types";
-import { useFilterStore } from "../stores/useFilterStore";
+import {
+  DEFAULT_SORT_ORDER,
+  SORT_ORDERS,
+  type SortOrder,
+  useFilterStore,
+} from "../stores/useFilterStore";
 
 const VALID_CAUSES = new Set<string>(CAUSES_OF_DEATH);
 const VALID_CATEGORIES = new Set<string>(TECH_CATEGORIES);
+const VALID_SORTS = new Set<SortOrder>(SORT_ORDERS);
 
 const PARAM_QUERY = "q";
 const PARAM_CAUSE = "cause";
 const PARAM_CATEGORY = "category";
+const PARAM_SORT = "sort";
 
 function parseCsv<T extends string>(raw: string | null, valid: Set<string>): Set<T> {
   const result = new Set<T>();
@@ -29,6 +36,13 @@ function parseCsv<T extends string>(raw: string | null, valid: Set<string>): Set
   return result;
 }
 
+function parseSortOrder(raw: string | null): SortOrder {
+  if (raw && VALID_SORTS.has(raw as SortOrder)) {
+    return raw as SortOrder;
+  }
+  return DEFAULT_SORT_ORDER;
+}
+
 function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): string {
   const next = new URLSearchParams();
   const trimmed = state.searchQuery.trim();
@@ -40,6 +54,9 @@ function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): s
   }
   if (state.activeCategories.size > 0) {
     next.set(PARAM_CATEGORY, [...state.activeCategories].join(","));
+  }
+  if (state.sortOrder !== DEFAULT_SORT_ORDER) {
+    next.set(PARAM_SORT, state.sortOrder);
   }
   return next.toString();
 }
@@ -59,6 +76,7 @@ export function useFilterUrlSync() {
       searchQuery: searchParams.get(PARAM_QUERY) ?? "",
       activeCauses: parseCsv<CauseOfDeath>(searchParams.get(PARAM_CAUSE), VALID_CAUSES),
       activeCategories: parseCsv<TechCategory>(searchParams.get(PARAM_CATEGORY), VALID_CATEGORIES),
+      sortOrder: parseSortOrder(searchParams.get(PARAM_SORT)),
     });
   }, [searchParams]);
 

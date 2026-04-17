@@ -56,4 +56,17 @@ describe("PourButton", () => {
 
     expect(usePourStore.getState().pouredThisSession.has("vine")).toBe(true);
   });
+
+  it("shows a placeholder dash while counts are loading", () => {
+    usePourStore.setState({ counts: {}, loading: true });
+    render(<PourButton entryId="vine" entryName="Vine" />);
+    expect(screen.getByText("—")).toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveAttribute("aria-busy", "true");
+  });
+
+  it("does not show the placeholder once the count has hydrated", () => {
+    usePourStore.setState({ counts: { vine: 0 }, loading: true });
+    render(<PourButton entryId="vine" entryName="Vine" />);
+    expect(screen.queryByText("—")).not.toBeInTheDocument();
+  });
 });

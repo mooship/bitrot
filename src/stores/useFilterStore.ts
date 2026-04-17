@@ -14,6 +14,9 @@ function toggleInSet<T>(set: Set<T>, item: T): Set<T> {
 
 export type SortOrder = "died" | "lifespan" | "name";
 
+export const SORT_ORDERS: readonly SortOrder[] = ["died", "lifespan", "name"];
+export const DEFAULT_SORT_ORDER: SortOrder = "died";
+
 interface FilterStore {
   activeCauses: Set<CauseOfDeath>;
   activeCategories: Set<TechCategory>;
@@ -26,11 +29,23 @@ interface FilterStore {
   clearAll: () => void;
 }
 
+export function hasActiveFilters(state: {
+  activeCauses: Set<CauseOfDeath>;
+  activeCategories: Set<TechCategory>;
+  searchQuery: string;
+}): boolean {
+  return (
+    state.activeCauses.size > 0 ||
+    state.activeCategories.size > 0 ||
+    state.searchQuery.trim().length > 0
+  );
+}
+
 export const useFilterStore = create<FilterStore>((set) => ({
   activeCauses: new Set(),
   activeCategories: new Set(),
   searchQuery: "",
-  sortOrder: "died",
+  sortOrder: DEFAULT_SORT_ORDER,
 
   toggleCause: (cause) =>
     set((state) => ({ activeCauses: toggleInSet(state.activeCauses, cause) })),
@@ -42,7 +57,13 @@ export const useFilterStore = create<FilterStore>((set) => ({
 
   setSortOrder: (order) => set({ sortOrder: order }),
 
-  clearAll: () => set({ activeCauses: new Set(), activeCategories: new Set(), searchQuery: "" }),
+  clearAll: () =>
+    set({
+      activeCauses: new Set(),
+      activeCategories: new Set(),
+      searchQuery: "",
+      sortOrder: DEFAULT_SORT_ORDER,
+    }),
 }));
 
 function entryMatchesQuery(entry: (typeof entries)[number], query: string): boolean {
