@@ -1,12 +1,6 @@
 export interface Env {
   POURS: KVNamespace;
-  POUR_COUNTER: DurableObjectNamespace;
-  POUR_RATE_LIMITER: RateLimit;
   ALLOWED_ORIGIN: string;
-}
-
-interface RateLimit {
-  limit(options: { key: string }): Promise<{ success: boolean }>;
 }
 
 type PourCounts = Record<string, number>;
@@ -15,6 +9,9 @@ const VALID_ID = /^[a-z0-9-]{1,64}$/;
 const POUR_PATH = /^\/pours\/([a-z0-9-]+)$/;
 const TOTALS_KEY = "meta:totals";
 const POUR_PREFIX = "pour:";
+const RATE_LIMIT_PREFIX = "rl:";
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+const RATE_LIMIT_MAX = 10;
 const TOTALS_CACHE_TTL = 60;
 const TOTALS_SMAXAGE = 30;
 const TOTALS_CACHE_URL = "https://bitrot-worker.internal/cache/pours";
@@ -144,50 +141,26 @@ function jsonResponse(
   });
 }
 
-export class PourCounter {
-  private state: DurableObjectState;
-  private env: Env;
-  private count: number | null = null;
-
-  constructor(state: DurableObjectState, env: Env) {
-    this.state = state;
-    this.env = env;
+async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
+  const key = `${RATE_LIMIT_PREFIX}${ip}`;
+  const count = parseCount(await env.POURS.get(key));
+  if (count >= RATE_LIMIT_MAX) {
+    return false;
   }
-
-  async fetch(request: Request): Promise<Response> {
-    const url = new URL(request.url);
-    const id = url.searchParams.get("id") ?? "";
-
-    if (this.count === null) {
-      const stored = await this.state.storage.get<number>("count");
-      this.count =
-        typeof stored === "number"
-          ? parseCount(stored)
-          : parseCount(await this.env.POURS.get(`${POUR_PREFIX}${id}`));
-    }
-
-    const next = this.count + 1;
-    this.count = next;
-
-    await Promise.all([
-      this.state.storage.put("count", next),
-      this.env.POURS.put(`${POUR_PREFIX}${id}`, String(next), {
-        metadata: { count: next },
-      }),
-    ]);
-
-    return new Response(JSON.stringify({ count: next }), {
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+  await env.POURS.put(key, String(count + 1), {
+    expirationTtl: RATE_LIMIT_WINDOW_SECONDS,
+  });
+  return true;
 }
 
 async function incrementPour(env: Env, id: string): Promise<number> {
-  const doId = env.POUR_COUNTER.idFromName(id);
-  const stub = env.POUR_COUNTER.get(doId);
-  const res = await stub.fetch(`https://do.invalid/increment?id=${encodeURIComponent(id)}`);
-  const data = (await res.json()) as { count: number };
-  return data.count;
+  const key = `${POUR_PREFIX}${id}`;
+  const current = parseCount(await env.POURS.get(key));
+  const next = current + 1;
+  await env.POURS.put(key, String(next), {
+    metadata: { count: next },
+  });
+  return next;
 }
 
 async function buildTotalsResponse(env: Env, cors: Record<string, string>): Promise<Response> {
@@ -253,8 +226,8 @@ export default {
         return jsonResponse({ error: "Unable to determine client IP" }, 400, cors);
       }
 
-      const { success } = await env.POUR_RATE_LIMITER.limit({ key: ip });
-      if (!success) {
+      const allowed = await checkRateLimit(env, ip);
+      if (!allowed) {
         return jsonResponse({ error: "Rate limit exceeded" }, 429, cors);
       }
 
