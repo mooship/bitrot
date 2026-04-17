@@ -6,21 +6,31 @@ export interface Env {
 type PourCounts = Record<string, number>;
 
 const VALID_ID = /^[a-z0-9-]{1,64}$/;
-const RATE_LIMIT_WINDOW_SECONDS = 60;
-const RATE_LIMIT_MAX = 10;
+const POUR_PATH = /^\/pours\/([a-z0-9-]+)$/;
 const TOTALS_KEY = "meta:totals";
 const POUR_PREFIX = "pour:";
 const RATE_LIMIT_PREFIX = "rl:";
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+const RATE_LIMIT_MAX = 10;
+const TOTALS_CACHE_TTL = 60;
+const TOTALS_SMAXAGE = 30;
+const TOTALS_CACHE_URL = "https://bitrot-worker.internal/cache/pours";
 
-function parseCount(raw: string | null): number {
-  if (raw === null) {
-    return 0;
+function totalsCacheKey(): Request {
+  return new Request(TOTALS_CACHE_URL);
+}
+
+function parseCount(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
+    return Math.floor(value);
   }
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n < 0) {
-    return 0;
+  if (typeof value === "string") {
+    const n = Number(value);
+    if (Number.isFinite(n) && n >= 0) {
+      return Math.floor(n);
+    }
   }
-  return Math.floor(n);
+  return 0;
 }
 
 function parseTotals(raw: string): PourCounts | null {
@@ -44,20 +54,25 @@ function parseTotals(raw: string): PourCounts | null {
 }
 
 async function rebuildTotals(env: Env): Promise<PourCounts> {
-  const list = await env.POURS.list({ prefix: POUR_PREFIX });
   const counts: PourCounts = {};
-  await Promise.all(
-    list.keys.map(async (key) => {
+  let cursor: string | undefined;
+  do {
+    const page = await env.POURS.list<{ count: number }>({
+      prefix: POUR_PREFIX,
+      cursor,
+    });
+    for (const key of page.keys) {
       const id = key.name.slice(POUR_PREFIX.length);
-      counts[id] = parseCount(await env.POURS.get(key.name));
-    })
-  );
+      counts[id] = parseCount(key.metadata?.count);
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
   await env.POURS.put(TOTALS_KEY, JSON.stringify(counts));
   return counts;
 }
 
 async function readTotals(env: Env): Promise<PourCounts> {
-  const raw = await env.POURS.get(TOTALS_KEY);
+  const raw = await env.POURS.get(TOTALS_KEY, { cacheTtl: TOTALS_CACHE_TTL });
   if (raw !== null) {
     const validated = parseTotals(raw);
     if (validated !== null) {
@@ -68,16 +83,55 @@ async function readTotals(env: Env): Promise<PourCounts> {
   return rebuildTotals(env);
 }
 
-function corsHeaders(allowedOrigin: string): HeadersInit {
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin,
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Max-Age": "86400",
-  };
+async function sha256Hex(input: string): Promise<string> {
+  const bytes = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function json(data: unknown, status = 200, extraHeaders: HeadersInit = {}): Response {
+function originsMatch(requestOrigin: string, parsedAllowed: URL | null): boolean {
+  if (!requestOrigin || !parsedAllowed) {
+    return false;
+  }
+  try {
+    const a = new URL(requestOrigin);
+    return a.protocol === parsedAllowed.protocol && a.host === parsedAllowed.host;
+  } catch {
+    return false;
+  }
+}
+
+let corsState: { cors: Record<string, string>; parsed: URL | null } | null = null;
+
+function getCorsState(allowedOrigin: string) {
+  if (corsState !== null) {
+    return corsState;
+  }
+  let parsed: URL | null;
+  try {
+    parsed = new URL(allowedOrigin);
+  } catch {
+    parsed = null;
+  }
+  corsState = {
+    parsed,
+    cors: {
+      "Access-Control-Allow-Origin": allowedOrigin,
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, If-None-Match",
+      "Access-Control-Expose-Headers": "ETag",
+      "Access-Control-Max-Age": "86400",
+      Vary: "Origin",
+    },
+  };
+  return corsState;
+}
+
+function jsonResponse(
+  data: unknown,
+  status = 200,
+  extraHeaders: Record<string, string> = {}
+): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
@@ -85,19 +139,6 @@ function json(data: unknown, status = 200, extraHeaders: HeadersInit = {}): Resp
       ...extraHeaders,
     },
   });
-}
-
-function originsMatch(requestOrigin: string, allowed: string): boolean {
-  if (!requestOrigin || !allowed) {
-    return false;
-  }
-  try {
-    const a = new URL(requestOrigin);
-    const b = new URL(allowed);
-    return a.protocol === b.protocol && a.host === b.host;
-  } catch {
-    return false;
-  }
 }
 
 async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
@@ -112,61 +153,93 @@ async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
   return true;
 }
 
+async function incrementPour(env: Env, id: string): Promise<number> {
+  const key = `${POUR_PREFIX}${id}`;
+  const current = parseCount(await env.POURS.get(key));
+  const next = current + 1;
+  await env.POURS.put(key, String(next), {
+    metadata: { count: next },
+  });
+  return next;
+}
+
+async function buildTotalsResponse(env: Env, cors: Record<string, string>): Promise<Response> {
+  const counts = await readTotals(env);
+  const body = JSON.stringify(counts);
+  const etag = `"${await sha256Hex(body)}"`;
+  return new Response(body, {
+    status: 200,
+    headers: {
+      ...cors,
+      "Content-Type": "application/json",
+      "Cache-Control": `public, max-age=${TOTALS_SMAXAGE}, s-maxage=${TOTALS_SMAXAGE}`,
+      ETag: etag,
+    },
+  });
+}
+
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") ?? "";
-    const allowedOrigin = env.ALLOWED_ORIGIN;
+    const { cors, parsed } = getCorsState(env.ALLOWED_ORIGIN);
 
-    if (!originsMatch(origin, allowedOrigin)) {
+    if (!originsMatch(origin, parsed)) {
       return new Response(null, { status: 403 });
     }
-
-    const cors = corsHeaders(allowedOrigin);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
     }
 
     if (url.pathname === "/pours" && request.method === "GET") {
-      const counts = await readTotals(env);
-      return json(counts, 200, cors);
+      const cache = caches.default;
+      const cacheKey = totalsCacheKey();
+      const ifNoneMatch = request.headers.get("If-None-Match");
+
+      let response = await cache.match(cacheKey);
+      if (!response) {
+        response = await buildTotalsResponse(env, cors);
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
+      }
+
+      if (ifNoneMatch && response.headers.get("ETag") === ifNoneMatch) {
+        return new Response(null, { status: 304, headers: response.headers });
+      }
+      return response;
     }
 
-    const pourMatch = /^\/pours\/([a-z0-9-]+)$/.exec(url.pathname);
+    const pourMatch = POUR_PATH.exec(url.pathname);
     if (pourMatch) {
       if (request.method !== "POST") {
-        return json({ error: "Method not allowed" }, 405, cors);
+        return jsonResponse({ error: "Method not allowed" }, 405, cors);
       }
 
       const id = pourMatch[1];
 
       if (!VALID_ID.test(id)) {
-        return json({ error: "Invalid entry ID" }, 400, cors);
+        return jsonResponse({ error: "Invalid entry ID" }, 400, cors);
       }
 
       const ip = request.headers.get("CF-Connecting-IP");
       if (!ip) {
-        return json({ error: "Unable to determine client IP" }, 400, cors);
+        return jsonResponse({ error: "Unable to determine client IP" }, 400, cors);
       }
 
       const allowed = await checkRateLimit(env, ip);
       if (!allowed) {
-        return json({ error: "Rate limit exceeded" }, 429, cors);
+        return jsonResponse({ error: "Rate limit exceeded" }, 429, cors);
       }
 
-      const key = `${POUR_PREFIX}${id}`;
-      const current = parseCount(await env.POURS.get(key));
-      const next = current + 1;
-      await env.POURS.put(key, String(next));
-      // Invalidate the totals cache rather than read-modify-writing it. Per-id
-      // `pour:<id>` keys are the source of truth; the next GET /pours rebuilds
-      // from them via list(). Avoids the lost-update race on meta:totals.
-      await env.POURS.delete(TOTALS_KEY);
+      const next = await incrementPour(env, id);
 
-      return json({ count: next }, 200, cors);
+      ctx.waitUntil(
+        Promise.all([env.POURS.delete(TOTALS_KEY), caches.default.delete(totalsCacheKey())])
+      );
+
+      return jsonResponse({ count: next }, 200, cors);
     }
 
-    return json({ error: "Not found" }, 404, cors);
+    return jsonResponse({ error: "Not found" }, 404, cors);
   },
 };
