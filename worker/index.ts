@@ -19,6 +19,10 @@ const TOTALS_CACHE_TTL = 60;
 const TOTALS_SMAXAGE = 30;
 const TOTALS_CACHE_URL = "https://bitrot-worker.internal/cache/pours";
 
+function totalsCacheKey(): Request {
+  return new Request(TOTALS_CACHE_URL);
+}
+
 function parseCount(value: unknown): number {
   if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
     return Math.floor(value);
@@ -85,12 +89,7 @@ async function readTotals(env: Env): Promise<PourCounts> {
 async function sha256Hex(input: string): Promise<string> {
   const bytes = new TextEncoder().encode(input);
   const hash = await crypto.subtle.digest("SHA-256", bytes);
-  const view = new Uint8Array(hash);
-  let hex = "";
-  for (let i = 0; i < view.length; i++) {
-    hex += view[i].toString(16).padStart(2, "0");
-  }
-  return hex;
+  return Array.from(new Uint8Array(hash), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 function originsMatch(requestOrigin: string, parsedAllowed: URL | null): boolean {
@@ -105,37 +104,30 @@ function originsMatch(requestOrigin: string, parsedAllowed: URL | null): boolean
   }
 }
 
-function parseAllowedOrigin(allowed: string): URL | null {
-  try {
-    return new URL(allowed);
-  } catch {
-    return null;
+let corsState: { cors: Record<string, string>; parsed: URL | null } | null = null;
+
+function getCorsState(allowedOrigin: string) {
+  if (corsState !== null) {
+    return corsState;
   }
-}
-
-let cachedAllowedOrigin: string | null = null;
-let cachedParsedOrigin: URL | null = null;
-let cachedCorsHeaders: Record<string, string> | null = null;
-
-function getCorsHeaders(allowedOrigin: string): Record<string, string> {
-  if (cachedAllowedOrigin !== allowedOrigin || !cachedCorsHeaders) {
-    cachedAllowedOrigin = allowedOrigin;
-    cachedParsedOrigin = parseAllowedOrigin(allowedOrigin);
-    cachedCorsHeaders = {
+  let parsed: URL | null;
+  try {
+    parsed = new URL(allowedOrigin);
+  } catch {
+    parsed = null;
+  }
+  corsState = {
+    parsed,
+    cors: {
       "Access-Control-Allow-Origin": allowedOrigin,
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, If-None-Match",
       "Access-Control-Expose-Headers": "ETag",
       "Access-Control-Max-Age": "86400",
       Vary: "Origin",
-    };
-  }
-  return cachedCorsHeaders;
-}
-
-function getParsedAllowedOrigin(allowedOrigin: string): URL | null {
-  getCorsHeaders(allowedOrigin);
-  return cachedParsedOrigin;
+    },
+  };
+  return corsState;
 }
 
 function jsonResponse(
@@ -168,22 +160,21 @@ export class PourCounter {
 
     if (this.count === null) {
       const stored = await this.state.storage.get<number>("count");
-      if (typeof stored === "number" && Number.isFinite(stored) && stored >= 0) {
-        this.count = Math.floor(stored);
-      } else {
-        const fallback = parseCount(await this.env.POURS.get(`${POUR_PREFIX}${id}`));
-        this.count = fallback;
-        await this.state.storage.put("count", fallback);
-      }
+      this.count =
+        typeof stored === "number"
+          ? parseCount(stored)
+          : parseCount(await this.env.POURS.get(`${POUR_PREFIX}${id}`));
     }
 
     const next = this.count + 1;
     this.count = next;
-    await this.state.storage.put("count", next);
 
-    await this.env.POURS.put(`${POUR_PREFIX}${id}`, String(next), {
-      metadata: { count: next },
-    });
+    await Promise.all([
+      this.state.storage.put("count", next),
+      this.env.POURS.put(`${POUR_PREFIX}${id}`, String(next), {
+        metadata: { count: next },
+      }),
+    ]);
 
     return new Response(JSON.stringify({ count: next }), {
       headers: { "Content-Type": "application/json" },
@@ -199,40 +190,30 @@ async function incrementPour(env: Env, id: string): Promise<number> {
   return data.count;
 }
 
-async function buildTotalsResponse(
-  env: Env,
-  cors: Record<string, string>,
-  ifNoneMatch: string | null
-): Promise<Response> {
+async function buildTotalsResponse(env: Env, cors: Record<string, string>): Promise<Response> {
   const counts = await readTotals(env);
   const body = JSON.stringify(counts);
   const etag = `"${await sha256Hex(body)}"`;
-
-  const headers: Record<string, string> = {
-    ...cors,
-    "Content-Type": "application/json",
-    "Cache-Control": `public, max-age=${TOTALS_SMAXAGE}, s-maxage=${TOTALS_SMAXAGE}`,
-    ETag: etag,
-  };
-
-  if (ifNoneMatch === etag) {
-    return new Response(null, { status: 304, headers });
-  }
-  return new Response(body, { status: 200, headers });
+  return new Response(body, {
+    status: 200,
+    headers: {
+      ...cors,
+      "Content-Type": "application/json",
+      "Cache-Control": `public, max-age=${TOTALS_SMAXAGE}, s-maxage=${TOTALS_SMAXAGE}`,
+      ETag: etag,
+    },
+  });
 }
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get("Origin") ?? "";
-    const allowedOrigin = env.ALLOWED_ORIGIN;
-    const parsedAllowed = getParsedAllowedOrigin(allowedOrigin);
+    const { cors, parsed } = getCorsState(env.ALLOWED_ORIGIN);
 
-    if (!originsMatch(origin, parsedAllowed)) {
+    if (!originsMatch(origin, parsed)) {
       return new Response(null, { status: 403 });
     }
-
-    const cors = getCorsHeaders(allowedOrigin);
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
@@ -240,33 +221,19 @@ export default {
 
     if (url.pathname === "/pours" && request.method === "GET") {
       const cache = caches.default;
-      const cacheKey = new Request(TOTALS_CACHE_URL, { method: "GET" });
+      const cacheKey = totalsCacheKey();
       const ifNoneMatch = request.headers.get("If-None-Match");
 
-      const cached = await cache.match(cacheKey);
-      if (cached) {
-        const etag = cached.headers.get("ETag");
-        const headers = new Headers(cached.headers);
-        for (const [k, v] of Object.entries(cors)) {
-          headers.set(k, v);
-        }
-        if (ifNoneMatch && etag && ifNoneMatch === etag) {
-          return new Response(null, { status: 304, headers });
-        }
-        return new Response(cached.body, { status: cached.status, headers });
+      let response = await cache.match(cacheKey);
+      if (!response) {
+        response = await buildTotalsResponse(env, cors);
+        ctx.waitUntil(cache.put(cacheKey, response.clone()));
       }
 
-      const fresh = await buildTotalsResponse(env, cors, null);
-      const toCache = new Response(fresh.clone().body, {
-        status: 200,
-        headers: fresh.headers,
-      });
-      ctx.waitUntil(cache.put(cacheKey, toCache));
-
-      if (ifNoneMatch && fresh.headers.get("ETag") === ifNoneMatch) {
-        return new Response(null, { status: 304, headers: fresh.headers });
+      if (ifNoneMatch && response.headers.get("ETag") === ifNoneMatch) {
+        return new Response(null, { status: 304, headers: response.headers });
       }
-      return fresh;
+      return response;
     }
 
     const pourMatch = POUR_PATH.exec(url.pathname);
@@ -294,10 +261,7 @@ export default {
       const next = await incrementPour(env, id);
 
       ctx.waitUntil(
-        Promise.all([
-          env.POURS.delete(TOTALS_KEY),
-          caches.default.delete(new Request(TOTALS_CACHE_URL, { method: "GET" })),
-        ])
+        Promise.all([env.POURS.delete(TOTALS_KEY), caches.default.delete(totalsCacheKey())])
       );
 
       return jsonResponse({ count: next }, 200, cors);
