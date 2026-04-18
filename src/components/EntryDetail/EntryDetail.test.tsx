@@ -60,7 +60,7 @@ describe("EntryDetail", () => {
 
   it("renders cause of death badge", () => {
     renderWithRouter(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
-    expect(screen.getByText("Neglected")).toBeInTheDocument();
+    expect(screen.getAllByText("Neglected").length).toBeGreaterThan(0);
   });
 
   it("renders category label", () => {

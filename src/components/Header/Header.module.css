@@ -64,6 +64,28 @@
   color: var(--pour-liquid);
 }
 
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+@media (hover: hover) {
+  .iconBtn:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+    transform: scale(1.05);
+  }
+}
+
 .globalCount {
   display: flex;
   align-items: baseline;

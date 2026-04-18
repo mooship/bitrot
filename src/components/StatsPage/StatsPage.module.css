@@ -101,9 +101,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color var(--transition-fast);
 }
 
 .barTrack {
+  display: block;
   height: 8px;
   background-color: var(--bg-elevated);
   border-radius: var(--radius-full);
@@ -111,11 +113,43 @@
 }
 
 .bar {
+  display: block;
   height: 100%;
   background-color: var(--pour-liquid);
   border-radius: var(--radius-full);
   transition: width var(--transition-slow);
   min-width: 4px;
+}
+
+button.barRow {
+  width: 100%;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: var(--space-1) var(--space-2);
+  margin-inline-start: calc(-1 * var(--space-2));
+  border-radius: var(--radius-md);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+@media (hover: hover) {
+  button.barRow:hover {
+    background-color: var(--bg-elevated);
+  }
+
+  button.barRow:hover .barLabel {
+    color: var(--text-primary);
+  }
+}
+
+button.barRow:focus-visible {
+  background-color: var(--bg-elevated);
+  border-color: var(--text-muted);
+  outline: none;
 }
 
 .barCount {

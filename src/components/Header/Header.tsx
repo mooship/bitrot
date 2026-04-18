@@ -1,11 +1,19 @@
 import clsx from "clsx";
-import { Link, NavLink } from "react-router-dom";
+import { Shuffle } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { entries } from "../../data/entries";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
 
 export function Header() {
   const globalCount = usePourStore((s) => s.globalCount);
+  const navigate = useNavigate();
+
+  const handleRandom = () => {
+    const pick = entries[Math.floor(Math.random() * entries.length)];
+    navigate(`/entry/${pick.id}`);
+  };
 
   return (
     <header className={styles.header}>
@@ -23,6 +31,14 @@ export function Header() {
               Stats
             </NavLink>
           </nav>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            onClick={handleRandom}
+            aria-label="Open a random entry"
+          >
+            <Shuffle size={18} aria-hidden="true" />
+          </button>
           <ThemeToggle />
         </div>
         {globalCount > 0 && (
