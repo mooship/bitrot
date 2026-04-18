@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { entries } from "../../data/entries";
 import type { CauseOfDeath, TechCategory } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { usePageSeo } from "../../hooks/usePageSeo";
 import { useFilterStore } from "../../stores/useFilterStore";
 import { usePourStore } from "../../stores/usePourStore";
 import styles from "./StatsPage.module.css";
@@ -15,7 +15,7 @@ function avg(nums: number[]): number {
 }
 
 export function StatsPage() {
-  useDocumentTitle("Stats · Bitrot");
+  usePageSeo("stats");
 
   const pourCounts = usePourStore((s) => s.counts);
   const navigate = useNavigate();

@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { usePageSeo } from "../../hooks/usePageSeo";
 import styles from "./AboutPage.module.css";
 
 export function AboutPage() {
-  useDocumentTitle("About · Bitrot");
+  usePageSeo("about");
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>

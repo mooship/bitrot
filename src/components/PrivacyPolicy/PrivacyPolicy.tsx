@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { usePageSeo } from "../../hooks/usePageSeo";
 import styles from "./PrivacyPolicy.module.css";
 
 export function PrivacyPolicy() {
-  useDocumentTitle("Privacy Policy · Bitrot");
+  usePageSeo("privacy");
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>
