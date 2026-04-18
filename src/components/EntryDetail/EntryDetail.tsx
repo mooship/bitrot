@@ -2,12 +2,14 @@ import clsx from "clsx";
 import { Copy, Share2, X } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { entries } from "../../data/entries";
 import type { DeadTech } from "../../data/types";
 import { CATEGORY_LABELS, CAUSE_LABELS } from "../../data/types";
 import { useEntryAccent } from "../../hooks/useEntryAccent";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { useShareOrCopy } from "../../hooks/useShareOrCopy";
 import { useFilterStore } from "../../stores/useFilterStore";
+import { getRelatedEntries } from "../../utils/related";
 import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
 import styles from "./EntryDetail.module.css";
@@ -118,9 +120,14 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
   };
 
   const facts = buildFacts(entry, handleCrossLink);
+  const related = getRelatedEntries(entry, entries);
 
   const handleShare = () => {
     void share({ title: entry.name, text: entry.tagline, url: getEntryUrl(entry.id) });
+  };
+
+  const handleRelatedClick = (id: string) => {
+    navigate(`/entry/${id}`);
   };
 
   return (
@@ -170,6 +177,31 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
               </Fragment>
             ))}
           </dl>
+
+          {related.length > 0 && (
+            <section className={styles.related} aria-labelledby="detail-related-heading">
+              <h3 id="detail-related-heading" className={styles.relatedHeading}>
+                Related obituaries
+              </h3>
+              <ul className={styles.relatedList}>
+                {related.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      className={styles.relatedItem}
+                      onClick={() => handleRelatedClick(item.id)}
+                    >
+                      <span className={styles.relatedName}>{item.name}</span>
+                      <span className={styles.relatedDates}>
+                        {item.born}–{item.died}
+                      </span>
+                      <span className={styles.relatedCause}>{CAUSE_LABELS[item.causeOfDeath]}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
         </div>
 
         <footer className={styles.footer}>
