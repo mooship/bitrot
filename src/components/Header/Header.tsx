@@ -1,35 +1,18 @@
 import clsx from "clsx";
 import { Shuffle } from "lucide-react";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { entries } from "../../data/entries";
 import { usePourStore } from "../../stores/usePourStore";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
 
-function pickRandomEntryId(currentId: string | undefined): string {
-  if (entries.length === 0) {
-    return "";
-  }
-  if (entries.length === 1) {
-    return entries[0].id;
-  }
-  let pick = entries[Math.floor(Math.random() * entries.length)];
-  if (currentId && pick.id === currentId) {
-    pick = entries[Math.floor(Math.random() * entries.length)];
-  }
-  return pick.id;
-}
-
 export function Header() {
   const globalCount = usePourStore((s) => s.globalCount);
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
 
   const handleRandom = () => {
-    const next = pickRandomEntryId(id);
-    if (next) {
-      navigate(`/entry/${next}`);
-    }
+    const pick = entries[Math.floor(Math.random() * entries.length)];
+    navigate(`/entry/${pick.id}`);
   };
 
   return (

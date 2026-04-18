@@ -70,20 +70,15 @@ export function StatsPage() {
   const shortestLived = byLifespan.slice(0, 5);
   const longestLived = byLifespan.slice(-5).reverse();
 
-  const filterByCause = (cause: CauseOfDeath) => {
-    useFilterStore.setState({
-      activeCauses: new Set([cause]),
-      activeCategories: new Set(),
-      searchQuery: "",
-    });
-    navigate("/");
-  };
-
-  const filterByCategory = (category: TechCategory) => {
+  const navigateWithFilter = (patch: {
+    activeCauses?: Set<CauseOfDeath>;
+    activeCategories?: Set<TechCategory>;
+  }) => {
     useFilterStore.setState({
       activeCauses: new Set(),
-      activeCategories: new Set([category]),
+      activeCategories: new Set(),
       searchQuery: "",
+      ...patch,
     });
     navigate("/");
   };
@@ -124,7 +119,7 @@ export function StatsPage() {
               <button
                 type="button"
                 className={styles.barRow}
-                onClick={() => filterByCause(cause)}
+                onClick={() => navigateWithFilter({ activeCauses: new Set([cause]) })}
                 aria-label={`Show ${count} ${CAUSE_LABELS[cause]} entries`}
               >
                 <span className={styles.barLabel}>{CAUSE_LABELS[cause]}</span>
@@ -169,7 +164,7 @@ export function StatsPage() {
               <button
                 type="button"
                 className={styles.barRow}
-                onClick={() => filterByCategory(cat)}
+                onClick={() => navigateWithFilter({ activeCategories: new Set([cat]) })}
                 aria-label={`Show ${count} ${CATEGORY_LABELS[cat]} entries`}
               >
                 <span className={styles.barLabel}>{CATEGORY_LABELS[cat]}</span>
