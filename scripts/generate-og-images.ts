@@ -58,9 +58,8 @@ async function generateAll(): Promise<void> {
     },
   ];
 
-  let generated = 0;
+  const staleEntries: Array<{ entry: DeadTech; hash: string; outPath: string }> = [];
   let skipped = 0;
-
   for (const entry of entries) {
     const hash = entryHash(entry);
     const outPath = resolve(OUT_DIR, `${entry.id}.png`);
@@ -68,20 +67,30 @@ async function generateAll(): Promise<void> {
       skipped += 1;
       continue;
     }
+    staleEntries.push({ entry, hash, outPath });
+  }
 
-    const svg = await satori(buildEntryOgTemplate(entry) as Parameters<typeof satori>[0], {
-      width: OG_WIDTH,
-      height: OG_HEIGHT,
-      fonts,
-    });
-    const png = new Resvg(svg, { fitTo: { mode: "width", value: OG_WIDTH } }).render().asPng();
-    writeFileSync(outPath, png);
-    manifest[entry.id] = hash;
-    generated += 1;
+  const CONCURRENCY = 6;
+  for (let i = 0; i < staleEntries.length; i += CONCURRENCY) {
+    const batch = staleEntries.slice(i, i + CONCURRENCY);
+    await Promise.all(
+      batch.map(async ({ entry, hash, outPath }) => {
+        const svg = await satori(buildEntryOgTemplate(entry) as Parameters<typeof satori>[0], {
+          width: OG_WIDTH,
+          height: OG_HEIGHT,
+          fonts,
+        });
+        const png = new Resvg(svg, { fitTo: { mode: "width", value: OG_WIDTH } }).render().asPng();
+        writeFileSync(outPath, png);
+        manifest[entry.id] = hash;
+      })
+    );
   }
 
   writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, 2)}\n`);
-  console.log(`OG images: ${generated} generated, ${skipped} cached (${entries.length} total)`);
+  console.log(
+    `OG images: ${staleEntries.length} generated, ${skipped} cached (${entries.length} total)`
+  );
 }
 
 const isMain =

@@ -1,12 +1,9 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { updatePageSeo } from "../../utils/seo";
+import { usePageSeo } from "../../hooks/usePageSeo";
 import styles from "./PrivacyPolicy.module.css";
 
 export function PrivacyPolicy() {
-  useEffect(() => {
-    updatePageSeo("privacy");
-  }, []);
+  usePageSeo("privacy");
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>

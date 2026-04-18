@@ -1,6 +1,6 @@
 import type { DeadTech } from "../data/types";
 
-const BASE_URL = (import.meta.env.VITE_PUBLIC_URL ?? "https://bitrot.timothybrits.co.za").replace(
+const BASE_URL = (import.meta.env?.VITE_PUBLIC_URL ?? "https://bitrot.timothybrits.co.za").replace(
   /\/$/,
   ""
 );
@@ -12,8 +12,12 @@ const DEFAULT_IMAGE_ALT = "Bitrot — Dead Tech Memorial";
 
 export type StaticPage = "home" | "about" | "privacy" | "stats";
 
+export function getEntryPath(entryId: string): string {
+  return `/entry/${entryId}`;
+}
+
 export function getEntryUrl(entryId: string): string {
-  return `${BASE_URL}/entry/${entryId}`;
+  return `${BASE_URL}${getEntryPath(entryId)}`;
 }
 
 export function getEntryOgImageUrl(entryId: string): string {

@@ -15,7 +15,6 @@ import { entryById } from "./data/entries";
 import { useFilterUrlSync } from "./hooks/useFilterUrlSync";
 import { useFilteredEntries, useFilterStore } from "./stores/useFilterStore";
 import { usePourStore } from "./stores/usePourStore";
-import { updatePageSeo } from "./utils/seo";
 
 function HomePage() {
   const filteredEntries = useFilteredEntries();
@@ -24,12 +23,6 @@ function HomePage() {
   const { id } = useParams<{ id: string }>();
 
   const activeEntry = id ? entryById(id) : null;
-
-  useEffect(() => {
-    if (!id) {
-      updatePageSeo("home");
-    }
-  }, [id]);
 
   useFilterUrlSync();
 

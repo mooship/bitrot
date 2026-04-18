@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 import { entries } from "../src/data/entries.ts";
 import type { DeadTech } from "../src/data/types.ts";
+import { getEntryPath } from "../src/utils/seo.ts";
 
 const BASE_URL = (process.env.VITE_PUBLIC_URL ?? "https://bitrot.timothybrits.co.za").replace(
   /\/$/,
@@ -24,7 +25,7 @@ const STATIC_URLS: SitemapUrl[] = [
 
 export function buildSitemapXml(allEntries: DeadTech[], baseUrl: string = BASE_URL): string {
   const entryUrls: SitemapUrl[] = allEntries.map((e) => ({
-    loc: `/entry/${e.id}`,
+    loc: getEntryPath(e.id),
     changefreq: "yearly",
     priority: "0.7",
   }));

@@ -1,12 +1,9 @@
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { updatePageSeo } from "../../utils/seo";
+import { usePageSeo } from "../../hooks/usePageSeo";
 import styles from "./AboutPage.module.css";
 
 export function AboutPage() {
-  useEffect(() => {
-    updatePageSeo("about");
-  }, []);
+  usePageSeo("about");
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>
