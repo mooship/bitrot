@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { updatePageSeo } from "../../utils/seo";
 import styles from "./PrivacyPolicy.module.css";
 
 export function PrivacyPolicy() {
-  useDocumentTitle("Privacy Policy · Bitrot");
+  useEffect(() => {
+    updatePageSeo("privacy");
+  }, []);
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>

@@ -1,9 +1,12 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useDocumentTitle } from "../../hooks/useDocumentTitle";
+import { updatePageSeo } from "../../utils/seo";
 import styles from "./AboutPage.module.css";
 
 export function AboutPage() {
-  useDocumentTitle("About · Bitrot");
+  useEffect(() => {
+    updatePageSeo("about");
+  }, []);
   return (
     <article className={styles.container}>
       <Link to="/" className={styles.backLink}>

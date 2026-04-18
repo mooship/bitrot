@@ -143,7 +143,7 @@ describe("EntryDetail", () => {
       fireEvent.click(screen.getByRole("button", { name: "Copy link to this entry" }));
 
       await vi.waitFor(() => {
-        expect(writeTextSpy).toHaveBeenCalledWith(expect.stringContaining("#/entry/google-reader"));
+        expect(writeTextSpy).toHaveBeenCalledWith(expect.stringContaining("/entry/google-reader"));
       });
     });
 
@@ -193,7 +193,7 @@ describe("EntryDetail", () => {
         expect(shareSpy).toHaveBeenCalledWith(
           expect.objectContaining({
             title: "Google Reader",
-            url: expect.stringContaining("#/entry/google-reader"),
+            url: expect.stringContaining("/entry/google-reader"),
           })
         );
       });
