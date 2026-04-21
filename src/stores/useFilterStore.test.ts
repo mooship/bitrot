@@ -123,13 +123,6 @@ describe("useFilteredEntries", () => {
     const { result } = renderHook(() => useFilteredEntries());
     expect(result.current.length).toBeGreaterThan(0);
     expect(result.current.some((e) => e.id === "google-reader")).toBe(true);
-    expect(
-      result.current.every((e) =>
-        /google reader/i.test(
-          `${e.name} ${e.tagline} ${e.autopsy} ${e.killedBy ?? ""} ${e.parent ?? ""}`
-        )
-      )
-    ).toBe(true);
   });
 
   it("search query is case-insensitive", () => {
@@ -197,5 +190,69 @@ describe("useFilterStore sortOrder", () => {
   it("setSortOrder updates the sort order", () => {
     useFilterStore.getState().setSortOrder("lifespan");
     expect(useFilterStore.getState().sortOrder).toBe("lifespan");
+  });
+});
+
+describe("useFilterStore sortDirection", () => {
+  it("defaults to 'desc' alongside the 'died' sortOrder", () => {
+    expect(useFilterStore.getState().sortDirection).toBe("desc");
+  });
+
+  it("resets to the default for the new order when switching sort", () => {
+    useFilterStore.getState().setSortOrder("lifespan");
+    expect(useFilterStore.getState().sortDirection).toBe("asc");
+    useFilterStore.getState().setSortOrder("died");
+    expect(useFilterStore.getState().sortDirection).toBe("desc");
+  });
+
+  it("toggleSortDirection flips asc <-> desc", () => {
+    useFilterStore.getState().toggleSortDirection();
+    expect(useFilterStore.getState().sortDirection).toBe("asc");
+    useFilterStore.getState().toggleSortDirection();
+    expect(useFilterStore.getState().sortDirection).toBe("desc");
+  });
+
+  it("reverses the filtered results when flipped", () => {
+    useFilterStore.getState().setSortOrder("name");
+    const asc = renderHook(() => useFilteredEntries()).result.current.map((e) => e.name);
+    useFilterStore.getState().toggleSortDirection();
+    const desc = renderHook(() => useFilteredEntries()).result.current.map((e) => e.name);
+    expect(desc).toEqual([...asc].reverse());
+  });
+});
+
+describe("useFilteredEntries year range", () => {
+  it("filters by death year >= fromYear", () => {
+    useFilterStore.getState().setYearRange(2015, null);
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.every((e) => e.died >= 2015)).toBe(true);
+  });
+
+  it("filters by death year <= toYear", () => {
+    useFilterStore.getState().setYearRange(null, 2010);
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.every((e) => e.died <= 2010)).toBe(true);
+  });
+
+  it("filters by a combined year range", () => {
+    useFilterStore.getState().setYearRange(2010, 2015);
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.every((e) => e.died >= 2010 && e.died <= 2015)).toBe(true);
+  });
+
+  it("is cleared by clearAll", () => {
+    useFilterStore.getState().setYearRange(2010, 2015);
+    useFilterStore.getState().clearAll();
+    const state = useFilterStore.getState();
+    expect(state.fromYear).toBeNull();
+    expect(state.toYear).toBeNull();
+  });
+});
+
+describe("useFilteredEntries fuzzy search", () => {
+  it("tolerates a one-character typo on a brand name", () => {
+    useFilterStore.getState().setSearchQuery("googel reader");
+    const { result } = renderHook(() => useFilteredEntries());
+    expect(result.current.some((e) => e.id === "google-reader")).toBe(true);
   });
 });

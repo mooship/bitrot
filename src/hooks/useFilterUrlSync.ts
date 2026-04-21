@@ -7,8 +7,13 @@ import {
   type TechCategory,
 } from "../data/types";
 import {
+  DEFAULT_SORT_DIRECTION,
   DEFAULT_SORT_ORDER,
+  MAX_ENTRY_YEAR,
+  MIN_ENTRY_YEAR,
+  SORT_DIRECTIONS,
   SORT_ORDERS,
+  type SortDirection,
   type SortOrder,
   useFilterStore,
 } from "../stores/useFilterStore";
@@ -16,11 +21,15 @@ import {
 const VALID_CAUSES = new Set<string>(CAUSES_OF_DEATH);
 const VALID_CATEGORIES = new Set<string>(TECH_CATEGORIES);
 const VALID_SORTS = new Set<SortOrder>(SORT_ORDERS);
+const VALID_DIRECTIONS = new Set<SortDirection>(SORT_DIRECTIONS);
 
 const PARAM_QUERY = "q";
 const PARAM_CAUSE = "cause";
 const PARAM_CATEGORY = "category";
 const PARAM_SORT = "sort";
+const PARAM_DIR = "dir";
+const PARAM_FROM = "from";
+const PARAM_TO = "to";
 
 function parseCsv<T extends string>(raw: string | null, valid: Set<string>): Set<T> {
   const result = new Set<T>();
@@ -43,6 +52,27 @@ function parseSortOrder(raw: string | null): SortOrder {
   return DEFAULT_SORT_ORDER;
 }
 
+function parseSortDirection(raw: string | null, order: SortOrder): SortDirection {
+  if (raw && VALID_DIRECTIONS.has(raw as SortDirection)) {
+    return raw as SortDirection;
+  }
+  return DEFAULT_SORT_DIRECTION[order];
+}
+
+function parseYear(raw: string | null): number | null {
+  if (!raw) {
+    return null;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed)) {
+    return null;
+  }
+  if (parsed < MIN_ENTRY_YEAR || parsed > MAX_ENTRY_YEAR) {
+    return null;
+  }
+  return parsed;
+}
+
 function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): string {
   const next = new URLSearchParams();
   const trimmed = state.searchQuery.trim();
@@ -58,6 +88,15 @@ function buildSearchString(state: ReturnType<typeof useFilterStore.getState>): s
   if (state.sortOrder !== DEFAULT_SORT_ORDER) {
     next.set(PARAM_SORT, state.sortOrder);
   }
+  if (state.sortDirection !== DEFAULT_SORT_DIRECTION[state.sortOrder]) {
+    next.set(PARAM_DIR, state.sortDirection);
+  }
+  if (state.fromYear != null) {
+    next.set(PARAM_FROM, String(state.fromYear));
+  }
+  if (state.toYear != null) {
+    next.set(PARAM_TO, String(state.toYear));
+  }
   return next.toString();
 }
 
@@ -72,11 +111,15 @@ export function useFilterUrlSync() {
     }
     lastSyncedString.current = incoming;
 
+    const sortOrder = parseSortOrder(searchParams.get(PARAM_SORT));
     useFilterStore.setState({
       searchQuery: searchParams.get(PARAM_QUERY) ?? "",
       activeCauses: parseCsv<CauseOfDeath>(searchParams.get(PARAM_CAUSE), VALID_CAUSES),
       activeCategories: parseCsv<TechCategory>(searchParams.get(PARAM_CATEGORY), VALID_CATEGORIES),
-      sortOrder: parseSortOrder(searchParams.get(PARAM_SORT)),
+      sortOrder,
+      sortDirection: parseSortDirection(searchParams.get(PARAM_DIR), sortOrder),
+      fromYear: parseYear(searchParams.get(PARAM_FROM)),
+      toYear: parseYear(searchParams.get(PARAM_TO)),
     });
   }, [searchParams]);
 

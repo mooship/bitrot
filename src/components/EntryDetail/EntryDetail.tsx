@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Copy, Share2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Share2, X } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { entries } from "../../data/entries";
@@ -17,6 +17,8 @@ import styles from "./EntryDetail.module.css";
 interface EntryDetailProps {
   entry: DeadTech | null;
   onClose: () => void;
+  prevEntry?: DeadTech | null;
+  nextEntry?: DeadTech | null;
 }
 
 interface Fact {
@@ -84,7 +86,7 @@ function getCopyLabel(state: ReturnType<typeof useShareOrCopy>["copyState"]): st
   }
 }
 
-export function EntryDetail({ entry, onClose }: EntryDetailProps) {
+export function EntryDetail({ entry, onClose, prevEntry, nextEntry }: EntryDetailProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const accentStyle = useEntryAccent(entry?.brandColor);
@@ -102,6 +104,32 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
       closeButtonRef.current?.focus();
     }
   }, [entry]);
+
+  useEffect(() => {
+    if (!entry) {
+      return;
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+        return;
+      }
+      const target = e.target as HTMLElement;
+      const inEditable =
+        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
+      if (inEditable) {
+        return;
+      }
+      if (e.key === "ArrowLeft" && prevEntry) {
+        e.preventDefault();
+        navigate(`/entry/${prevEntry.id}`);
+      } else if (e.key === "ArrowRight" && nextEntry) {
+        e.preventDefault();
+        navigate(`/entry/${nextEntry.id}`);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [entry, prevEntry, nextEntry, navigate]);
 
   if (!entry) {
     return null;
@@ -150,15 +178,37 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
             </span>
             <span className={styles.causeBadge}>{CAUSE_LABELS[entry.causeOfDeath]}</span>
           </div>
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className={styles.closeBtn}
-            onClick={onClose}
-            aria-label={`Close ${entry.name}`}
-          >
-            <X size={20} aria-hidden="true" />
-          </button>
+          <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => prevEntry && navigate(`/entry/${prevEntry.id}`)}
+              disabled={!prevEntry}
+              aria-label={prevEntry ? `Previous: ${prevEntry.name}` : "No previous entry"}
+              title={prevEntry ? `Previous: ${prevEntry.name} (←)` : undefined}
+            >
+              <ChevronLeft size={18} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => nextEntry && navigate(`/entry/${nextEntry.id}`)}
+              disabled={!nextEntry}
+              aria-label={nextEntry ? `Next: ${nextEntry.name}` : "No next entry"}
+              title={nextEntry ? `Next: ${nextEntry.name} (→)` : undefined}
+            >
+              <ChevronRight size={18} aria-hidden="true" />
+            </button>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className={styles.closeBtn}
+              onClick={onClose}
+              aria-label={`Close ${entry.name}`}
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
         <div className={styles.body}>

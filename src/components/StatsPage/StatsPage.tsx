@@ -5,6 +5,7 @@ import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from 
 import { usePageSeo } from "../../hooks/usePageSeo";
 import { useFilterStore } from "../../stores/useFilterStore";
 import { usePourStore } from "../../stores/usePourStore";
+import { Graveyard } from "../Graveyard/Graveyard";
 import styles from "./StatsPage.module.css";
 
 function avg(nums: number[]): number {
@@ -110,6 +111,11 @@ export function StatsPage() {
           <span className={styles.statLabel}>longest life (years)</span>
         </div>
       </div>
+
+      <section className={styles.section}>
+        <h2 className={styles.heading}>Graveyard</h2>
+        <Graveyard />
+      </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Cause of Death</h2>

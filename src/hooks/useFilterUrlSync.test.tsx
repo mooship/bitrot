@@ -222,6 +222,71 @@ describe("useFilterUrlSync", () => {
 
       expect(result.current.has("sort")).toBe(false);
     });
+
+    it("writes dir param only when direction is non-default for the order", () => {
+      const { result } = renderSync("/");
+
+      act(() => {
+        useFilterStore.getState().toggleSortDirection();
+      });
+
+      expect(result.current.get("dir")).toBe("asc");
+
+      act(() => {
+        useFilterStore.getState().toggleSortDirection();
+      });
+
+      expect(result.current.has("dir")).toBe(false);
+    });
+
+    it("writes from/to params for year range", () => {
+      const { result } = renderSync("/");
+
+      act(() => {
+        useFilterStore.getState().setYearRange(2010, 2015);
+      });
+
+      expect(result.current.get("from")).toBe("2010");
+      expect(result.current.get("to")).toBe("2015");
+    });
+
+    it("removes from/to params when year range is cleared", () => {
+      const { result } = renderSync("/?from=2010&to=2015");
+      expect(result.current.get("from")).toBe("2010");
+
+      act(() => {
+        useFilterStore.getState().setYearRange(null, null);
+      });
+
+      expect(result.current.has("from")).toBe(false);
+      expect(result.current.has("to")).toBe(false);
+    });
+  });
+
+  describe("year-range and direction hydration", () => {
+    it("hydrates fromYear and toYear from params", () => {
+      renderSync("/?from=2005&to=2015");
+      const state = useFilterStore.getState();
+      expect(state.fromYear).toBe(2005);
+      expect(state.toYear).toBe(2015);
+    });
+
+    it("ignores out-of-bounds year params", () => {
+      renderSync("/?from=1500&to=3000");
+      const state = useFilterStore.getState();
+      expect(state.fromYear).toBeNull();
+      expect(state.toYear).toBeNull();
+    });
+
+    it("hydrates dir param when valid for the selected sort", () => {
+      renderSync("/?sort=name&dir=desc");
+      expect(useFilterStore.getState().sortDirection).toBe("desc");
+    });
+
+    it("falls back to default direction when dir param is bogus", () => {
+      renderSync("/?sort=name&dir=sideways");
+      expect(useFilterStore.getState().sortDirection).toBe("asc");
+    });
   });
 
   describe("round-trip and external URL changes", () => {
