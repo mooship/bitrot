@@ -18,7 +18,7 @@
   padding: var(--space-5);
   inset: 50% auto auto 50%;
   transform: translate(-50%, -50%);
-  inline-size: min(420px, calc(100vw - var(--space-8)));
+  inline-size: min(420px, calc(100% - var(--space-8)));
   max-block-size: calc(100dvh - var(--space-8));
   overflow-y: auto;
   box-shadow: var(--shadow-xl);
