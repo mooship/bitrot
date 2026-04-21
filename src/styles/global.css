@@ -50,6 +50,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100dvh;
+  overflow-x: clip;
   transition:
     background-color var(--transition-slow),
     color var(--transition-slow);

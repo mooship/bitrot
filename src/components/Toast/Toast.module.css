@@ -14,7 +14,7 @@
   box-shadow: var(--shadow-lg);
   font-size: var(--text-sm);
   color: var(--text-primary);
-  white-space: nowrap;
+  max-inline-size: calc(100vw - var(--space-8));
   animation: slideUp var(--transition-base) ease forwards;
 }
 
