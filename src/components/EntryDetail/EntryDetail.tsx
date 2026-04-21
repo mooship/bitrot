@@ -9,6 +9,7 @@ import { useEntryAccent } from "../../hooks/useEntryAccent";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { useShareOrCopy } from "../../hooks/useShareOrCopy";
 import { useFilterStore } from "../../stores/useFilterStore";
+import { isEditableTarget } from "../../utils/dom";
 import { getRelatedEntries } from "../../utils/related";
 import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
@@ -105,6 +106,9 @@ export function EntryDetail({ entry, onClose, prevEntry, nextEntry }: EntryDetai
     }
   }, [entry]);
 
+  const neighborsRef = useRef({ prev: prevEntry, next: nextEntry });
+  neighborsRef.current = { prev: prevEntry, next: nextEntry };
+
   useEffect(() => {
     if (!entry) {
       return;
@@ -113,23 +117,21 @@ export function EntryDetail({ entry, onClose, prevEntry, nextEntry }: EntryDetai
       if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
         return;
       }
-      const target = e.target as HTMLElement;
-      const inEditable =
-        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-      if (inEditable) {
+      if (isEditableTarget(e.target)) {
         return;
       }
-      if (e.key === "ArrowLeft" && prevEntry) {
+      const { prev, next } = neighborsRef.current;
+      if (e.key === "ArrowLeft" && prev) {
         e.preventDefault();
-        navigate(`/entry/${prevEntry.id}`);
-      } else if (e.key === "ArrowRight" && nextEntry) {
+        navigate(`/entry/${prev.id}`);
+      } else if (e.key === "ArrowRight" && next) {
         e.preventDefault();
-        navigate(`/entry/${nextEntry.id}`);
+        navigate(`/entry/${next.id}`);
       }
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [entry, prevEntry, nextEntry, navigate]);
+  }, [entry, navigate]);
 
   if (!entry) {
     return null;

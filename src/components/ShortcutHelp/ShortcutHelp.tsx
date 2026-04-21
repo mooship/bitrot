@@ -1,8 +1,9 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { entries } from "../../data/entries";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
+import { isEditableTarget, isInDialog } from "../../utils/dom";
+import { currentEntryId, pickRandomEntry } from "../../utils/random";
 import styles from "./ShortcutHelp.module.css";
 
 const SHORTCUTS: { keys: string[]; description: string }[] = [
@@ -13,26 +14,14 @@ const SHORTCUTS: { keys: string[]; description: string }[] = [
   { keys: ["?"], description: "Show this shortcuts overlay" },
 ];
 
-function isEditableTarget(el: EventTarget | null): boolean {
-  if (!(el instanceof HTMLElement)) {
-    return false;
-  }
-  return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable;
-}
-
-function isInDialog(el: EventTarget | null): boolean {
-  if (!(el instanceof HTMLElement)) {
-    return false;
-  }
-  return el.closest('[role="dialog"]') !== null;
-}
-
 export function ShortcutHelp() {
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const pathnameRef = useRef(location.pathname);
+  pathnameRef.current = location.pathname;
 
   useFocusTrap(panelRef, { active: open, onEscape: () => setOpen(false) });
 
@@ -47,27 +36,25 @@ export function ShortcutHelp() {
       if (isEditableTarget(e.target)) {
         return;
       }
-      if (e.key === "?" && !open && !isInDialog(e.target)) {
+      if (isInDialog(e.target)) {
+        return;
+      }
+      if (e.key === "?" && !open) {
         e.preventDefault();
         setOpen(true);
         return;
       }
-      if (e.key === "r" && !open && !isInDialog(e.target)) {
-        if (entries.length === 0) {
-          return;
+      if (e.key === "r" && !open) {
+        const pick = pickRandomEntry(currentEntryId(pathnameRef.current));
+        if (pick) {
+          e.preventDefault();
+          navigate(`/entry/${pick.id}`);
         }
-        const currentMatch = location.pathname.match(/^\/entry\/([^/]+)/);
-        const currentId = currentMatch ? currentMatch[1] : null;
-        const pool = currentId ? entries.filter((en) => en.id !== currentId) : entries;
-        const source = pool.length > 0 ? pool : entries;
-        const pick = source[Math.floor(Math.random() * source.length)];
-        e.preventDefault();
-        navigate(`/entry/${pick.id}`);
       }
     }
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [open, navigate, location.pathname]);
+  }, [open, navigate]);
 
   if (!open) {
     return null;

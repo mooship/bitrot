@@ -1,40 +1,21 @@
 import clsx from "clsx";
 import { Shuffle } from "lucide-react";
-import { useRef } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { entries } from "../../data/entries";
 import { usePourStore } from "../../stores/usePourStore";
+import { currentEntryId, pickRandomEntry } from "../../utils/random";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
-
-const RECENT_PICK_LIMIT = 3;
-
-function currentEntryId(pathname: string): string | null {
-  const match = pathname.match(/^\/entry\/([^/]+)/);
-  return match ? match[1] : null;
-}
 
 export function Header() {
   const globalCount = usePourStore((s) => s.globalCount);
   const navigate = useNavigate();
   const location = useLocation();
-  const recentPicks = useRef<string[]>([]);
 
   const handleRandom = () => {
-    if (entries.length === 0) {
-      return;
+    const pick = pickRandomEntry(currentEntryId(location.pathname));
+    if (pick) {
+      navigate(`/entry/${pick.id}`);
     }
-    const currentId = currentEntryId(location.pathname);
-    const avoid = new Set([...recentPicks.current]);
-    if (currentId) {
-      avoid.add(currentId);
-    }
-    const candidates = entries.filter((e) => !avoid.has(e.id));
-    const pool = candidates.length > 0 ? candidates : entries.filter((e) => e.id !== currentId);
-    const source = pool.length > 0 ? pool : entries;
-    const pick = source[Math.floor(Math.random() * source.length)];
-    recentPicks.current = [pick.id, ...recentPicks.current].slice(0, RECENT_PICK_LIMIT);
-    navigate(`/entry/${pick.id}`);
   };
 
   return (

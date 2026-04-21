@@ -8,6 +8,7 @@ const ROW_HEIGHT = 8;
 const ROW_GAP = 2;
 const AXIS_HEIGHT = 22;
 const HORIZONTAL_PADDING = 16;
+const WIDTH = 800;
 
 function niceStep(range: number): number {
   if (range <= 10) {
@@ -22,29 +23,41 @@ function niceStep(range: number): number {
   return 20;
 }
 
+const SORTED_ENTRIES = [...entries].sort((a, b) => a.born - b.born || a.died - b.died);
+
+const { minYear, maxYear } = SORTED_ENTRIES.reduce(
+  (acc, e) => ({
+    minYear: Math.min(acc.minYear, e.born),
+    maxYear: Math.max(acc.maxYear, e.died),
+  }),
+  { minYear: Number.POSITIVE_INFINITY, maxYear: Number.NEGATIVE_INFINITY }
+);
+
+const MIN_YEAR = minYear - PADDING_YEARS;
+const MAX_YEAR = maxYear + PADDING_YEARS;
+const SPAN = Math.max(1, MAX_YEAR - MIN_YEAR);
+const HEIGHT = SORTED_ENTRIES.length * (ROW_HEIGHT + ROW_GAP) + AXIS_HEIGHT;
+const PLOT_WIDTH = WIDTH - HORIZONTAL_PADDING * 2;
+
+function yearToX(year: number): number {
+  return HORIZONTAL_PADDING + ((year - MIN_YEAR) / SPAN) * PLOT_WIDTH;
+}
+
+const TICKS: number[] = (() => {
+  const step = niceStep(SPAN);
+  const tickStart = Math.ceil(MIN_YEAR / step) * step;
+  const out: number[] = [];
+  for (let y = tickStart; y <= MAX_YEAR; y += step) {
+    out.push(y);
+  }
+  return out;
+})();
+
 export function Graveyard() {
   const navigate = useNavigate();
 
-  if (entries.length === 0) {
+  if (SORTED_ENTRIES.length === 0) {
     return null;
-  }
-
-  const sorted = [...entries].sort((a, b) => a.born - b.born || a.died - b.died);
-  const minYear = Math.min(...sorted.map((e) => e.born)) - PADDING_YEARS;
-  const maxYear = Math.max(...sorted.map((e) => e.died)) + PADDING_YEARS;
-  const span = Math.max(1, maxYear - minYear);
-
-  const width = 800;
-  const height = sorted.length * (ROW_HEIGHT + ROW_GAP) + AXIS_HEIGHT;
-  const plotWidth = width - HORIZONTAL_PADDING * 2;
-
-  const yearToX = (year: number) => HORIZONTAL_PADDING + ((year - minYear) / span) * plotWidth;
-
-  const step = niceStep(span);
-  const tickStart = Math.ceil(minYear / step) * step;
-  const ticks: number[] = [];
-  for (let y = tickStart; y <= maxYear; y += step) {
-    ticks.push(y);
   }
 
   return (
@@ -55,26 +68,26 @@ export function Graveyard() {
       <div className={styles.scroll}>
         <svg
           className={styles.svg}
-          viewBox={`0 0 ${width} ${height}`}
+          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
           role="img"
-          aria-label={`Graveyard timeline of ${entries.length} dead technologies from ${
-            minYear + PADDING_YEARS
-          } to ${maxYear - PADDING_YEARS}`}
+          aria-label={`Graveyard timeline of ${SORTED_ENTRIES.length} dead technologies from ${
+            MIN_YEAR + PADDING_YEARS
+          } to ${MAX_YEAR - PADDING_YEARS}`}
           preserveAspectRatio="none"
         >
           <g className={styles.axis}>
-            {ticks.map((year) => (
+            {TICKS.map((year) => (
               <g key={year}>
                 <line
                   x1={yearToX(year)}
                   x2={yearToX(year)}
                   y1={0}
-                  y2={height - AXIS_HEIGHT}
+                  y2={HEIGHT - AXIS_HEIGHT}
                   className={styles.gridLine}
                 />
                 <text
                   x={yearToX(year)}
-                  y={height - 6}
+                  y={HEIGHT - 6}
                   className={styles.axisLabel}
                   textAnchor="middle"
                 >
@@ -84,7 +97,7 @@ export function Graveyard() {
             ))}
           </g>
 
-          {sorted.map((entry, i) => {
+          {SORTED_ENTRIES.map((entry, i) => {
             const x1 = yearToX(entry.born);
             const x2 = yearToX(entry.died);
             const y = i * (ROW_HEIGHT + ROW_GAP) + ROW_HEIGHT / 2;

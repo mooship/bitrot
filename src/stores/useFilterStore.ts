@@ -88,7 +88,8 @@ export const useFilterStore = create<FilterStore>((set) => ({
   toggleCategory: (category) =>
     set((state) => ({ activeCategories: toggleInSet(state.activeCategories, category) })),
 
-  setSearchQuery: (query) => set({ searchQuery: query }),
+  setSearchQuery: (query) =>
+    set((state) => (state.searchQuery === query ? state : { searchQuery: query })),
 
   setSortOrder: (order) =>
     set((state) => {
@@ -98,12 +99,16 @@ export const useFilterStore = create<FilterStore>((set) => ({
       return { sortOrder: order, sortDirection: DEFAULT_SORT_DIRECTION[order] };
     }),
 
-  setSortDirection: (direction) => set({ sortDirection: direction }),
+  setSortDirection: (direction) =>
+    set((state) => (state.sortDirection === direction ? state : { sortDirection: direction })),
 
   toggleSortDirection: () =>
     set((state) => ({ sortDirection: state.sortDirection === "asc" ? "desc" : "asc" })),
 
-  setYearRange: (from, to) => set({ fromYear: from, toYear: to }),
+  setYearRange: (from, to) =>
+    set((state) =>
+      state.fromYear === from && state.toYear === to ? state : { fromYear: from, toYear: to }
+    ),
 
   clearAll: () =>
     set({
@@ -151,6 +156,7 @@ export function useFilteredEntries() {
   const fromYear = useFilterStore((s) => s.fromYear);
   const toYear = useFilterStore((s) => s.toYear);
 
+  const trimmedQuery = searchQuery.trim();
   const filtered = entries.filter((entry) => {
     if (activeCauses.size > 0 && !activeCauses.has(entry.causeOfDeath)) {
       return false;
@@ -164,7 +170,7 @@ export function useFilteredEntries() {
     if (toYear != null && entry.died > toYear) {
       return false;
     }
-    if (searchQuery.trim() && !entryMatchesQuery(entry, searchQuery)) {
+    if (trimmedQuery && !entryMatchesQuery(entry, trimmedQuery)) {
       return false;
     }
     return true;

@@ -7,8 +7,7 @@ import { getDailyEntry } from "../../utils/daily";
 import styles from "./DailyObituary.module.css";
 
 export function DailyObituary() {
-  const state = useFilterStore();
-  const filtersActive = hasActiveFilters(state);
+  const filtersActive = useFilterStore(hasActiveFilters);
   const entry = getDailyEntry(entries);
   const accentStyle = useEntryAccent(entry?.brandColor);
 

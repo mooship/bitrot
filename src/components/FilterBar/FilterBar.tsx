@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import {
-  DEFAULT_SORT_DIRECTION,
   hasActiveFilters,
   MAX_ENTRY_YEAR,
   MIN_ENTRY_YEAR,
@@ -12,6 +11,7 @@ import {
   useFilteredEntries,
   useFilterStore,
 } from "../../stores/useFilterStore";
+import { isEditableTarget, isInDialog } from "../../utils/dom";
 import styles from "./FilterBar.module.css";
 
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
@@ -50,13 +50,8 @@ export function FilterBar() {
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      const target = e.target as HTMLElement;
-      const inEditable =
-        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-      const inDialog = target.closest('[role="dialog"]') !== null;
-
       if (e.key === "/") {
-        if (inEditable || inDialog) {
+        if (isEditableTarget(e.target) || isInDialog(e.target)) {
           return;
         }
         e.preventDefault();
@@ -65,7 +60,7 @@ export function FilterBar() {
       }
 
       if (e.key === "Escape") {
-        if (inDialog) {
+        if (isInDialog(e.target)) {
           return;
         }
         const state = useFilterStore.getState();
@@ -74,7 +69,7 @@ export function FilterBar() {
         }
         e.preventDefault();
         state.clearAll();
-        if (target === inputRef.current) {
+        if (e.target === inputRef.current) {
           inputRef.current?.blur();
         }
       }
@@ -185,7 +180,6 @@ export function FilterBar() {
               <div className={styles.chips}>
                 {SORT_OPTIONS.map(({ value, label }) => {
                   const isActive = sortOrder === value;
-                  const showsDefault = !isActive || sortDirection === DEFAULT_SORT_DIRECTION[value];
                   const ariaLabel = isActive
                     ? `Sort by ${label}, ${sortDirection === "asc" ? "ascending" : "descending"}. Click to reverse.`
                     : `Sort by ${label}`;
@@ -205,7 +199,6 @@ export function FilterBar() {
                         ) : (
                           <ArrowDown size={12} aria-hidden="true" className={styles.sortCaret} />
                         ))}
-                      {!isActive && showsDefault && null}
                     </button>
                   );
                 })}

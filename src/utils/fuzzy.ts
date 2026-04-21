@@ -1,6 +1,9 @@
-function levenshtein(a: string, b: string): number {
+function levenshteinAtMost(a: string, b: string, budget: number): number {
   if (a === b) {
     return 0;
+  }
+  if (Math.abs(a.length - b.length) > budget) {
+    return budget + 1;
   }
   if (a.length === 0) {
     return b.length;
@@ -8,20 +11,26 @@ function levenshtein(a: string, b: string): number {
   if (b.length === 0) {
     return a.length;
   }
-  const prev = new Array<number>(b.length + 1);
-  const curr = new Array<number>(b.length + 1);
+  let prev = new Array<number>(b.length + 1);
+  let curr = new Array<number>(b.length + 1);
   for (let j = 0; j <= b.length; j++) {
     prev[j] = j;
   }
   for (let i = 1; i <= a.length; i++) {
     curr[0] = i;
+    let rowMin = curr[0];
     for (let j = 1; j <= b.length; j++) {
       const cost = a.charCodeAt(i - 1) === b.charCodeAt(j - 1) ? 0 : 1;
-      curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+      const v = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
+      curr[j] = v;
+      if (v < rowMin) {
+        rowMin = v;
+      }
     }
-    for (let j = 0; j <= b.length; j++) {
-      prev[j] = curr[j];
+    if (rowMin > budget) {
+      return budget + 1;
     }
+    [prev, curr] = [curr, prev];
   }
   return prev[b.length];
 }
@@ -58,7 +67,7 @@ function termMatchesHaystack(term: string, haystack: string, tokens: string[]): 
     if (Math.abs(token.length - term.length) > budget) {
       continue;
     }
-    if (levenshtein(token, term) <= budget) {
+    if (levenshteinAtMost(token, term, budget) <= budget) {
       return true;
     }
   }

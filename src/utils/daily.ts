@@ -8,11 +8,23 @@ function utcEpochDay(date: Date): number {
   );
 }
 
+const sortedCache = new WeakMap<readonly DeadTech[], readonly DeadTech[]>();
+
+function stableSorted(pool: readonly DeadTech[]): readonly DeadTech[] {
+  const cached = sortedCache.get(pool);
+  if (cached) {
+    return cached;
+  }
+  const sorted = [...pool].sort((a, b) => a.id.localeCompare(b.id));
+  sortedCache.set(pool, sorted);
+  return sorted;
+}
+
 export function getDailyEntry(pool: readonly DeadTech[], date: Date = new Date()): DeadTech | null {
   if (pool.length === 0) {
     return null;
   }
-  const stable = [...pool].sort((a, b) => a.id.localeCompare(b.id));
+  const stable = stableSorted(pool);
   const index = ((utcEpochDay(date) % stable.length) + stable.length) % stable.length;
   return stable[index];
 }
