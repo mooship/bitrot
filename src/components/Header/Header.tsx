@@ -1,18 +1,21 @@
 import clsx from "clsx";
 import { Shuffle } from "lucide-react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { entries } from "../../data/entries";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { usePourStore } from "../../stores/usePourStore";
+import { currentEntryId, pickRandomEntry } from "../../utils/random";
 import { ThemeToggle } from "../ThemeToggle/ThemeToggle";
 import styles from "./Header.module.css";
 
 export function Header() {
   const globalCount = usePourStore((s) => s.globalCount);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleRandom = () => {
-    const pick = entries[Math.floor(Math.random() * entries.length)];
-    navigate(`/entry/${pick.id}`);
+    const pick = pickRandomEntry(currentEntryId(location.pathname));
+    if (pick) {
+      navigate(`/entry/${pick.id}`);
+    }
   };
 
   return (
@@ -36,6 +39,7 @@ export function Header() {
             className={styles.iconBtn}
             onClick={handleRandom}
             aria-label="Open a random entry"
+            title="Open a random entry (r)"
           >
             <Shuffle size={18} aria-hidden="true" />
           </button>

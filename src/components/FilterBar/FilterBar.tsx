@@ -1,14 +1,17 @@
 import clsx from "clsx";
-import { Search, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Search, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { entries } from "../../data/entries";
 import { CATEGORY_LABELS, CAUSE_LABELS, CAUSES_OF_DEATH, TECH_CATEGORIES } from "../../data/types";
 import {
   hasActiveFilters,
+  MAX_ENTRY_YEAR,
+  MIN_ENTRY_YEAR,
   type SortOrder,
   useFilteredEntries,
   useFilterStore,
 } from "../../stores/useFilterStore";
+import { isEditableTarget, isInDialog } from "../../utils/dom";
 import styles from "./FilterBar.module.css";
 
 const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
@@ -25,24 +28,30 @@ export function FilterBar() {
     activeCategories,
     searchQuery,
     sortOrder,
+    sortDirection,
+    fromYear,
+    toYear,
     toggleCause,
     toggleCategory,
     setSearchQuery,
     setSortOrder,
+    toggleSortDirection,
+    setYearRange,
     clearAll,
   } = useFilterStore();
 
-  const hasFilters = hasActiveFilters({ activeCauses, activeCategories, searchQuery });
+  const hasFilters = hasActiveFilters({
+    activeCauses,
+    activeCategories,
+    searchQuery,
+    fromYear,
+    toYear,
+  });
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      const target = e.target as HTMLElement;
-      const inEditable =
-        target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable;
-      const inDialog = target.closest('[role="dialog"]') !== null;
-
       if (e.key === "/") {
-        if (inEditable || inDialog) {
+        if (isEditableTarget(e.target) || isInDialog(e.target)) {
           return;
         }
         e.preventDefault();
@@ -51,7 +60,7 @@ export function FilterBar() {
       }
 
       if (e.key === "Escape") {
-        if (inDialog) {
+        if (isInDialog(e.target)) {
           return;
         }
         const state = useFilterStore.getState();
@@ -60,7 +69,7 @@ export function FilterBar() {
         }
         e.preventDefault();
         state.clearAll();
-        if (target === inputRef.current) {
+        if (e.target === inputRef.current) {
           inputRef.current?.blur();
         }
       }
@@ -72,6 +81,25 @@ export function FilterBar() {
   }, []);
 
   const filteredCount = useFilteredEntries().length;
+
+  const handleSortClick = (value: SortOrder) => {
+    if (sortOrder === value) {
+      toggleSortDirection();
+      return;
+    }
+    setSortOrder(value);
+  };
+
+  const handleYearChange = (field: "from" | "to", raw: string) => {
+    const value = raw.trim();
+    const parsed = value === "" ? null : Number.parseInt(value, 10);
+    const normalized = parsed != null && Number.isFinite(parsed) ? parsed : null;
+    if (field === "from") {
+      setYearRange(normalized, toYear);
+    } else {
+      setYearRange(fromYear, normalized);
+    }
+  };
 
   return (
     <search className={styles.filterBar} aria-label="Filter entries">
@@ -150,17 +178,67 @@ export function FilterBar() {
             <fieldset className={styles.group}>
               <legend className={styles.groupLabel}>Sort</legend>
               <div className={styles.chips}>
-                {SORT_OPTIONS.map(({ value, label }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    className={clsx(styles.chip, sortOrder === value && styles.chipActive)}
-                    aria-pressed={sortOrder === value}
-                    onClick={() => setSortOrder(value)}
-                  >
-                    {label}
-                  </button>
-                ))}
+                {SORT_OPTIONS.map(({ value, label }) => {
+                  const isActive = sortOrder === value;
+                  const ariaLabel = isActive
+                    ? `Sort by ${label}, ${sortDirection === "asc" ? "ascending" : "descending"}. Click to reverse.`
+                    : `Sort by ${label}`;
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      className={clsx(styles.chip, isActive && styles.chipActive)}
+                      aria-pressed={isActive}
+                      aria-label={ariaLabel}
+                      onClick={() => handleSortClick(value)}
+                    >
+                      <span>{label}</span>
+                      {isActive &&
+                        (sortDirection === "asc" ? (
+                          <ArrowUp size={12} aria-hidden="true" className={styles.sortCaret} />
+                        ) : (
+                          <ArrowDown size={12} aria-hidden="true" className={styles.sortCaret} />
+                        ))}
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
+
+            <fieldset className={styles.group}>
+              <legend className={styles.groupLabel}>Years</legend>
+              <div className={styles.yearRange}>
+                <label className={styles.yearField}>
+                  <span className={styles.visuallyHidden}>From year</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className={styles.yearInput}
+                    min={MIN_ENTRY_YEAR}
+                    max={MAX_ENTRY_YEAR}
+                    placeholder={String(MIN_ENTRY_YEAR)}
+                    value={fromYear ?? ""}
+                    onChange={(e) => handleYearChange("from", e.target.value)}
+                    aria-label="Died in or after year"
+                  />
+                </label>
+                <span aria-hidden="true" className={styles.yearSep}>
+                  –
+                </span>
+                <label className={styles.yearField}>
+                  <span className={styles.visuallyHidden}>To year</span>
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    className={styles.yearInput}
+                    min={MIN_ENTRY_YEAR}
+                    max={MAX_ENTRY_YEAR}
+                    placeholder={String(MAX_ENTRY_YEAR)}
+                    value={toYear ?? ""}
+                    onChange={(e) => handleYearChange("to", e.target.value)}
+                    aria-label="Died in or before year"
+                  />
+                </label>
               </div>
             </fieldset>
           </div>

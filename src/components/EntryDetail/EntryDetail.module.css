@@ -72,6 +72,39 @@
   border: 1px solid var(--border);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.navBtn:disabled {
+  color: var(--border);
+  cursor: not-allowed;
+}
+
+@media (hover: hover) {
+  .navBtn:not(:disabled):hover {
+    color: var(--text-primary);
+    background-color: var(--bg-elevated);
+  }
+}
+
 .closeBtn {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Copy, Share2, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Copy, Share2, X } from "lucide-react";
 import { Fragment, type ReactNode, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { entries } from "../../data/entries";
@@ -9,6 +9,7 @@ import { useEntryAccent } from "../../hooks/useEntryAccent";
 import { useFocusTrap } from "../../hooks/useFocusTrap";
 import { useShareOrCopy } from "../../hooks/useShareOrCopy";
 import { useFilterStore } from "../../stores/useFilterStore";
+import { isEditableTarget } from "../../utils/dom";
 import { getRelatedEntries } from "../../utils/related";
 import { getEntryUrl, updateSeo } from "../../utils/seo";
 import { PourButton } from "../PourButton/PourButton";
@@ -17,6 +18,8 @@ import styles from "./EntryDetail.module.css";
 interface EntryDetailProps {
   entry: DeadTech | null;
   onClose: () => void;
+  prevEntry?: DeadTech | null;
+  nextEntry?: DeadTech | null;
 }
 
 interface Fact {
@@ -84,7 +87,7 @@ function getCopyLabel(state: ReturnType<typeof useShareOrCopy>["copyState"]): st
   }
 }
 
-export function EntryDetail({ entry, onClose }: EntryDetailProps) {
+export function EntryDetail({ entry, onClose, prevEntry, nextEntry }: EntryDetailProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const accentStyle = useEntryAccent(entry?.brandColor);
@@ -102,6 +105,33 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
       closeButtonRef.current?.focus();
     }
   }, [entry]);
+
+  const neighborsRef = useRef({ prev: prevEntry, next: nextEntry });
+  neighborsRef.current = { prev: prevEntry, next: nextEntry };
+
+  useEffect(() => {
+    if (!entry) {
+      return;
+    }
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
+        return;
+      }
+      if (isEditableTarget(e.target)) {
+        return;
+      }
+      const { prev, next } = neighborsRef.current;
+      if (e.key === "ArrowLeft" && prev) {
+        e.preventDefault();
+        navigate(`/entry/${prev.id}`);
+      } else if (e.key === "ArrowRight" && next) {
+        e.preventDefault();
+        navigate(`/entry/${next.id}`);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [entry, navigate]);
 
   if (!entry) {
     return null;
@@ -150,15 +180,37 @@ export function EntryDetail({ entry, onClose }: EntryDetailProps) {
             </span>
             <span className={styles.causeBadge}>{CAUSE_LABELS[entry.causeOfDeath]}</span>
           </div>
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className={styles.closeBtn}
-            onClick={onClose}
-            aria-label={`Close ${entry.name}`}
-          >
-            <X size={20} aria-hidden="true" />
-          </button>
+          <div className={styles.headerActions}>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => prevEntry && navigate(`/entry/${prevEntry.id}`)}
+              disabled={!prevEntry}
+              aria-label={prevEntry ? `Previous: ${prevEntry.name}` : "No previous entry"}
+              title={prevEntry ? `Previous: ${prevEntry.name} (←)` : undefined}
+            >
+              <ChevronLeft size={18} aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              className={styles.navBtn}
+              onClick={() => nextEntry && navigate(`/entry/${nextEntry.id}`)}
+              disabled={!nextEntry}
+              aria-label={nextEntry ? `Next: ${nextEntry.name}` : "No next entry"}
+              title={nextEntry ? `Next: ${nextEntry.name} (→)` : undefined}
+            >
+              <ChevronRight size={18} aria-hidden="true" />
+            </button>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className={styles.closeBtn}
+              onClick={onClose}
+              aria-label={`Close ${entry.name}`}
+            >
+              <X size={20} aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
         <div className={styles.body}>

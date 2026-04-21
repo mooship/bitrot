@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Navigate, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import { AboutPage } from "./components/AboutPage/AboutPage";
+import { DailyObituary } from "./components/DailyObituary/DailyObituary";
 import { EntryDetail } from "./components/EntryDetail/EntryDetail";
 import { FilterBar } from "./components/FilterBar/FilterBar";
 import { Footer } from "./components/Footer/Footer";
 import { Header } from "./components/Header/Header";
 import { PageMain } from "./components/PageMain/PageMain";
 import { PrivacyPolicy } from "./components/PrivacyPolicy/PrivacyPolicy";
+import { ShortcutHelp } from "./components/ShortcutHelp/ShortcutHelp";
 import { SkipLink } from "./components/SkipLink/SkipLink";
 import { StatsPage } from "./components/StatsPage/StatsPage";
 import { Timeline } from "./components/Timeline/Timeline";
@@ -26,17 +28,32 @@ function HomePage() {
 
   useFilterUrlSync();
 
+  const filteredIndex = activeEntry
+    ? filteredEntries.findIndex((e) => e.id === activeEntry.id)
+    : -1;
+  const prevEntry = filteredIndex > 0 ? filteredEntries[filteredIndex - 1] : null;
+  const nextEntry =
+    filteredIndex >= 0 && filteredIndex < filteredEntries.length - 1
+      ? filteredEntries[filteredIndex + 1]
+      : null;
+
   return (
     <>
       <FilterBar />
       <PageMain>
+        <DailyObituary />
         <Timeline
           entries={filteredEntries}
           sortOrder={sortOrder}
           onSelect={(entryId) => navigate(`/entry/${entryId}`)}
         />
       </PageMain>
-      <EntryDetail entry={activeEntry} onClose={() => navigate("/")} />
+      <EntryDetail
+        entry={activeEntry}
+        onClose={() => navigate("/")}
+        prevEntry={prevEntry}
+        nextEntry={nextEntry}
+      />
     </>
   );
 }
@@ -83,6 +100,7 @@ export default function App() {
       </Routes>
       <Footer />
       <Toast />
+      <ShortcutHelp />
     </>
   );
 }

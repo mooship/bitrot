@@ -163,6 +163,56 @@
   min-height: var(--touch-target);
   display: flex;
   align-items: center;
+  gap: var(--space-1);
+}
+
+.sortCaret {
+  color: inherit;
+}
+
+.yearRange {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.yearField {
+  display: inline-flex;
+}
+
+.yearInput {
+  inline-size: 5ch;
+  min-height: var(--touch-target);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-align: center;
+  -moz-appearance: textfield;
+  appearance: textfield;
+  transition:
+    border-color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.yearInput::-webkit-outer-spin-button,
+.yearInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.yearInput:focus-visible {
+  outline: none;
+  border-color: var(--pour-liquid);
+}
+
+.yearSep {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
 }
 
 .chipActive {

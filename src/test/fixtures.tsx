@@ -16,6 +16,9 @@ export function resetFilterStore() {
     activeCategories: new Set(),
     searchQuery: "",
     sortOrder: "died",
+    sortDirection: "desc",
+    fromYear: null,
+    toYear: null,
   });
 }
 
