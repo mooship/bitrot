@@ -331,7 +331,7 @@
     opacity: 0;
     border-radius: var(--radius-2xl);
     max-block-size: 85dvh;
-    inline-size: min(640px, calc(100vw - var(--space-8)));
+    inline-size: calc(100% - var(--space-8));
     max-inline-size: 640px;
   }
 
