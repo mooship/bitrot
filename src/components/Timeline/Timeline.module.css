@@ -73,3 +73,13 @@
     padding-inline-start: 0;
   }
 }
+
+@media (min-width: 1280px) {
+  .section {
+    max-width: var(--max-width);
+  }
+
+  .list {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
