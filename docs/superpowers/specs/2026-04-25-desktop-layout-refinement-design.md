@@ -40,7 +40,7 @@ On wide desktop viewports (1280px+) the layout has several proportioning issues:
 
 - Desktop breakpoint (≥640px) overrides:
   - `.banner` padding: bumps to `--space-6` block / `--space-8` inline
-  - `.banner` margin: `--space-6` top / `--space-8` bottom
+  - `.banner` block margin: `--space-6` top / `--space-8` bottom; inline margin stays `auto` (centering)
   - `.name` `font-size`: `var(--text-xl)` → `var(--text-3xl)`
   - `.tagline` `font-size`: `var(--text-base)` → `var(--text-lg)`
 
