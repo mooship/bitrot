@@ -6,7 +6,7 @@
 }
 
 .inner {
-  max-width: var(--max-width);
+  max-width: var(--timeline-width);
   margin-inline: auto;
   padding-inline: var(--space-4);
   display: flex;
@@ -181,7 +181,7 @@
 }
 
 .yearInput {
-  inline-size: 5ch;
+  inline-size: 6ch;
   min-height: var(--touch-target);
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border);
