@@ -311,3 +311,22 @@
     flex-shrink: 0;
   }
 }
+
+@media (min-width: 640px) {
+  .searchInputWrap {
+    min-height: 32px;
+  }
+
+  .chip {
+    min-height: 32px;
+    padding: var(--space-1) var(--space-2);
+  }
+
+  .yearInput {
+    min-height: 32px;
+  }
+
+  .clearBtn {
+    min-height: 32px;
+  }
+}
