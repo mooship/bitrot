@@ -181,7 +181,7 @@
 }
 
 .yearInput {
-  inline-size: 6ch;
+  inline-size: 8ch;
   min-height: var(--touch-target);
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border);
