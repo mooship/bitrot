@@ -85,3 +85,20 @@
 .dot {
   color: var(--border);
 }
+
+@media (min-width: 640px) {
+  .banner {
+    padding: var(--space-6) var(--space-8);
+    margin-block-start: var(--space-6);
+    margin-block-end: var(--space-8);
+  }
+
+  .name {
+    font-size: var(--text-3xl);
+  }
+
+  .tagline {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+  }
+}
