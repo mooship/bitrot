@@ -56,8 +56,10 @@
   transition: color var(--transition-fast);
 }
 
-.navLink:hover {
-  color: var(--text-primary);
+@media (hover: hover) {
+  .navLink:hover {
+    color: var(--text-primary);
+  }
 }
 
 .navLinkActive {

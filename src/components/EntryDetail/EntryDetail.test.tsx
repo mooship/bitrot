@@ -300,5 +300,18 @@ describe("EntryDetail", () => {
 
       expect(useFilterStore.getState().searchQuery).toBe("Google+");
     });
+
+    it("resets year range and sort order when following a cross-link", async () => {
+      useFilterStore.setState({ fromYear: 2005, toYear: 2020, sortOrder: "name" });
+      renderWithRouter(<EntryDetail entry={mockEntry} onClose={vi.fn()} />);
+      const user = userEvent.setup();
+
+      await user.click(screen.getByRole("button", { name: "Show entries related to Google+" }));
+
+      const state = useFilterStore.getState();
+      expect(state.fromYear).toBeNull();
+      expect(state.toYear).toBeNull();
+      expect(state.sortOrder).toBe("died");
+    });
   });
 });
