@@ -37,6 +37,24 @@ describe("isEditableTarget", () => {
 });
 
 describe("isInDialog", () => {
+  let container: HTMLDivElement;
+
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.removeChild(container);
+  });
+
+  function makeDialog(): HTMLDivElement {
+    const dialog = document.createElement("div");
+    dialog.setAttribute("role", "dialog");
+    container.appendChild(dialog);
+    return dialog;
+  }
+
   it("returns false for null", () => {
     expect(isInDialog(null)).toBe(false);
   });
@@ -46,37 +64,24 @@ describe("isInDialog", () => {
   });
 
   it("returns true for an element directly inside a dialog", () => {
-    const dialog = document.createElement("div");
-    dialog.setAttribute("role", "dialog");
+    const dialog = makeDialog();
     const button = document.createElement("button");
     dialog.appendChild(button);
-    document.body.appendChild(dialog);
-
     expect(isInDialog(button)).toBe(true);
-
-    document.body.removeChild(dialog);
   });
 
   it("returns true for a deeply nested element inside a dialog", () => {
-    const dialog = document.createElement("div");
-    dialog.setAttribute("role", "dialog");
+    const dialog = makeDialog();
     const inner = document.createElement("div");
     const span = document.createElement("span");
     inner.appendChild(span);
     dialog.appendChild(inner);
-    document.body.appendChild(dialog);
-
     expect(isInDialog(span)).toBe(true);
-
-    document.body.removeChild(dialog);
   });
 
   it("returns false for an element outside any dialog", () => {
     const div = document.createElement("div");
-    document.body.appendChild(div);
-
+    container.appendChild(div);
     expect(isInDialog(div)).toBe(false);
-
-    document.body.removeChild(div);
   });
 });

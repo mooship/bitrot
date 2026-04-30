@@ -19,6 +19,25 @@ function Trap({ active, onEscape, children }: Props) {
   );
 }
 
+function Toggle() {
+  const [active, setActive] = useState(false);
+  return (
+    <>
+      <button type="button" data-testid="toggle" onClick={() => setActive(true)}>
+        activate
+      </button>
+      <Trap active={active}>
+        <button type="button" data-testid="first">
+          first
+        </button>
+        <button type="button" data-testid="last">
+          last
+        </button>
+      </Trap>
+    </>
+  );
+}
+
 describe("useFocusTrap", () => {
   it("does not intercept Tab when inactive", async () => {
     const user = userEvent.setup();
@@ -127,25 +146,6 @@ describe("useFocusTrap", () => {
 
   it("responds to the active prop toggling on", async () => {
     const user = userEvent.setup();
-    function Toggle() {
-      const [active, setActive] = useState(false);
-      return (
-        <>
-          <button type="button" data-testid="toggle" onClick={() => setActive(true)}>
-            activate
-          </button>
-          <Trap active={active}>
-            <button type="button" data-testid="first">
-              first
-            </button>
-            <button type="button" data-testid="last">
-              last
-            </button>
-          </Trap>
-        </>
-      );
-    }
-
     render(<Toggle />);
     await user.click(screen.getByTestId("toggle"));
 
