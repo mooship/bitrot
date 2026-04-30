@@ -140,11 +140,9 @@ export function EntryDetail({ entry, onClose, prevEntry, nextEntry }: EntryDetai
   const lifespan = entry.died - entry.born;
 
   const handleCrossLink = (term: string) => {
-    useFilterStore.setState({
-      searchQuery: term,
-      activeCauses: new Set(),
-      activeCategories: new Set(),
-    });
+    const { clearAll, setSearchQuery } = useFilterStore.getState();
+    clearAll();
+    setSearchQuery(term);
     onClose();
     navigate("/");
   };
