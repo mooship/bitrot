@@ -15,13 +15,17 @@ function avg(nums: number[]): number {
   return nums.reduce((s, n) => s + n, 0) / nums.length;
 }
 
-function countByKey<K extends string>(
+function countByKey<T, K extends string>(
+  items: readonly T[],
   keys: readonly K[],
-  fn: (e: (typeof entries)[number]) => K
+  fn: (e: T) => K
 ): { key: K; count: number }[] {
-  return keys
-    .map((k) => ({ key: k, count: entries.filter((e) => fn(e) === k).length }))
-    .sort((a, b) => b.count - a.count);
+  const tally = new Map<K, number>();
+  for (const e of items) {
+    const k = fn(e);
+    tally.set(k, (tally.get(k) ?? 0) + 1);
+  }
+  return keys.map((k) => ({ key: k, count: tally.get(k) ?? 0 })).sort((a, b) => b.count - a.count);
 }
 
 interface BarItem {
@@ -44,7 +48,7 @@ function BarList({ items }: { items: BarItem[] }) {
             <span className={styles.barTrack}>
               <span
                 className={styles.bar}
-                style={{ width: `${(count / max) * 100}%` }}
+                style={{ width: max > 0 ? `${(count / max) * 100}%` : "0%" }}
                 aria-hidden="true"
               />
             </span>
@@ -81,8 +85,8 @@ export function StatsPage() {
   const lifespans = entries.map((e) => e.died - e.born);
   const avgLifespan = avg(lifespans);
 
-  const causeCounts = countByKey(CAUSES_OF_DEATH, (e) => e.causeOfDeath);
-  const categoryCounts = countByKey(TECH_CATEGORIES, (e) => e.category);
+  const causeCounts = countByKey(entries, CAUSES_OF_DEATH, (e) => e.causeOfDeath);
+  const categoryCounts = countByKey(entries, TECH_CATEGORIES, (e) => e.category);
 
   const maxCauseCount = Math.max(...causeCounts.map((c) => c.count));
   const maxCategoryCount = Math.max(...categoryCounts.map((c) => c.count));

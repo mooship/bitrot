@@ -74,11 +74,14 @@ describe("PourButton", () => {
     const user = userEvent.setup();
     render(<PourButton entryId="vine" entryName="Vine" />);
 
-    await user.click(screen.getByRole("button"));
-    const countAfterFirst = usePourStore.getState().counts.vine;
+    const button = screen.getByRole("button");
+    expect(button).not.toBeDisabled();
 
-    await user.click(screen.getByRole("button")); // no-op — button is now disabled
+    await user.click(button);
+    expect(button).toBeDisabled();
+
+    const countAfterFirst = usePourStore.getState().counts.vine;
+    await user.click(button);
     expect(usePourStore.getState().counts.vine).toBe(countAfterFirst);
-    expect(screen.getByRole("button")).toBeDisabled();
   });
 });
