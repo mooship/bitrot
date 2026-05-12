@@ -66,4 +66,5 @@
   --header-height: 64px;
   --filter-height: 56px;
   --touch-target: 44px;
+  --backdrop: rgba(0, 0, 0, 0.6);
 }

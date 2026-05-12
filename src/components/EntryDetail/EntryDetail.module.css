@@ -1,7 +1,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--backdrop);
   z-index: var(--z-overlay);
   backdrop-filter: blur(2px);
 }
@@ -79,7 +79,8 @@
   flex-shrink: 0;
 }
 
-.navBtn {
+.navBtn,
+.closeBtn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,6 +89,9 @@
   border-radius: var(--radius-full);
   color: var(--text-muted);
   flex-shrink: 0;
+}
+
+.navBtn {
   transition:
     color var(--transition-fast),
     background-color var(--transition-fast);
@@ -106,14 +110,6 @@
 }
 
 .closeBtn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--touch-target);
-  height: var(--touch-target);
-  border-radius: var(--radius-full);
-  color: var(--text-muted);
-  flex-shrink: 0;
   transition:
     color var(--transition-fast),
     background-color var(--transition-fast),

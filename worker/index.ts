@@ -101,10 +101,10 @@ function originsMatch(requestOrigin: string, parsedAllowed: URL | null): boolean
   }
 }
 
-let corsState: { cors: Record<string, string>; parsed: URL | null } | null = null;
+let corsState: { origin: string; cors: Record<string, string>; parsed: URL | null } | null = null;
 
 function getCorsState(allowedOrigin: string) {
-  if (corsState !== null) {
+  if (corsState !== null && corsState.origin === allowedOrigin) {
     return corsState;
   }
   let parsed: URL | null;
@@ -114,6 +114,7 @@ function getCorsState(allowedOrigin: string) {
     parsed = null;
   }
   corsState = {
+    origin: allowedOrigin,
     parsed,
     cors: {
       "Access-Control-Allow-Origin": allowedOrigin,
@@ -142,7 +143,7 @@ function jsonResponse(
 }
 
 async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
-  const key = `${RATE_LIMIT_PREFIX}${ip}`;
+  const key = `${RATE_LIMIT_PREFIX}${await sha256Hex(ip)}`;
   const count = parseCount(await env.POURS.get(key));
   if (count >= RATE_LIMIT_MAX) {
     return false;

@@ -9,5 +9,8 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.ts"],
     css: { modules: { classNameStrategy: "non-scoped" } },
     include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.{ts,tsx}"],
+    coverage: {
+      thresholds: { lines: 80, functions: 80, branches: 75 },
+    },
   },
 });
