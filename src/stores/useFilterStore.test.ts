@@ -71,14 +71,16 @@ describe("useFilteredEntries", () => {
   it("filters by a single cause", () => {
     useFilterStore.getState().toggleCause("neglected");
     const { result } = renderHook(() => useFilteredEntries());
-    expect(result.current.length).toBeGreaterThan(0);
+    const expected = entries.filter((e) => e.causeOfDeath === "neglected").length;
+    expect(result.current.length).toBe(expected);
     expect(result.current.every((e) => e.causeOfDeath === "neglected")).toBe(true);
   });
 
   it("filters by a single category", () => {
     useFilterStore.getState().toggleCategory("social");
     const { result } = renderHook(() => useFilteredEntries());
-    expect(result.current.length).toBeGreaterThan(0);
+    const expected = entries.filter((e) => e.category === "social").length;
+    expect(result.current.length).toBe(expected);
     expect(result.current.every((e) => e.category === "social")).toBe(true);
   });
 

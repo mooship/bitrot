@@ -2,7 +2,7 @@ import { entries } from "../data/entries";
 import type { DeadTech } from "../data/types";
 
 const RECENT_PICK_LIMIT = 3;
-const recentPicks: string[] = [];
+export const recentPicks: string[] = [];
 
 export function currentEntryId(pathname: string): string | null {
   const match = pathname.match(/^\/entry\/([^/]+)/);
@@ -26,8 +26,4 @@ export function pickRandomEntry(currentId: string | null): DeadTech | null {
     recentPicks.length = RECENT_PICK_LIMIT;
   }
   return pick;
-}
-
-export function _resetRecentPicksForTest(): void {
-  recentPicks.length = 0;
 }

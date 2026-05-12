@@ -15,6 +15,63 @@ function avg(nums: number[]): number {
   return nums.reduce((s, n) => s + n, 0) / nums.length;
 }
 
+function countByKey<K extends string>(
+  keys: readonly K[],
+  fn: (e: (typeof entries)[number]) => K
+): { key: K; count: number }[] {
+  return keys
+    .map((k) => ({ key: k, count: entries.filter((e) => fn(e) === k).length }))
+    .sort((a, b) => b.count - a.count);
+}
+
+interface BarItem {
+  key: string | number;
+  label: string;
+  count: number;
+  max: number;
+  displayValue?: string;
+  ariaLabel?: string;
+  onClick?: () => void;
+}
+
+function BarList({ items }: { items: BarItem[] }) {
+  return (
+    <ul className={styles.barList}>
+      {items.map(({ key, label, count, max, displayValue, ariaLabel, onClick }) => {
+        const inner = (
+          <>
+            <span className={styles.barLabel}>{label}</span>
+            <span className={styles.barTrack}>
+              <span
+                className={styles.bar}
+                style={{ width: `${(count / max) * 100}%` }}
+                aria-hidden="true"
+              />
+            </span>
+            <span className={styles.barCount}>{displayValue ?? count}</span>
+          </>
+        );
+        return (
+          <li key={key} className={onClick ? undefined : styles.barRow}>
+            {onClick ? (
+              <button
+                type="button"
+                className={styles.barRow}
+                onClick={onClick}
+                aria-label={ariaLabel}
+              >
+                {inner}
+              </button>
+            ) : (
+              inner
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 export function StatsPage() {
   usePageSeo("stats");
 
@@ -24,15 +81,8 @@ export function StatsPage() {
   const lifespans = entries.map((e) => e.died - e.born);
   const avgLifespan = avg(lifespans);
 
-  const causeCounts = CAUSES_OF_DEATH.map((cause) => ({
-    cause,
-    count: entries.filter((e) => e.causeOfDeath === cause).length,
-  })).sort((a, b) => b.count - a.count);
-
-  const categoryCounts = TECH_CATEGORIES.map((cat) => ({
-    cat,
-    count: entries.filter((e) => e.category === cat).length,
-  })).sort((a, b) => b.count - a.count);
+  const causeCounts = countByKey(CAUSES_OF_DEATH, (e) => e.causeOfDeath);
+  const categoryCounts = countByKey(TECH_CATEGORIES, (e) => e.category);
 
   const maxCauseCount = Math.max(...causeCounts.map((c) => c.count));
   const maxCategoryCount = Math.max(...categoryCounts.map((c) => c.count));
@@ -119,92 +169,55 @@ export function StatsPage() {
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Cause of Death</h2>
-        <ul className={styles.barList}>
-          {causeCounts.map(({ cause, count }) => (
-            <li key={cause}>
-              <button
-                type="button"
-                className={styles.barRow}
-                onClick={() => navigateWithFilter({ activeCauses: new Set([cause]) })}
-                aria-label={`Show ${count} ${CAUSE_LABELS[cause]} entries`}
-              >
-                <span className={styles.barLabel}>{CAUSE_LABELS[cause]}</span>
-                <span className={styles.barTrack}>
-                  <span
-                    className={styles.bar}
-                    style={{ width: `${(count / maxCauseCount) * 100}%` }}
-                    aria-hidden="true"
-                  />
-                </span>
-                <span className={styles.barCount}>{count}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <BarList
+          items={causeCounts.map(({ key, count }) => ({
+            key,
+            label: CAUSE_LABELS[key],
+            count,
+            max: maxCauseCount,
+            ariaLabel: `Show ${count} ${CAUSE_LABELS[key]} entries`,
+            onClick: () => navigateWithFilter({ activeCauses: new Set([key]) }),
+          }))}
+        />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Deaths by Decade</h2>
-        <ul className={styles.barList}>
-          {decadeCounts.map(({ decade, count }) => (
-            <li key={decade} className={styles.barRow}>
-              <span className={styles.barLabel}>{decade}s</span>
-              <div className={styles.barTrack}>
-                <div
-                  className={styles.bar}
-                  style={{ width: `${(count / maxDecadeCount) * 100}%` }}
-                  aria-hidden="true"
-                />
-              </div>
-              <span className={styles.barCount}>{count}</span>
-            </li>
-          ))}
-        </ul>
+        <BarList
+          items={decadeCounts.map(({ decade, count }) => ({
+            key: decade,
+            label: `${decade}s`,
+            count,
+            max: maxDecadeCount,
+          }))}
+        />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Category</h2>
-        <ul className={styles.barList}>
-          {categoryCounts.map(({ cat, count }) => (
-            <li key={cat}>
-              <button
-                type="button"
-                className={styles.barRow}
-                onClick={() => navigateWithFilter({ activeCategories: new Set([cat]) })}
-                aria-label={`Show ${count} ${CATEGORY_LABELS[cat]} entries`}
-              >
-                <span className={styles.barLabel}>{CATEGORY_LABELS[cat]}</span>
-                <span className={styles.barTrack}>
-                  <span
-                    className={styles.bar}
-                    style={{ width: `${(count / maxCategoryCount) * 100}%` }}
-                    aria-hidden="true"
-                  />
-                </span>
-                <span className={styles.barCount}>{count}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <BarList
+          items={categoryCounts.map(({ key, count }) => ({
+            key,
+            label: CATEGORY_LABELS[key],
+            count,
+            max: maxCategoryCount,
+            ariaLabel: `Show ${count} ${CATEGORY_LABELS[key]} entries`,
+            onClick: () => navigateWithFilter({ activeCategories: new Set([key]) }),
+          }))}
+        />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.heading}>Average Lifespan by Category</h2>
-        <ul className={styles.barList}>
-          {categoryAvgLifespan.map(({ cat, avg: avgYears }) => (
-            <li key={cat} className={styles.barRow}>
-              <span className={styles.barLabel}>{CATEGORY_LABELS[cat]}</span>
-              <div className={styles.barTrack}>
-                <div
-                  className={styles.bar}
-                  style={{ width: `${(avgYears / maxCategoryAvg) * 100}%` }}
-                  aria-hidden="true"
-                />
-              </div>
-              <span className={styles.barCount}>{avgYears.toFixed(1)}y</span>
-            </li>
-          ))}
-        </ul>
+        <BarList
+          items={categoryAvgLifespan.map(({ cat, avg: avgYears }) => ({
+            key: cat,
+            label: CATEGORY_LABELS[cat],
+            count: avgYears,
+            max: maxCategoryAvg,
+            displayValue: `${avgYears.toFixed(1)}y`,
+          }))}
+        />
       </section>
 
       {topPoured.length > 0 && (

@@ -69,4 +69,16 @@ describe("PourButton", () => {
     render(<PourButton entryId="vine" entryName="Vine" />);
     expect(screen.queryByText("—")).not.toBeInTheDocument();
   });
+
+  it("is disabled after pouring so a second click cannot increment the count", async () => {
+    const user = userEvent.setup();
+    render(<PourButton entryId="vine" entryName="Vine" />);
+
+    await user.click(screen.getByRole("button"));
+    const countAfterFirst = usePourStore.getState().counts.vine;
+
+    await user.click(screen.getByRole("button")); // no-op — button is now disabled
+    expect(usePourStore.getState().counts.vine).toBe(countAfterFirst);
+    expect(screen.getByRole("button")).toBeDisabled();
+  });
 });

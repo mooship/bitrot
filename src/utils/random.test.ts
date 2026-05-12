@@ -1,8 +1,8 @@
 import { entries } from "../data/entries";
-import { _resetRecentPicksForTest, currentEntryId, pickRandomEntry } from "./random";
+import { currentEntryId, pickRandomEntry, recentPicks } from "./random";
 
 beforeEach(() => {
-  _resetRecentPicksForTest();
+  recentPicks.length = 0;
 });
 
 describe("currentEntryId", () => {
@@ -38,7 +38,7 @@ describe("pickRandomEntry", () => {
     const [first] = entries;
     const seenCurrentId = new Set<string>();
     for (let i = 0; i < 30; i++) {
-      _resetRecentPicksForTest();
+      recentPicks.length = 0;
       const pick = pickRandomEntry(first.id);
       if (pick) {
         seenCurrentId.add(pick.id);

@@ -71,8 +71,9 @@ export const usePourStore = create<PourStore>((set, get) => ({
         };
       });
     } catch {
-      const rollback = { ...get().counts, [id]: prev };
-      const rolledBackPending = new Set(get().pendingPours);
+      const snap = get();
+      const rollback = { ...snap.counts, [id]: prev };
+      const rolledBackPending = new Set(snap.pendingPours);
       rolledBackPending.delete(id);
       prevSession.delete(id);
       writeSessionSet(SESSION_KEY, prevSession);
