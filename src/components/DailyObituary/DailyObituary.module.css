@@ -4,6 +4,7 @@
   margin: var(--space-4) auto var(--space-6);
   padding: var(--space-4) var(--space-5);
   background-color: var(--bg-elevated);
+  background-image: radial-gradient(ellipse at left center, var(--glow) 0%, transparent 60%);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -13,7 +14,7 @@
   position: absolute;
   inset-block: 0;
   inset-inline-start: 0;
-  width: 3px;
+  width: 4px;
   background-color: var(--entry-accent, var(--pour-liquid));
 }
 
@@ -29,7 +30,7 @@
   font-size: var(--text-xs);
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   margin: 0;
 }
 
