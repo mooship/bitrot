@@ -10,8 +10,8 @@
   font-family: var(--font-mono);
   font-size: var(--text-base);
   font-weight: 700;
-  color: var(--text-secondary);
-  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
   white-space: nowrap;
   min-width: 3.5rem;
 }
@@ -19,7 +19,7 @@
 .line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, var(--border), transparent);
+  background: linear-gradient(to right, rgba(212, 168, 67, 0.3), transparent);
 }
 
 @media (min-width: 640px) {

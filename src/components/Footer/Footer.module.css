@@ -1,7 +1,19 @@
 .footer {
   margin-block-start: auto;
-  border-block-start: 1px solid var(--border);
-  padding-block: var(--space-8);
+  border: none;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    var(--border) 20%,
+    var(--pour-liquid) 50%,
+    var(--border) 80%,
+    transparent
+  );
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  padding-block-start: var(--space-10);
+  padding-block-end: var(--space-8);
 }
 
 .inner {

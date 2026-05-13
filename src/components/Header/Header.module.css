@@ -1,6 +1,8 @@
 .header {
   background-color: var(--bg-primary);
+  background-image: linear-gradient(to bottom, rgba(212, 168, 67, 0.04), transparent);
   border-block-end: 1px solid var(--border);
+  box-shadow: 0 2px 20px rgba(212, 168, 67, 0.06);
   transition: background-color var(--transition-slow);
 }
 
@@ -29,7 +31,7 @@
   font-size: var(--text-2xl);
   font-weight: 700;
   line-height: var(--leading-tight);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variation-settings: "WONK" 1;
   font-optical-sizing: auto;
   color: var(--text-primary);
