@@ -56,6 +56,7 @@
   --z-overlay: 200;
   --z-modal: 300;
   --z-toast: 400;
+  --z-grain: 490;
   --z-skip: 500;
 
   --transition-fast: 120ms ease;

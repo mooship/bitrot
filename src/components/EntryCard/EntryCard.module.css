@@ -1,7 +1,7 @@
 .card {
   position: relative;
   background-color: var(--bg-surface);
-  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.015) 0%, transparent 60%);
+  background-image: linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   overflow: hidden;
